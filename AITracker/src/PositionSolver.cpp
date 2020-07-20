@@ -104,6 +104,13 @@ PositionSolver::PositionSolver(int width, int height):
         0, 0, 1
     );
 
+    /*camera_matrix = (cv::Mat_<double>(3, 3) <<
+        34.32, 0, 307.3,
+        0, 34.17, 251.4,
+        0, 0, 1
+        );*/
+
+
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 }
 
@@ -118,7 +125,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         );
     }
 
-    std::vector<double> rv(3), tv(3);
+    std::vector<double> rv({ -2, -2, 0 }), tv({0,0,-3});
     cv::Mat rvec(rv), tvec(tv);
 
     cv::Mat ip(landmarkPoints);
@@ -133,6 +140,8 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         cv::SOLVEPNP_ITERATIVE
         );
 
+    //std::cout << rvec << std::endl;
+
 
     //double rot[9] = { 0 };
     cv::Mat rotM(3, 3, CV_64FC1);
@@ -140,6 +149,8 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
 
     cv::Mat concated(3, 4, CV_64FC1);
+    //cv::Mat transs(3, 1, CV_64FC1);
+    //cv::hconcat(rotM, transs, concated);
     cv::hconcat(rotM, tvec, concated);
 
 
@@ -155,11 +166,21 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     );
 
 
+    double d = 6;
+
+    //Correct relative translation
+    double yaw_angle = rvec.at<double>(1,0);
+    double y_trans = tvec.at<double>(1, 0);  //Bien
+    double correction = y_trans <= 0 ? yaw_angle + std::atan(y_trans / d) : yaw_angle - std::atan(y_trans / d);
+
+
     for (int i = 0; i < 3; i++)
     {
         face_data->rotation[i] = rvec.at<double>(i, 0);
         face_data->translation[i] = tvec.at<double>(i, 0);
     }
+
+    //face_data->rotation[1] = correction;
 
     std::cout << "FACEDATA\n" << face_data->to_string()<<std::endl; 
  }
