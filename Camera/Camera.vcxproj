@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Alvaro\source\repos\Camera\Dependencies\onnxruntime\include;C:\Users\Álvaro\source\repos\Camera\Dependencies\libusb\include\libusb-1.0;C:\Users\Alvaro\source\repos\Camera\Dependencies\OpenCV\include\;$(ProjectDir)Dependencies\OpenCV\include;$(ProjectDir)Include;C:\Users\Alvaro\source\repos\Camera\AITracker\src;$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\OpenCV\include\;$(ProjectDir)Include;C:\Users\Alvaro\source\repos\Camera\AITracker\src;$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

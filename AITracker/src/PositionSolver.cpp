@@ -123,7 +123,6 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
     cv::Mat ip(landmarkPoints);
 
-
     solvePnP(mat3dcontour,
         ip, 
         this->camera_matrix, 
