@@ -156,7 +156,6 @@
     <ClCompile Include="src\PositionSolver.cpp" />
     <ClCompile Include="src\imageprocessor.cpp" />
     <ClCompile Include="src\data.cpp" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model.cpp" />
   </ItemGroup>
   <ItemGroup>

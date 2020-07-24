@@ -9,10 +9,8 @@
 
 
 
-struct PositionData
-{
-	float yaw, pitch, roll, x, y, z;
-};
+
+
 
 
 class UDPSender

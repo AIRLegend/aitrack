@@ -15,10 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp">
+    <ClCompile Include="src\UDPSender.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="UDPSender.cpp">
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\viewmain.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,8 +29,16 @@
     <ClInclude Include="Include\ps3eye.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="UDPSender.h">
+    <ClInclude Include="src\UDPSender.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\view\MainWindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\view\viewmain.h">
+      <Filter>Archivos de encabezado</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
