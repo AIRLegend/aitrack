@@ -42,7 +42,7 @@ struct ps3eye_context {
 
 
 Presenter::Presenter(IView& view, Tracker* tracker) :
-	t(640, 480),
+	t(640, 480)
 	//settings("./prefs.ini", QSettings::IniFormat)
 {
 	this->view = &view;
@@ -60,7 +60,6 @@ Presenter::~Presenter()
 
 void Presenter::run_loop()
 {
-	//UDPSender s("192.168.1.137", 5555);
 	int width = 640;
 	int height = 480;
 	int fps = 30;
@@ -72,14 +71,13 @@ void Presenter::run_loop()
 	}
 	ctx.eye->setFlip(true);
 
-
 	FaceData d = FaceData();
-	//Tracker t = Tracker(640, 480);
 
 
 	ctx.eye->start();
 
-	uint8_t* video_tex_pixels = new uint8_t[width * height * 3];
+	int video_frame_buff_size = width * height * 3;
+	uint8_t* video_tex_pixels = new uint8_t[video_frame_buff_size];
 
 
 	cv::Scalar colorR(255, 0, 0);
@@ -91,7 +89,6 @@ void Presenter::run_loop()
 	{
 		ctx.eye->getFrame(video_tex_pixels);
 		cv::Mat mat(height, width, CV_8UC3, video_tex_pixels);
-
 
 		t.predict(mat, d);
 
@@ -117,18 +114,17 @@ void Presenter::run_loop()
 			buffer_data[5] = d.rotation[2];
 			udp_sender->send_data(buffer_data);
 		}
-		//cv::imshow("Display window", mat);
+
 		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
 		view->paint_video_frame(mat);
 
-		int key = cv::waitKey(10);
-		if (key == 113) break;
+		cv::waitKey(10);
 
 	}
 
 	ctx.eye->stop();
 
-	cv::destroyAllWindows();
+	//cv::destroyAllWindows();
 }
 
 void Presenter::toggle_tracking()

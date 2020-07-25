@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CameraTrack", "Camera\Camera.vcxproj", "{A8790279-9ADF-4825-8198-22711689CEEF}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PS3Driver", "PS3Driver\PS3Driver.vcxproj", "{212672B2-4D87-4DED-9345-D66FB4CBF4AD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AITracker", "AITracker\AITracker.vcxproj", "{05AE71B6-F1C8-4F35-A1AE-1225AACD32E8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "GUILib\GUILib.vcxproj", "{5B4F6644-3599-41DB-8A3C-4CD888FCC86B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcxproj", "{5B4F6644-3599-41DB-8A3C-4CD888FCC86B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,13 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A8790279-9ADF-4825-8198-22711689CEEF}.Debug|x64.ActiveCfg = Debug|x64
-		{A8790279-9ADF-4825-8198-22711689CEEF}.Debug|x64.Build.0 = Debug|x64
-		{A8790279-9ADF-4825-8198-22711689CEEF}.Debug|x86.ActiveCfg = Debug|Win32
-		{A8790279-9ADF-4825-8198-22711689CEEF}.Debug|x86.Build.0 = Debug|Win32
-		{A8790279-9ADF-4825-8198-22711689CEEF}.Release|x64.ActiveCfg = Release|x64
-		{A8790279-9ADF-4825-8198-22711689CEEF}.Release|x86.ActiveCfg = Release|Win32
-		{A8790279-9ADF-4825-8198-22711689CEEF}.Release|x86.Build.0 = Release|Win32
 		{212672B2-4D87-4DED-9345-D66FB4CBF4AD}.Debug|x64.ActiveCfg = Debug|x64
 		{212672B2-4D87-4DED-9345-D66FB4CBF4AD}.Debug|x64.Build.0 = Debug|x64
 		{212672B2-4D87-4DED-9345-D66FB4CBF4AD}.Debug|x86.ActiveCfg = Debug|Win32

@@ -24,5 +24,7 @@ public:
 	Presenter(IView& view, Tracker *tracker);
 	~Presenter();
 	void run_loop();
+
+	//IPresenter
 	void toggle_tracking();
 };

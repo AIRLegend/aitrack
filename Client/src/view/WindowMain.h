@@ -21,8 +21,6 @@ public:
 	~WindowMain();
 	IPresenter *presenter;
 
-	void setCamPreview(cv::Mat& img);
-
 	//Iview
 	void paint_video_frame(cv::Mat& img);
 	void connect_presenter(IPresenter* presenter);

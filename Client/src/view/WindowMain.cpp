@@ -8,6 +8,7 @@ WindowMain::WindowMain(QWidget *parent)
 {
 	ui.setupUi(this);
 
+	this->presenter = NULL;
 	btn_track = findChild<QPushButton*>("trackBtn");
 	tracking_frame = findChild<QLabel*>("cameraView");
 	gp_box = findChild<QGroupBox*>("sendGruoupbox");
@@ -41,8 +42,6 @@ void WindowMain::connect_presenter(IPresenter* presenter)
 
 void WindowMain::set_tracking_mode(bool is_tracking)
 {
-	//onTrackClick();
-	//std::cout << "TOGGLE TRACKING: " << is_tracking << std::endl;
 	if (is_tracking)
 	{
 		// Change button name to "stop"
@@ -83,6 +82,5 @@ std::string WindowMain::get_input_port()
 
 void WindowMain::onTrackClick()
 {
-	//std::cout << "CLICKED" << std::endl;
 	presenter->toggle_tracking();
 }

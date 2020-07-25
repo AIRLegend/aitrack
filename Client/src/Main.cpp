@@ -1,5 +1,6 @@
-#include <QtWidgets/QApplication>
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
+#include <QtWidgets/QApplication>
 #include "view/WindowMain.h"
 #include "presenter/presenter.h"
 
