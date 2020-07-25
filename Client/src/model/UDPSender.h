@@ -3,16 +3,7 @@
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
 
-
-#define IP "192.168.1.137"
-#define PORT 5555
-
-
-
-struct PositionData
-{
-	float yaw, pitch, roll, x, y, z;
-};
+#include <string>
 
 
 class UDPSender
@@ -28,6 +19,9 @@ private:
 	SOCKET s;
 
 public:
+	std::string ip;
+	int port;
+
 	UDPSender(const char* dest_ip, int dest_port);
 	~UDPSender();
 	void send_data( double* data);

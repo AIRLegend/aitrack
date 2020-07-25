@@ -1,15 +1,13 @@
+//#include "../model/UDPSender.h"
 
+#include "presenter.h"
 
-#include "UDPSender.h"
-
-#include <iostream>
 #include "ps3eye.h"
 #include <string.h>
 
 #include "opencv.hpp"
 
-
-#include "../AITracker/src/model.h"
+#include "../model/IPResolver.h"
 
 
 
@@ -42,26 +40,44 @@ struct ps3eye_context {
 
 
 
-void run_camera(int width, int height, int fps)
-{
 
-	UDPSender s("192.168.1.137", 5555);
+Presenter::Presenter(IView& view, Tracker* tracker) :
+	t(640, 480)
+	//settings("./prefs.ini", QSettings::IniFormat)
+{
+	this->view = &view;
+	this->view->connect_presenter(this);
+
+	std::string ip_str = network::get_local_ip();
+	this->view->set_input_ip(ip_str);  // Set ip input text with the current IP
+	this->udp_sender = new UDPSender(ip_str.data(), 5555);
+}
+
+Presenter::~Presenter()
+{
+	delete this->udp_sender;
+}
+
+void Presenter::run_loop()
+{
+	int width = 640;
+	int height = 480;
+	int fps = 30;
 
 	ps3eye_context ctx(width, height, fps);
 	if (!ctx.hasDevices()) {
 		printf("No PS3 Eye camera connected\n");
 		return;
 	}
-	ctx.eye->setFlip(true); /* mirrored left-right */
-
+	ctx.eye->setFlip(true);
 
 	FaceData d = FaceData();
-	Tracker t = Tracker(640, 480);
 
 
 	ctx.eye->start();
 
-	uint8_t* video_tex_pixels = new uint8_t[width * height * 3];
+	int video_frame_buff_size = width * height * 3;
+	uint8_t* video_tex_pixels = new uint8_t[video_frame_buff_size];
 
 
 	cv::Scalar colorR(255, 0, 0);
@@ -69,11 +85,10 @@ void run_camera(int width, int height, int fps)
 
 	double buffer_data[6];
 
-	while (true)
+	while(run)
 	{
 		ctx.eye->getFrame(video_tex_pixels);
 		cv::Mat mat(height, width, CV_8UC3, video_tex_pixels);
-
 
 		t.predict(mat, d);
 
@@ -97,32 +112,40 @@ void run_camera(int width, int height, int fps)
 			buffer_data[3] = d.rotation[1];
 			buffer_data[4] = d.rotation[0];
 			buffer_data[5] = d.rotation[2];
-			s.send_data(buffer_data);
+			udp_sender->send_data(buffer_data);
 		}
-		cv::imshow("Display window", mat);
 
-		int key = cv::waitKey(10);
-		if (key == 113) break;
-		
+		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+		view->paint_video_frame(mat);
+
+		cv::waitKey(10);
+
 	}
 
 	ctx.eye->stop();
 
-	cv::destroyAllWindows();
+	//cv::destroyAllWindows();
 }
 
-int main(int argc, char* argv[])
+void Presenter::toggle_tracking()
 {
-	bool mode_test = false;
-	int width = 640;
-	int height = 480;
-	int fps = 30;
+
+	/*QString ip = view->get_input_ip().data();
+	QString port = view->get_input_port().data();
+	settings.setValue("ip",ip);
+	settings.setValue("port", port);*/
 
 
-	
+	if (view->get_input_ip() != this->udp_sender->ip)
+	{
+		//std::string msy(this->udp_sender->ip);
+		//std::cout << "USER CHANGED IP FIELD: " << view->get_input_ip()  << " UDP sender == " << msy << std::endl;
+		delete(this->udp_sender);
+		this->udp_sender = new UDPSender(view->get_input_ip().data(), 5555);
+	}
 
-	run_camera(width, height, fps);
-
-
-	return EXIT_SUCCESS;
+	run = !run;
+	view->set_tracking_mode(run);
+	if (run)
+		run_loop();
 }
