@@ -27,6 +27,9 @@ public:
 	void paint_video_frame(cv::Mat& img);
 	void connect_presenter(IPresenter* presenter);
 	void set_tracking_mode(bool is_tracking) override;
+	std::string get_input_ip();
+	void set_input_ip(std::string& ip);
+	std::string get_input_port();
 	
 private:
 	Ui::MainWindow ui;

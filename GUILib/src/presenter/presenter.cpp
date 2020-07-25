@@ -7,7 +7,7 @@
 
 #include "opencv.hpp"
 
-
+#include "../model/IPResolver.h"
 
 
 
@@ -42,15 +42,20 @@ struct ps3eye_context {
 
 
 Presenter::Presenter(IView& view, Tracker* tracker) :
-	udp_sender("192.168.1.137", 5555),
-	t(640, 480)
+	t(640, 480),
+	//settings("./prefs.ini", QSettings::IniFormat)
 {
 	this->view = &view;
 	this->view->connect_presenter(this);
+
+	std::string ip_str = network::get_local_ip();
+	this->view->set_input_ip(ip_str);  // Set ip input text with the current IP
+	this->udp_sender = new UDPSender(ip_str.data(), 5555);
 }
 
 Presenter::~Presenter()
 {
+	delete this->udp_sender;
 }
 
 void Presenter::run_loop()
@@ -110,7 +115,7 @@ void Presenter::run_loop()
 			buffer_data[3] = d.rotation[1];
 			buffer_data[4] = d.rotation[0];
 			buffer_data[5] = d.rotation[2];
-			udp_sender.send_data(buffer_data);
+			udp_sender->send_data(buffer_data);
 		}
 		//cv::imshow("Display window", mat);
 		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
@@ -128,10 +133,23 @@ void Presenter::run_loop()
 
 void Presenter::toggle_tracking()
 {
+
+	/*QString ip = view->get_input_ip().data();
+	QString port = view->get_input_port().data();
+	settings.setValue("ip",ip);
+	settings.setValue("port", port);*/
+
+
+	if (view->get_input_ip() != this->udp_sender->ip)
+	{
+		//std::string msy(this->udp_sender->ip);
+		//std::cout << "USER CHANGED IP FIELD: " << view->get_input_ip()  << " UDP sender == " << msy << std::endl;
+		delete(this->udp_sender);
+		this->udp_sender = new UDPSender(view->get_input_ip().data(), 5555);
+	}
+
 	run = !run;
 	view->set_tracking_mode(run);
 	if (run)
 		run_loop();
-
-	
 }

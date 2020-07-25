@@ -40,6 +40,9 @@
     <ClCompile Include="src\camera\Ps3Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\model\IPResolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="src\view\MainWindow.ui">
@@ -76,6 +79,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\view\i_view.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\IPResolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

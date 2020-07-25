@@ -11,6 +11,12 @@
 UDPSender::UDPSender(const char* dest_ip, int dest_port)
 {
 
+    this->ip = std::string(dest_ip);
+
+    //std::cout << "from sender, the ip is " << this->ip << std::endl;
+
+    this->port = dest_port;
+
     dest = sockaddr_in();
     local = sockaddr_in();
 
@@ -30,7 +36,6 @@ UDPSender::UDPSender(const char* dest_ip, int dest_port)
 
 UDPSender::~UDPSender()
 {
-
     closesocket(s);
     WSACleanup();
 }
@@ -48,7 +53,7 @@ void UDPSender::send_data( double* d)
 
 
 
-    std::cout << "SENT PACKET" << std::endl;
+    //std::cout << "SENT PACKET" << std::endl;
     std::cin;
 
 };

@@ -182,7 +182,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
     //face_data->rotation[1] = correction;
 
-    std::cout << "FACEDATA\n" << face_data->to_string()<<std::endl; 
+    //std::cout << "FACEDATA\n" << face_data->to_string()<<std::endl; 
  }
 
 
