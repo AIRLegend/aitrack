@@ -12,7 +12,7 @@
 
 
 
-Tracker::Tracker(PositionSolver* solver, std::string detection_model_path, std::string landmark_model_path):
+Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
     improc()
     //buffer_input_tensor(Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4))
 {
@@ -24,14 +24,14 @@ Tracker::Tracker(PositionSolver* solver, std::string detection_model_path, std::
     omp_set_num_threads(1);
 
 	//session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-	session = new Ort::Session(*enviro, modelFile, *session_options);
+	session = new Ort::Session(*enviro, detection_model_path.data(), *session_options);
 	allocator = new Ort::AllocatorWithDefaultOptions();
     memory_info = (Ort::MemoryInfo*)allocator->GetInfo();
 
 
    
     const wchar_t* modelFile2 = std::wstring(landmark_model_path.begin(), landmark_model_path.end()).data();//L"models/mnv3_opt_b.onnx";
-    session_lm = new Ort::Session(*enviro, modelFile2, *session_options);
+    session_lm = new Ort::Session(*enviro, landmark_model_path.data(), *session_options);
 
     //facedata = new FaceData();
     this->solver = solver;//new PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);

@@ -1,11 +1,13 @@
 #pragma once
 
+#include "i_view.h"
+
 #include <QtWidgets/QMainWindow>
 #include <QImage>
+
+
 #include "opencv.hpp"
-//#include "../presenter/presenter.h"
 #include "../presenter/i_presenter.h"
-#include "i_view.h"
 
 #include "ui_MainWindow.h"
 
@@ -28,14 +30,17 @@ public:
 	std::string get_input_ip();
 	void set_input_ip(std::string& ip);
 	std::string get_input_port();
+	ConfigData get_inputs() override;
+	void set_inputs(ConfigData data) override;
 	
 private:
 	Ui::MainWindow ui;
-	QPushButton* btn_track;
+	QPushButton *btn_track, *btn_save;
 	QLabel* tracking_frame;
-	QGroupBox* gp_box;
+	QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
 
 
 private slots:
 	void onTrackClick();
+	void onSaveClick();
 };
