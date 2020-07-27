@@ -12,11 +12,11 @@
 
 
 
-Tracker::Tracker(int img_width, int img_heigth):
+Tracker::Tracker(PositionSolver* solver, std::string detection_model_path, std::string landmark_model_path):
     improc()
     //buffer_input_tensor(Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4))
 {
-	const wchar_t* modelFile = L"E:\\OpenSeeFace\\models\\mnv3_detection_opt.onnx";
+    const wchar_t* modelFile = std::wstring(detection_model_path.begin(), detection_model_path.end()).data();    //L"models/mnv3_detection_opt.onnx";
 	enviro = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "test");
 	session_options = new Ort::SessionOptions();
     //session_options->SetIntraOpNumThreads(1);
@@ -29,11 +29,12 @@ Tracker::Tracker(int img_width, int img_heigth):
     memory_info = (Ort::MemoryInfo*)allocator->GetInfo();
 
 
-    const wchar_t* modelFile2 = L"E:\\OpenSeeFace\\models\\mnv3_opt_b.onnx";
+   
+    const wchar_t* modelFile2 = std::wstring(landmark_model_path.begin(), landmark_model_path.end()).data();//L"models/mnv3_opt_b.onnx";
     session_lm = new Ort::Session(*enviro, modelFile2, *session_options);
 
     //facedata = new FaceData();
-    solver = new PositionSolver(img_width, img_heigth);
+    this->solver = solver;//new PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
 
@@ -44,7 +45,11 @@ Tracker::Tracker(int img_width, int img_heigth):
 
 
     //buffer_input_tensor =  &Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
+    
+}
 
+Tracker::~Tracker()
+{
 }
 
 void Tracker::predict(cv::Mat& image, FaceData& face_data)

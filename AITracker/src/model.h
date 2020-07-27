@@ -18,7 +18,8 @@ class Tracker
 {
 
 public:
-	Tracker(int img_width, int img_heigth);
+	Tracker(PositionSolver* solver, std::string detection_model_path, std::string landmark_model_path);
+	~Tracker();
 	void predict(cv::Mat& image, FaceData& face_data);
 
 private:

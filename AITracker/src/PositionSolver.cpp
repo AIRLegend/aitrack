@@ -1,9 +1,16 @@
 #include "PositionSolver.h"
 
 
-PositionSolver::PositionSolver(int width, int height):
+PositionSolver::PositionSolver(int width, int height, 
+    float prior_pitch, float prior_yaw, float prior_distance):
     contour_indices{ 0,1,8,15,16,27,28,29,30,31,32,33,34,35,36,39,42,45 }
 {
+    this->prior_pitch = (1.1f * (prior_pitch + 90.f) / 180.f) - (double)2.5f;
+    this->prior_distance = prior_distance * -2. ;
+    this->prior_yaw = (1.84f*(prior_yaw + 90.f)/180.f) - (double)3.14f;
+
+    std::cout << "PRIORS CALCULATED: \nPITCH: " <<this->prior_pitch << "  YAW: " << this->prior_yaw << "  DISTANCE: " << this->prior_distance;
+
     mat3dcontour = (cv::Mat_<double>(18, 3) <<
         0.45517698, 0.30089578, -0.76442945,
         0.44899884, 0.16699584, -0.765143,
@@ -104,13 +111,6 @@ PositionSolver::PositionSolver(int width, int height):
         0, 0, 1
     );
 
-    /*camera_matrix = (cv::Mat_<double>(3, 3) <<
-        34.32, 0, 307.3,
-        0, 34.17, 251.4,
-        0, 0, 1
-        );*/
-
-
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 }
 
@@ -125,7 +125,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         );
     }
 
-    std::vector<double> rv({ -2, -2, 0 }), tv({0,0,-3});
+    std::vector<double> rv({ prior_pitch, prior_yaw, 0 }), tv({0, 0, prior_distance});
     cv::Mat rvec(rv), tvec(tv);
 
     cv::Mat ip(landmarkPoints);
@@ -142,15 +142,11 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
     //std::cout << rvec << std::endl;
 
-
-    //double rot[9] = { 0 };
     cv::Mat rotM(3, 3, CV_64FC1);
     cv::Rodrigues(rvec, rotM);
 
 
     cv::Mat concated(3, 4, CV_64FC1);
-    //cv::Mat transs(3, 1, CV_64FC1);
-    //cv::hconcat(rotM, transs, concated);
     cv::hconcat(rotM, tvec, concated);
 
 
@@ -166,12 +162,12 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     );
 
 
-    double d = 6;
+    //double d = 6;
 
     //Correct relative translation
-    double yaw_angle = rvec.at<double>(1,0);
-    double y_trans = tvec.at<double>(1, 0);  //Bien
-    double correction = y_trans <= 0 ? yaw_angle + std::atan(y_trans / d) : yaw_angle - std::atan(y_trans / d);
+    //double yaw_angle = rvec.at<double>(1,0);
+    //double y_trans = tvec.at<double>(1, 0);  //Bien
+    //double correction = y_trans <= 0 ? yaw_angle + std::atan(y_trans / d) : yaw_angle - std::atan(y_trans / d);
 
 
     for (int i = 0; i < 3; i++)

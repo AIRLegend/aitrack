@@ -8,7 +8,15 @@ class PositionSolver
 {
 
 public:
-	PositionSolver(int im_width, int im_height);
+
+	double prior_pitch, prior_yaw, prior_distance;
+
+	PositionSolver(
+		int im_width, 
+		int im_height,
+		float prior_pitch = -2.f,
+		float prior_yaw = -2.f,
+		float prior_distance = -1.2f);
 
 	void solve_rotation(FaceData* face_data);
 
