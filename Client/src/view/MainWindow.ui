@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>757</width>
-    <height>501</height>
+    <width>801</width>
+    <height>564</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,86 +24,21 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>757</width>
-    <height>501</height>
+    <width>804</width>
+    <height>800</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>AITrack</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="sendGruoupbox">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>370</y>
-      <width>261</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Opentrack address</string>
-    </property>
-    <widget class="QLineEdit" name="ipField">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>30</y>
-       <width>201</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>192.168.1.10</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>21</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>IP</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>60</y>
-       <width>81</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Port</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="portField">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>60</y>
-       <width>131</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>5555</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QPushButton" name="trackBtn">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>570</x>
       <y>390</y>
-      <width>271</width>
-      <height>71</height>
+      <width>211</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -120,7 +55,7 @@
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>40</y>
+      <y>30</y>
       <width>381</width>
       <height>301</height>
      </rect>
@@ -140,6 +75,212 @@
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="prefsGroupbox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>350</y>
+      <width>511</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Preferences</string>
+    </property>
+    <widget class="QGroupBox" name="sendGroupbox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>261</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Custom Opentrack address</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <widget class="QLineEdit" name="ipField">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>30</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="acceptDrops">
+       <bool>false</bool>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address where Opentrack is running. Leave empty for using local PC IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="whatsThis">
+       <string>asadf</string>
+      </property>
+      <property name="text">
+       <string>192.168.1.10</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>21</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>IP</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>60</y>
+        <width>81</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Port</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="portField">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>60</y>
+        <width>131</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>4242</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="paramsGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>30</y>
+       <width>221</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Initial parameters</string>
+     </property>
+     <widget class="QLineEdit" name="pitchField">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>30</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>31</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pitch</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>53</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Yaw</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="yawField">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>52</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>105</x>
+        <y>40</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Distance</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="distanceField">
+      <property name="geometry">
+       <rect>
+        <x>153</x>
+        <y>40</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QPushButton" name="saveBtn">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>151</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Save config</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

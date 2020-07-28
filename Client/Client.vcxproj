@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\model\Config.cpp" />
     <ClCompile Include="src\model\IPResolver.cpp" />
     <ClCompile Include="src\camera\Ps3Camera.cpp" />
     <ClCompile Include="src\presenter\presenter.cpp" />
@@ -168,6 +169,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\ps3eye.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\model\Config.h" />
     <ClInclude Include="src\model\IPResolver.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
     <ClInclude Include="src\camera\ICamera.h" />
@@ -183,6 +186,13 @@
     <ProjectReference Include="..\PS3Driver\PS3Driver.vcxproj">
       <Project>{212672b2-4d87-4ded-9345-d66fb4cbf4ad}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\logo.png" />
+    <Image Include="res\logo_256px.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

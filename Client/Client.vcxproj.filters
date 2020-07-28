@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\model\IPResolver.cpp" />
+    <ClCompile Include="src\camera\Ps3Camera.cpp" />
+    <ClCompile Include="src\presenter\presenter.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\model\UDPSender.cpp" />
+    <ClCompile Include="src\view\WindowMain.cpp" />
+    <ClCompile Include="src\model\Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\ps3eye.h" />
+    <ClInclude Include="src\model\IPResolver.h" />
+    <ClInclude Include="src\camera\Ps3Camera.h" />
+    <ClInclude Include="src\camera\ICamera.h" />
+    <ClInclude Include="src\presenter\i_presenter.h" />
+    <ClInclude Include="src\presenter\presenter.h" />
+    <ClInclude Include="src\model\UDPSender.h" />
+    <ClInclude Include="src\view\i_view.h" />
+    <ClInclude Include="src\model\Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\view\WindowMain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="src\view\qml.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="src\view\MainWindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\logo.png" />
+    <Image Include="res\logo_256px.ico" />
+  </ItemGroup>
+</Project>

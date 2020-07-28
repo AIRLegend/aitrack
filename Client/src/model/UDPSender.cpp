@@ -13,7 +13,7 @@ UDPSender::UDPSender(const char* dest_ip, int dest_port)
 
     this->ip = std::string(dest_ip);
 
-    //std::cout << "from sender, the ip is " << this->ip << std::endl;
+    std::cout << "from sender, the ip is " << this->ip << std::endl;
 
     this->port = dest_port;
 
