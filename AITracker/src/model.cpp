@@ -1,10 +1,6 @@
 #include "model.h"
 
 #include "onnxruntime_cxx_api.h"
-
-
-
-//#include "imageprocessor.h"
 #include "opencv2/core/matx.hpp"
 
 #include <math.h>
@@ -14,14 +10,15 @@
 
 Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
     improc()
-    //buffer_input_tensor(Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4))
 {
-    const wchar_t* modelFile = std::wstring(detection_model_path.begin(), detection_model_path.end()).data();    //L"models/mnv3_detection_opt.onnx";
-	enviro = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "test");
+    
+    this->solver = solver;
+
+    const wchar_t* modelFile = std::wstring(detection_model_path.begin(), detection_model_path.end()).data();   
 	session_options = new Ort::SessionOptions();
-    //session_options->SetIntraOpNumThreads(1);
-    //session_options->SetInterOpNumThreads(1);
-    omp_set_num_threads(1);
+    enviro = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "env");
+    
+   
 
 	//session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 	session = new Ort::Session(*enviro, detection_model_path.data(), *session_options);
@@ -30,11 +27,10 @@ Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std
 
 
    
-    const wchar_t* modelFile2 = std::wstring(landmark_model_path.begin(), landmark_model_path.end()).data();//L"models/mnv3_opt_b.onnx";
+    const wchar_t* modelFile2 = std::wstring(landmark_model_path.begin(), landmark_model_path.end()).data();
     session_lm = new Ort::Session(*enviro, landmark_model_path.data(), *session_options);
 
-    //facedata = new FaceData();
-    this->solver = solver;//new PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);
+    
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
 
@@ -42,14 +38,12 @@ Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std
     detection_output_node_names = {"output", "maxpool"};
     landmarks_input_node_names = {"input"};
     landmarks_output_node_names = {"output"};
-
-
-    //buffer_input_tensor =  &Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
-    
 }
 
 Tracker::~Tracker()
 {
+    delete this->session;
+    delete this->session_lm;
 }
 
 void Tracker::predict(cv::Mat& image, FaceData& face_data)
@@ -96,8 +90,6 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
     improc.normalize(resized);
     
 
-    //float data[150528];  // 3 * 224 * 224
-    //improc.transpose((float*)resized.data, data);
     improc.transpose((float*)resized.data, buffer_data);
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
@@ -161,8 +153,6 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
     
     improc.normalize(resized);  
 
-    //float data[150528];  // 3 * 224 * 224
-    //improc.transpose((float*)resized.data, data);
     improc.transpose((float*)resized.data, buffer_data);
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);

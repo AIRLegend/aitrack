@@ -4,7 +4,6 @@
 #include <vector>
 #include "ps3eye.h"
 
-
 struct ps3eye_context {
 	ps3eye_context(int width, int height, int fps) :
 		eye(0)
@@ -35,8 +34,12 @@ struct ps3eye_context {
 
 class Ps3Camera : public ICamera
 {
+
+private:
+	ps3eye_context ctx;
+
 public:
-	Ps3Camera();
+	Ps3Camera(int width = 640, int height = 480, int fps = 30);
 	~Ps3Camera();
 	void start_camera();
 	void stop_camera();

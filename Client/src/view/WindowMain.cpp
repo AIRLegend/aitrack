@@ -29,6 +29,11 @@ WindowMain::~WindowMain()
 {
 }
 
+void WindowMain::closeEvent(QCloseEvent* event)
+{
+	this->presenter->close_program();
+}
+
 
 
 void WindowMain::paint_video_frame(cv::Mat& img)
@@ -113,6 +118,9 @@ ConfigData WindowMain::get_inputs()
 
 void WindowMain::set_inputs(const ConfigData data)
 {
+	if(data.ip != "")
+		gp_box_address->setChecked(true);
+
 	gp_box_address->findChild<QLineEdit*>("ipField")->setText(data.ip.data());
 	gp_box_address->findChild<QLineEdit*>("portField")->setText(QString::number(data.port));
 	gp_box_priors->findChild<QLineEdit*>("pitchField")->setText(QString::number(data.prior_pitch));

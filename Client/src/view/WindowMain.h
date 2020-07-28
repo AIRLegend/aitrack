@@ -22,16 +22,20 @@ public:
 	WindowMain(QWidget *parent = 0);
 	~WindowMain();
 	IPresenter *presenter;
+	void closeEvent(QCloseEvent* event) override;
 
 	//Iview
 	void paint_video_frame(cv::Mat& img);
 	void connect_presenter(IPresenter* presenter);
-	void set_tracking_mode(bool is_tracking) override;
+	void set_tracking_mode(bool is_tracking);
 	std::string get_input_ip();
 	void set_input_ip(std::string& ip);
 	std::string get_input_port();
-	ConfigData get_inputs() override;
-	void set_inputs(ConfigData data) override;
+	ConfigData get_inputs();
+	void set_inputs(ConfigData data);
+	
+
+
 	
 private:
 	Ui::MainWindow ui;
