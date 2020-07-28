@@ -29,11 +29,11 @@ int main(int argc, char *argv[])
     float solver_prior_yaw = conf_prefs.prior_yaw;
     float solver_prior_distance = conf_prefs.prior_distance;
 
-    std::wstring MODEL_DETECT_PATH = QString(std::string("./models/mnv3_detection_opt.onnx").data()).toStdWString();
-    std::wstring MODEL_LANDMARK_PATH = QString(std::string("./models/mnv3_opt_b.onnx").data()).toStdWString();
+    //std::wstring MODEL_DETECT_PATH = QString(std::string("./models/mnv3_detection_opt.onnx").data()).toStdWString();
+    //std::wstring MODEL_LANDMARK_PATH = QString(std::string("./models/mnv3_opt_b.onnx").data()).toStdWString();
 
-    //std::wstring MODEL_DETECT_PATH = QString(std::string("C:\\Users\\Alvaro\\source\\repos\\Camera\\x64\\Release\\models\\mnv3_detection_opt.onnx").data()).toStdWString();
-    //std::wstring MODEL_LANDMARK_PATH = QString(std::string("C:\\Users\\Alvaro\\source\\repos\\Camera\\x64\\Release\\models\\mnv3_opt_b.onnx").data()).toStdWString();
+    std::wstring MODEL_DETECT_PATH = QString(std::string("C:\\Users\\Alvaro\\source\\repos\\Camera\\x64\\Release\\models\\mnv3_detection_opt.onnx").data()).toStdWString();
+    std::wstring MODEL_LANDMARK_PATH = QString(std::string("C:\\Users\\Alvaro\\source\\repos\\Camera\\x64\\Release\\models\\mnv3_opt_b.onnx").data()).toStdWString();
 
 
     PositionSolver solver = PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);

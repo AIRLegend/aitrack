@@ -176,6 +176,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\model\UDPSender.cpp" />
     <ClCompile Include="src\view\WindowMain.cpp" />
+    <QtRcc Include="res\Resource.qrc" />
     <QtRcc Include="src\view\qml.qrc" />
   </ItemGroup>
   <ItemGroup>

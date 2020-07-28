@@ -31,6 +31,18 @@
   <property name="windowTitle">
    <string>AITrack</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../res/Resource.qrc">
+    <normaloff>:/logo_256px.ico</normaloff>
+    <normalon>:/logo_256px.ico</normalon>
+    <disabledoff>:/logo_256px.ico</disabledoff>:/logo_256px.ico</iconset>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>48</width>
+    <height>48</height>
+   </size>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="trackBtn">
     <property name="geometry">
@@ -285,6 +297,8 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../res/Resource.qrc"/>
+ </resources>
  <connections/>
 </ui>
