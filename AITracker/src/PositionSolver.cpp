@@ -130,7 +130,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
     cv::Mat ip(landmarkPoints);
 
-    solvePnP(mat3dcontour,
+    /*solvePnP(mat3dcontour,
         ip, 
         this->camera_matrix, 
         this->camera_distortion, 
@@ -138,7 +138,16 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         tvec, 
         true, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
-        );
+        );*/
+    
+    cv::solvePnPRefineLM(
+        mat3dcontour,
+        ip,
+        this->camera_matrix,
+        this->camera_distortion,
+        rvec,
+        tvec
+    );
 
     //std::cout << rvec << std::endl;
 

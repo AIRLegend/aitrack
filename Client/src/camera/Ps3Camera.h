@@ -39,7 +39,7 @@ private:
 	ps3eye_context ctx;
 
 public:
-	Ps3Camera(int width = 640, int height = 480, int fps = 30);
+	Ps3Camera(int width = 640, int height = 480, int fps = 60);
 	~Ps3Camera();
 	void start_camera();
 	void stop_camera();

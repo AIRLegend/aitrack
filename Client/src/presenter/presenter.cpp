@@ -110,7 +110,7 @@ void Presenter::run_loop()
 		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
 		view->paint_video_frame(mat);
 
-		cv::waitKey(10);
+		cv::waitKey(5);
 
 	}
 
