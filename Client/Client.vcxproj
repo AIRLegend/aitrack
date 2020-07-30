@@ -116,7 +116,7 @@
     <QtHeaderSearchPath>$(QTDIR)\include</QtHeaderSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>5.9.9</QtInstall>
+    <QtInstall>$(QTDIR)</QtInstall>
     <QtModules>core;uitools;widgets;quick</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
     <QtHeaderSearchPath>$(QTDIR)/include</QtHeaderSearchPath>
