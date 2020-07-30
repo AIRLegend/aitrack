@@ -69,7 +69,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;$(Platform)\$(Configuration)\uic;$(Platform)\$(Configuration)\moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(Qt_LIBPATH_);$(SolutionDir)Dependencies\libusb\MS64\static;$(SolutionDir)Dependencies\OpenCV\lib;$(SolutionDir)Dependencies\onnxruntime\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -102,7 +102,7 @@
       <AdditionalDependencies>$(Qt_LIBS_);opencv_world430d.lib;onnxruntime.lib;Ws2_32.lib;libusb-1.0.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)PS3Driver\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)PS3Driver\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;$(Platform)\$(Configuration)\uic;$(Platform)\$(Configuration)\moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
