@@ -112,12 +112,15 @@
     <QtInstall>5.9.9</QtInstall>
     <QtModules>core;uitools;widgets;quick</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
-    <QtLibrarySearchPath>E:\LibrariesC++\Qt\5.9.9\msvc2017_64\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
+    <QtLibrarySearchPath>$(QTDIR)\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
+    <QtHeaderSearchPath>$(QTDIR)\include</QtHeaderSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>5.9.9</QtInstall>
     <QtModules>core;uitools;widgets;quick</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtHeaderSearchPath>$(QTDIR)/include</QtHeaderSearchPath>
+    <QtLibrarySearchPath>$(QTDIR)/lib</QtLibrarySearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debugg|x64'" Label="QtSettings">
     <QtInstall>5.9.9</QtInstall>
