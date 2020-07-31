@@ -2,6 +2,9 @@
 
 <p align="center"> - The open head tracker - </p>
 
+[![Build status](https://ci.appveyor.com/api/projects/status/18wa4pqqsge9m0x3?svg=true)](https://ci.appveyor.com/project/AIRLegend/aitracker)
+
+
 ## What is this?
 
 AITrack is a 6-Degree of Freedom headtracker designed to work alongside [Opentrack](https://github.com/opentrack/opentrack) for its use in simulators/games. 
@@ -33,11 +36,9 @@ In case you want to know more, please, head to the `Doc/` directory to find guid
 
 ## Bugs and Contributing
 
-If you encounter any bug/problem or you have some idea, post it on the [issues page](https://github.com/AIRLegend/aitracker/issues) to find help or further discussion. If you decide to fix something or implement a request, feel free to fork this repo, develop your new feature in a separate branch and then, make a PR to review it. 
+If you encounter any bug/problem or you have some idea, post it on the [issues page](https://github.com/AIRLegend/aitracker/issues) to find help or further discussion. If you decide to fix something or implement a request, feel free to fork this repo, develop your new feature in a separate branch and then, make a PR to review it, here is the [guide to developers](Doc/DEVELOP.md). 
 
 Thank you!
-
-
 
 ## Acknowledgements
 
