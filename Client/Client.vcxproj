@@ -17,7 +17,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5B4F6644-3599-41DB-8A3C-4CD888FCC86B}</ProjectGuid>
     <Keyword>QtVS_v303</Keyword>
-    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+    <QtMsBuild Condition="'$(SolutionDir)\QtMsBuild'=='' OR !Exists('$(SolutionDir)\QtMsBuild\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
     <ProjectName>Client</ProjectName>
     <RootNamespace>Client</RootNamespace>
   </PropertyGroup>
@@ -25,6 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -39,7 +40,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(SolutionDir)\QtMsBuild\qt.targets') or !Exists('$(SolutionDir)\QtMsBuild\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
   </Target>
   <ImportGroup Label="ExtensionSettings" />
@@ -54,10 +55,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
-    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  <ImportGroup Condition="Exists('$(SolutionDir)\QtMsBuild\qt_defaults.props')">
+    <Import Project="$(SolutionDir)\QtMsBuild\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -67,10 +69,10 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(ProjectDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;$(Platform)\$(Configuration)\uic;$(Platform)\$(Configuration)\moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);C:\Users\Alvaro\source\repos\Camera\Dependencies\libusb\MS64\static;C:\Users\Alvaro\source\repos\Camera\Dependencies\OpenCV\lib;$(SolutionDir)Dependencies\onnxruntime\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);$(SolutionDir)Dependencies\libusb\MS64\static;$(SolutionDir)Dependencies\OpenCV\lib;$(SolutionDir)Dependencies\onnxruntime\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(Qt_LIBS_);opencv_world430.lib;onnxruntime.lib;Ws2_32.lib;libusb-1.0.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -94,23 +96,39 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);$(SolutionDir)Dependencies\libusb\MS64\static;$(SolutionDir)Dependencies\OpenCV\lib;$(SolutionDir)Dependencies\onnxruntime\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(Qt_LIBS_);opencv_world430d.lib;onnxruntime.lib;Ws2_32.lib;legacy_stdio_definitions.lib;libusb-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)PS3Driver\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;$(Platform)\$(Configuration)\uic;$(Platform)\$(Configuration)\moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>5.9.9</QtInstall>
-    <QtModules>quick</QtModules>
+    <QtInstall>$(QTDIR)</QtInstall>
+    <QtModules>core;uitools;widgets;quick</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
+    <QtLibrarySearchPath>$(QTDIR)\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
+    <QtHeaderSearchPath>$(QTDIR)\include</QtHeaderSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>5.9.9</QtInstall>
+    <QtInstall>$(QTDIR)</QtInstall>
     <QtModules>core;uitools;widgets;quick</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtHeaderSearchPath>$(QTDIR)/include</QtHeaderSearchPath>
+    <QtLibrarySearchPath>$(QTDIR)/lib</QtLibrarySearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debugg|x64'" Label="QtSettings">
-    <QtInstall>5.9.9</QtInstall>
+    <QtInstall>$(DefaultQtVersion)</QtInstall>
     <QtModules>core;uitools;widgets;quick</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
-  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
-    <Import Project="$(QtMsBuild)\qt.props" />
+  <ImportGroup Condition="Exists('$(SolutionDir)\QtMsBuild\qt.props')">
+    <Import Project="$(SolutionDir)\QtMsBuild\qt.props" />
   </ImportGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -121,7 +139,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -152,6 +170,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera\OCVCamera.cpp" />
+    <ClCompile Include="src\camera\CameraFactory.cpp" />
     <ClCompile Include="src\model\Config.cpp" />
     <ClCompile Include="src\model\IPResolver.cpp" />
     <ClCompile Include="src\camera\Ps3Camera.cpp" />
@@ -159,6 +179,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\model\UDPSender.cpp" />
     <ClCompile Include="src\view\WindowMain.cpp" />
+    <QtRcc Include="res\Resource.qrc" />
     <QtRcc Include="src\view\qml.qrc" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +189,8 @@
     <QtUic Include="src\view\MainWindow.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera\OCVCamera.h" />
+    <ClInclude Include="src\camera\CameraFactory.h" />
     <ClInclude Include="Include\ps3eye.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\model\Config.h" />
@@ -195,8 +218,8 @@
     <Image Include="res\logo_256px.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
-    <Import Project="$(QtMsBuild)\qt.targets" />
+  <ImportGroup Condition="Exists('$(SolutionDir)\QtMsBuild\qt.targets')">
+    <Import Project="$(SolutionDir)\QtMsBuild\qt.targets" />
   </ImportGroup>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

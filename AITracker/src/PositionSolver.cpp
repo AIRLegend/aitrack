@@ -9,7 +9,7 @@ PositionSolver::PositionSolver(int width, int height,
     this->prior_distance = prior_distance * -2. ;
     this->prior_yaw = (1.84f*(prior_yaw + 90.f)/180.f) - (double)3.14f;
 
-    std::cout << "PRIORS CALCULATED: \nPITCH: " <<this->prior_pitch << "  YAW: " << this->prior_yaw << "  DISTANCE: " << this->prior_distance;
+    //std::cout << "PRIORS CALCULATED: \nPITCH: " <<this->prior_pitch << "  YAW: " << this->prior_yaw << "  DISTANCE: " << this->prior_distance;
 
     mat3dcontour = (cv::Mat_<double>(18, 3) <<
         0.45517698, 0.30089578, -0.76442945,
@@ -130,7 +130,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
     cv::Mat ip(landmarkPoints);
 
-    solvePnP(mat3dcontour,
+    /*solvePnP(mat3dcontour,
         ip, 
         this->camera_matrix, 
         this->camera_distortion, 
@@ -138,7 +138,16 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         tvec, 
         true, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
-        );
+        );*/
+    
+    cv::solvePnPRefineLM(
+        mat3dcontour,
+        ip,
+        this->camera_matrix,
+        this->camera_distortion,
+        rvec,
+        tvec
+    );
 
     //std::cout << rvec << std::endl;
 

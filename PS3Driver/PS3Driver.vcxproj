@@ -241,6 +241,7 @@
     <ClCompile Include="src\ps3eye.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ps3eye.h" />
     <ClInclude Include="src\ps3eye.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

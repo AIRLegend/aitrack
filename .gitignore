@@ -346,3 +346,4 @@ healthchecksdb
 #Deps
 /Dependencies
 */Dependencies/*
+prefs.ini

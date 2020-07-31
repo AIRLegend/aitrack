@@ -13,7 +13,7 @@ UDPSender::UDPSender(const char* dest_ip, int dest_port)
 
     this->ip = std::string(dest_ip);
 
-    std::cout << "from sender, the ip is " << this->ip << std::endl;
+    //std::cout << "ip is " << this->ip << std::endl;
 
     this->port = dest_port;
 
@@ -44,18 +44,8 @@ UDPSender::~UDPSender()
 void UDPSender::send_data( double* d)
 {
     // Make packet
-
-    //double d2[] = { 10.0,3.0,3.0,    15.0, 3.0, 3.0 };
-
     const char* pkt = (char*)d;
-
     sendto(s, pkt, BUFFER_SIZE, 0, (sockaddr*)&dest, sizeof(dest));
-
-
-
-    //std::cout << "SENT PACKET" << std::endl;
-    std::cin;
-
 };
 
 

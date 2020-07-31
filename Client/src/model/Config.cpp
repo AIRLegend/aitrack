@@ -1,6 +1,6 @@
 #include "Config.h"
 
-
+#include <QFileInfo>
 
 
 
@@ -23,8 +23,7 @@ ConfigMgr::ConfigMgr(std::string ini_path):
 	conf(ini_path.data(), QSettings::IniFormat)
 {
 	//Check if there was no file
-	double pitch = conf.value("prior_pitch", -1).toDouble();
-	if (pitch < 0)
+	if(!QFileInfo(ini_path.data()).exists())
 	{
 		//Thre is no previous configuration so we set a default one
 		ConfigData cnf_default = ConfigData::getGenericConfig();

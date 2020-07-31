@@ -1,42 +1,13 @@
-//#include "../model/UDPSender.h"
-
 #include "presenter.h"
 
-#include "ps3eye.h"
+
 #include <string.h>
 
 #include "opencv.hpp"
 
 #include "../model/IPResolver.h"
 
-
-
-struct ps3eye_context {
-	ps3eye_context(int width, int height, int fps) :
-		eye(0)
-		, devices(ps3eye::PS3EYECam::getDevices())
-		, running(true)
-		, last_ticks(0)
-		, last_frames(0)
-	{
-		if (hasDevices()) {
-			eye = devices[0];
-			eye->init(width, height, (uint16_t)fps);
-		}
-	}
-
-	bool hasDevices()
-	{
-		return (devices.size() > 0);
-	}
-
-	std::vector<ps3eye::PS3EYECam::PS3EYERef> devices;
-	ps3eye::PS3EYECam::PS3EYERef eye;
-
-	bool running;
-	uint32_t last_ticks;
-	uint32_t last_frames;
-};
+#include "../camera/CameraFactory.h"
 
 
 
@@ -64,11 +35,21 @@ Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
 	this->udp_sender = new UDPSender(ip_str.data(), prefs.port);
 
 	this->view->set_inputs(prefs);
+
+	CameraFactory camfactory;
+	camera = camfactory.buildCamera();
+
+	if (camera == NULL)
+	{
+		std::cout << "NO CAMERAS AVAILABLE" << std::endl;
+	}
+	
 }
 
 Presenter::~Presenter()
 {
-	delete this->udp_sender;
+	delete this->udp_sender; 
+	delete this->camera;
 }
 
 void Presenter::sync_ui_inputs()
@@ -82,20 +63,11 @@ void Presenter::run_loop()
 	int height = 480;
 	int fps = 30;
 
-	ps3eye_context ctx(width, height, fps);
-	if (!ctx.hasDevices()) {
-		printf("No PS3 Eye camera connected\n");
-		return;
-	}
-	ctx.eye->setFlip(true);
-
+	
 	FaceData d = FaceData();
 
-
-	ctx.eye->start();
-
 	int video_frame_buff_size = width * height * 3;
-	uint8_t* video_tex_pixels = new uint8_t[video_frame_buff_size];
+	uint8_t *video_tex_pixels = new uint8_t[video_frame_buff_size];
 
 
 	cv::Scalar colorR(255, 0, 0);
@@ -103,9 +75,11 @@ void Presenter::run_loop()
 
 	double buffer_data[6];
 
+	camera->start_camera();
+
 	while(run)
 	{
-		ctx.eye->getFrame(video_tex_pixels);
+		camera->get_frame(video_tex_pixels);
 		cv::Mat mat(height, width, CV_8UC3, video_tex_pixels);
 
 		t->predict(mat, d);
@@ -136,26 +110,16 @@ void Presenter::run_loop()
 		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
 		view->paint_video_frame(mat);
 
-		cv::waitKey(10);
+		cv::waitKey(5);
 
 	}
 
-	ctx.eye->stop();
-
-	//cv::destroyAllWindows();
+	camera->stop_camera();
+	delete[] video_tex_pixels;
 }
 
 void Presenter::toggle_tracking()
 {
-
-
-	/*if (view->get_input_ip() != this->udp_sender->ip)
-	{
-		//std::string msy(this->udp_sender->ip);
-		//std::cout << "USER CHANGED IP FIELD: " << view->get_input_ip()  << " UDP sender == " << msy << std::endl;
-		delete(this->udp_sender);
-		this->udp_sender = new UDPSender(view->get_input_ip().data(), 5555);
-	}*/
 
 	run = !run;
 	view->set_tracking_mode(run);
@@ -166,4 +130,11 @@ void Presenter::toggle_tracking()
 void Presenter::save_prefs(const ConfigData& data)
 {
 	conf_mgr->updateConfig(data);
+}
+
+
+void Presenter::close_program()
+{
+	// Assure the camera is released (some cameras have a "recording LED" which can be annoying to have on)
+	camera->stop_camera(); 
 }
