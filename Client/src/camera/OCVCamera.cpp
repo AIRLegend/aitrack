@@ -1,9 +1,6 @@
 #include "OCVCamera.h"
 
 
-
-
-
 OCVCamera::OCVCamera(int width, int height, int fps) :
 	cap()
 {
@@ -11,8 +8,8 @@ OCVCamera::OCVCamera(int width, int height, int fps) :
 	{
 		throw std::runtime_error("No compatible camera found.");
 	}
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 }
 
 OCVCamera::~OCVCamera()

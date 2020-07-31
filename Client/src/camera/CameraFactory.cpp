@@ -9,7 +9,7 @@ ICamera* CameraFactory::buildCamera()
 	bool has_ps3 = true;
 	try
 	{
-		camera = new Ps3Camera;
+		camera = new Ps3Camera(640, 480, 30);
 	} catch (std::exception)
 	{
 		has_ps3 = false;
