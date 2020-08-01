@@ -35,7 +35,12 @@
    <iconset resource="../../res/Resource.qrc">
     <normaloff>:/logo_256px.ico</normaloff>
     <normalon>:/logo_256px.ico</normalon>
-    <disabledoff>:/logo_256px.ico</disabledoff>:/logo_256px.ico</iconset>
+    <disabledoff>:/logo_256px.ico</disabledoff>
+    <disabledon>:/logo_256px.ico</disabledon>
+    <activeoff>:/logo_256px.ico</activeoff>
+    <activeon>:/logo_256px.ico</activeon>
+    <selectedoff>:/logo_256px.ico</selectedoff>
+    <selectedon>:/logo_256px.ico</selectedon>:/logo_256px.ico</iconset>
   </property>
   <property name="iconSize">
    <size>

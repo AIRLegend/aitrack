@@ -12,8 +12,6 @@ AiTrack sends data over UDP to opentrack, which in turn, sends it to your game, 
 
 - Under `Options>Output` invert Pitch, Roll and Z axes.
 
-- Under `Options>Relative translation>Relative translation` set `Mode = Enabled` and disable for X, Y and Z axes.
-
 Example of Opentrack configuration:
 ![](../Images/OpentrackConfig.png)
 

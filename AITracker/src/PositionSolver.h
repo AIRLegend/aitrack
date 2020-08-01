@@ -28,5 +28,7 @@ private:
 	int width, height;
 	
 	cv::Mat camera_matrix, camera_distortion;
+
+	void get_euler(cv::Mat& rvec, cv::Mat& tvec);
 };
 
