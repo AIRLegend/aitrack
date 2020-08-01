@@ -6,7 +6,7 @@
 #include "../model/UDPSender.h"
 #include "i_presenter.h"
 #include "../view/i_view.h"
-#include "../camera/ICamera.h"
+#include "../camera/Camera.h"
 
 
 class Presenter : IPresenter
@@ -15,7 +15,7 @@ private:
 	FaceData face_data;
 	UDPSender *udp_sender;
 	Tracker *t;
-	ICamera *camera;
+	Camera *camera;
 	
 	IView* view;
 	bool run = false;

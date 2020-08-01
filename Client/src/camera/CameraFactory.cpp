@@ -3,9 +3,9 @@
 #include "Ps3Camera.h"
 #include "OCVCamera.h"
 
-ICamera* CameraFactory::buildCamera()
+Camera* CameraFactory::buildCamera()
 {
-	ICamera *camera = NULL;
+	Camera *camera = NULL;
 	bool has_ps3 = true;
 	try
 	{

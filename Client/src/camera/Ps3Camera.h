@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ICamera.h"
+#include "Camera.h"
 #include <vector>
 #include "ps3eye.h"
 
@@ -32,7 +32,7 @@ struct ps3eye_context {
 };
 
 
-class Ps3Camera : public ICamera
+class Ps3Camera : public Camera
 {
 
 private:

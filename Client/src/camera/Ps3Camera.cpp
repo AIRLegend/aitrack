@@ -3,8 +3,9 @@
 #include <iostream>
 
 
-Ps3Camera::Ps3Camera(int width, int height, int fps)
-	:ctx(width, height, fps)
+Ps3Camera::Ps3Camera(int width, int height, int fps):
+	Camera(width, height, fps),
+	ctx(width, height, fps)
 {
 	if (!this->ctx.hasDevices())
 	{

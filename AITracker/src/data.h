@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 
-
 class FaceData
 {
 public:

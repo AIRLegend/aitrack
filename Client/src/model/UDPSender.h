@@ -5,7 +5,9 @@
 
 #include <string>
 
-
+/**
+	Data sender to Opentrack using UDP
+*/
 class UDPSender
 {
 private:
@@ -24,6 +26,11 @@ public:
 
 	UDPSender(const char* dest_ip, int dest_port);
 	~UDPSender();
+
+	/**
+		Sends a data vector to opentrack.
+		@param data: Size 6 array which contains [X,Y,Z,Yaw,Pitch,Roll].
+	*/
 	void send_data( double* data);
 };
 

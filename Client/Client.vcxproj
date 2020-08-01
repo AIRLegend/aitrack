@@ -189,6 +189,7 @@
     <QtUic Include="src\view\MainWindow.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera\Camera.h" />
     <ClInclude Include="src\camera\OCVCamera.h" />
     <ClInclude Include="src\camera\CameraFactory.h" />
     <ClInclude Include="Include\ps3eye.h" />
@@ -196,7 +197,6 @@
     <ClInclude Include="src\model\Config.h" />
     <ClInclude Include="src\model\IPResolver.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
-    <ClInclude Include="src\camera\ICamera.h" />
     <ClInclude Include="src\presenter\i_presenter.h" />
     <ClInclude Include="src\presenter\presenter.h" />
     <ClInclude Include="src\model\UDPSender.h" />

@@ -42,6 +42,7 @@ Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
 	if (camera == NULL)
 	{
 		std::cout << "NO CAMERAS AVAILABLE" << std::endl;
+
 	}
 	
 }
@@ -59,14 +60,9 @@ void Presenter::sync_ui_inputs()
 
 void Presenter::run_loop()
 {
-	int width = 640;
-	int height = 480;
-	int fps = 30;
-
-	
 	FaceData d = FaceData();
 
-	int video_frame_buff_size = width * height * 3;
+	int video_frame_buff_size = camera->width * camera->height * 3;
 	uint8_t *video_tex_pixels = new uint8_t[video_frame_buff_size];
 
 
@@ -80,7 +76,7 @@ void Presenter::run_loop()
 	while(run)
 	{
 		camera->get_frame(video_tex_pixels);
-		cv::Mat mat(height, width, CV_8UC3, video_tex_pixels);
+		cv::Mat mat(camera->height, camera->width, CV_8UC3, video_tex_pixels);
 
 		t->predict(mat, d);
 
