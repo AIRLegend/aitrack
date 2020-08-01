@@ -5,7 +5,7 @@
 class FaceData
 {
 public:
-	// Pitch, Yaw, Roll
+	// Yaw, Pitch, Roll
 	double* rotation;
 
 	// X, Y, Z

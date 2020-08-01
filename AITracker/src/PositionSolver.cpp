@@ -11,27 +11,6 @@ PositionSolver::PositionSolver(int width, int height,
 
     //std::cout << "PRIORS CALCULATED: \nPITCH: " <<this->prior_pitch << "  YAW: " << this->prior_yaw << "  DISTANCE: " << this->prior_distance;
 
-    /*mat3dcontour = (cv::Mat_<double>(18, 3) <<
-        0.45517698, 0.30089578, -0.76442945,
-        0.44899884, 0.16699584, -0.765143,
-        0., -0.621079, -0.28729478,
-        -0.44899884, 0.16699584, -0.765143,
-        -0.45517698, 0.30089578, -0.76442945,
-        0., 0.2933326, -0.1375821,
-        0., 0.1948287, -0.06915811,
-        0., 0.10384402, -0.00915182,
-        0., 0., 0.,
-        0.08062635, -0.04127607, -0.13416104,
-        0.04643935, -0.05767522, -0.10299063,
-        0., -0.06875312, -0.09054535,
-        -0.04643935, -0.05767522, -0.10299063,
-        -0.08062635, -0.04127607, -0.13416104,
-        0.31590518, 0.2983375, -0.2851074,
-        0.13122973, 0.28444737, -0.23423915,
-        -0.13122973, 0.28444737, -0.23423915,
-        -0.31590518, 0.2983375, -0.2851074
-      );*/
-
     mat3dcontour = (cv::Mat_<double>(18, 3) <<
         0.45517698, -0.30089578, 0.76442945,
         0.44899884, -0.16699584, 0.765143,
@@ -146,19 +125,19 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         );
     }
 
-    //std::vector<double> rv({prior_pitch, prior_yaw, 0 }), tv({0, 0, prior_distance});
-    std::vector<double> rv({ -2, -2, 0 }), tv({ 0, 0, prior_distance });
+    std::vector<double> rv({prior_pitch, prior_yaw,0 }), tv({ 0, 0, prior_distance });
     cv::Mat rvec(rv), tvec(tv);
 
     cv::Mat ip(landmarkPoints);
 
+    
     solvePnP(mat3dcontour,
         ip, 
         this->camera_matrix, 
         this->camera_distortion, 
         rvec, 
         tvec, 
-        false, //extrinsic guess
+        true, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
         );
     
@@ -173,25 +152,6 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
 
     get_euler(rvec, tvec);
-
-    /*
-    cv::Mat rotM(3, 3, CV_64FC1);
-    cv::Rodrigues(rvec, rotM);
-
-    cv::Mat concated(3, 4, CV_64FC1);
-    cv::hconcat(rotM, tvec, concated);
-
-
-    cv::decomposeProjectionMatrix(
-        concated, 
-        cv::Mat(3, 3, CV_64FC1), 
-        cv::Mat(3, 3, CV_64FC1), 
-        cv::Mat(4, 1, CV_64FC1), 
-        cv::Mat(3, 3, CV_64FC1), 
-        cv::Mat(3, 3, CV_64FC1), 
-        cv::Mat(3, 3, CV_64FC1), 
-        rvec
-    );*/
 
 
     for (int i = 0; i < 3; i++)
