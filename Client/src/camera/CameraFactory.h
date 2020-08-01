@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ICamera.h"
+#include "Camera.h"
 
 class CameraFactory
 {
 public:
-	ICamera* buildCamera();
+	Camera* buildCamera();
 };
 

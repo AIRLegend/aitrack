@@ -20,6 +20,7 @@
     <QtMsBuild Condition="'$(SolutionDir)\QtMsBuild'=='' OR !Exists('$(SolutionDir)\QtMsBuild\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
     <ProjectName>Client</ProjectName>
     <RootNamespace>Client</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -60,9 +61,11 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>AITrack Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>AITrack</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debugg|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -189,6 +192,7 @@
     <QtUic Include="src\view\MainWindow.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera\Camera.h" />
     <ClInclude Include="src\camera\OCVCamera.h" />
     <ClInclude Include="src\camera\CameraFactory.h" />
     <ClInclude Include="Include\ps3eye.h" />
@@ -196,7 +200,6 @@
     <ClInclude Include="src\model\Config.h" />
     <ClInclude Include="src\model\IPResolver.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
-    <ClInclude Include="src\camera\ICamera.h" />
     <ClInclude Include="src\presenter\i_presenter.h" />
     <ClInclude Include="src\presenter\presenter.h" />
     <ClInclude Include="src\model\UDPSender.h" />

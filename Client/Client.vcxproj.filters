@@ -21,7 +21,6 @@
     <ClInclude Include="Include\ps3eye.h" />
     <ClInclude Include="src\model\IPResolver.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
-    <ClInclude Include="src\camera\ICamera.h" />
     <ClInclude Include="src\presenter\i_presenter.h" />
     <ClInclude Include="src\presenter\presenter.h" />
     <ClInclude Include="src\model\UDPSender.h" />
@@ -36,6 +35,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\camera\OCVCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

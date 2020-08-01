@@ -23,11 +23,12 @@ AITrack uses its own tracking pipeline (based on neural networks) to estimate th
 
 1. Download and install [Visual C++ Redistributable x64](https://aka.ms/vs/16/release/vc_redist.x64.exe) in case you don't already have it.
 2. Download Opentrack from [Opentrack's releases page](https://github.com/opentrack/opentrack/releases)
-2. Download the most recent version of the tracker from the [releases page](https://github.com/AIRLegend/aitracker/releases).
+2. Download the most recent version of the tracker from the [releases page](https://github.com/AIRLegend/aitracker/releases) (.zip file) and extract its content.
 4. Run Opentrack and make sure to select Input = **UDP over network**, then, click "Start". Opentrack then will be for the data AITrack will send.
-5. Run `Client.exe` from AITrack and click "Start tracking". 
+5. Run `AITrack.exe` from AITrack and click "Start tracking". 
 6. Look around!
 
+**IMPORTANT:**
 In case you want to know more, please, head to the `Doc/` directory to find guides about usage. If you can't find there what you're looking for, feel free to post your question on the [issues page](https://github.com/AIRLegend/aitracker/issues).
 
 ## Showoff videos

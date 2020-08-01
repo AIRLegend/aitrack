@@ -1,8 +1,8 @@
 #pragma once
-#include "ICamera.h"
+#include "Camera.h"
 #include "opencv.hpp"
 
-class OCVCamera : public ICamera
+class OCVCamera : public Camera
 {
 private:
 	cv::VideoCapture cap;

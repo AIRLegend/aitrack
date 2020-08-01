@@ -2,6 +2,7 @@
 
 
 OCVCamera::OCVCamera(int width, int height, int fps) :
+	Camera(width, height, fps),
 	cap()
 {
 	if (!is_camera_available())

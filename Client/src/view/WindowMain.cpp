@@ -2,6 +2,7 @@
 
 #include "../presenter/presenter.h"
 #include <iostream>
+#include <QMessageBox>
 
 WindowMain::WindowMain(QWidget *parent)
 	: QMainWindow(parent)
@@ -127,4 +128,19 @@ void WindowMain::set_inputs(const ConfigData data)
 	gp_box_priors->findChild<QLineEdit*>("yawField")->setText(QString::number(data.prior_yaw));
 	gp_box_priors->findChild<QLineEdit*>("distanceField")->setText(QString::number(data.prior_distance));
 
+}
+
+void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
+{
+	QMessageBox msgBox;
+	switch (severity) {
+	case MSG_SEVERITY::CRITICAL:
+		msgBox.setIcon(QMessageBox::Warning);
+		break;
+	default:
+		msgBox.setIcon(QMessageBox::Information);
+	}
+
+	msgBox.setText(msg);
+	msgBox.exec();
 }

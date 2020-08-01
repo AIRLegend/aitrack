@@ -12,8 +12,6 @@ AiTrack sends data over UDP to opentrack, which in turn, sends it to your game, 
 
 - Under `Options>Output` invert Pitch, Roll and Z axes.
 
-- Under `Options>Relative translation>Relative translation` set `Mode = Enabled` and disable for X, Y and Z axes.
-
 Example of Opentrack configuration:
 ![](../Images/OpentrackConfig.png)
 
@@ -21,9 +19,11 @@ Then, on AiTrack, jus click "Start tracking". The program will use the default c
 
 ## Tips
 
-Based on the testing made so far, there are some recommendations for getting the best performance.
+Based on the testing made so far, here are some recommendations for getting the best performance:
  
 -  Configure well your movement curves on Opentrack. Leave a little "dead zone" at the beginning of each curve and use the asymetric mapping feature for "Pitch".
 - Position your camera at about 0.5-1 meters horizontally from your face.
     * It's better if the camera is directly in front of you, but it doesn't mattter if you have some lateral offset.
 -  The camera should be, approximately,  at about your nose-level. Good positions are on top of our monitor, or at its base.
+- You shouldn't need to touch "Initial parameters" on AITrack. If you find the tracking is not accurate, fine-tune "Distance" parameter only to the actual value (distance from your face to the camera, in meters).
+- Use an Acella filter with Opentrack and set the smoothing near the maximum values (both rotation and position).

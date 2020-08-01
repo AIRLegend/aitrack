@@ -4,6 +4,11 @@
 #include "opencv.hpp"
 #include "data.h"
 
+
+/**
+	This class is responsible of mapping 2D facial landmarks to its
+	corresponding 3D world coordinates for pose estimation (Position and rotation).
+*/
 class PositionSolver
 {
 
@@ -16,8 +21,12 @@ public:
 		int im_height,
 		float prior_pitch = -2.f,
 		float prior_yaw = -2.f,
-		float prior_distance = -1.2f);
+		float prior_distance = -1.f);
 
+	/**
+		Stores solved translation/rotation on the face_data object
+		@param face_data FaceData instance with 2D landmark coordinates detected
+	*/
 	void solve_rotation(FaceData* face_data);
 
 private:
@@ -28,5 +37,10 @@ private:
 	int width, height;
 	
 	cv::Mat camera_matrix, camera_distortion;
+
+	/**
+		Gets euler angles from rotation matrix.
+	*/
+	void get_euler(cv::Mat& rvec, cv::Mat& tvec);
 };
 
