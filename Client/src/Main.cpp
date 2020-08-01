@@ -12,6 +12,7 @@
 
 int main(int argc, char *argv[])
 {
+   
     omp_set_num_threads(1);  // Disable ONNX paralelization so we dont steal all cpu cores.
 
 #if defined(Q_OS_WIN)

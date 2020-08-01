@@ -33,7 +33,7 @@ public:
 	std::string get_input_port();
 	ConfigData get_inputs();
 	void set_inputs(ConfigData data);
-	
+	void show_message(const char* msg, MSG_SEVERITY severity);
 
 
 	

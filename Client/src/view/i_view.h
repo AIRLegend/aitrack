@@ -5,6 +5,8 @@
 #include "../model/Config.h"
 #include "../presenter/i_presenter.h"
 
+enum MSG_SEVERITY { CRITICAL, NORMAL };
+
 class IView {
 public:
 	virtual void paint_video_frame(cv::Mat& img) = 0;
@@ -16,4 +18,6 @@ public:
 
 	virtual ConfigData get_inputs() = 0;
 	virtual void set_inputs(const ConfigData data) = 0;
+
+	virtual void show_message(const char* msg, MSG_SEVERITY severity) = 0;
 };

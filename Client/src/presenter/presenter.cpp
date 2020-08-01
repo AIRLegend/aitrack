@@ -29,9 +29,7 @@ Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
 		port = 4242;
 	}
 
-	//std::cout << ip_str << "   PORT  " << port << std::endl;
 
-	//this->view->set_input_ip(prefs.ip);
 	this->udp_sender = new UDPSender(ip_str.data(), prefs.port);
 
 	this->view->set_inputs(prefs);
@@ -42,7 +40,7 @@ Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
 	if (camera == NULL)
 	{
 		std::cout << "NO CAMERAS AVAILABLE" << std::endl;
-
+		this->view->show_message("No cameras detected. Make sure you plug one.", MSG_SEVERITY::CRITICAL);
 	}
 	
 }
