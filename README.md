@@ -13,7 +13,7 @@ AITrack uses its own tracking pipeline (based on neural networks) to estimate th
 
 ### Main features
 
-* Hardware (IR LED) free headtracking solution.
+* Hardware (IR LEDs, specific hardware...) free headtracking solution.
 * Good performance under poor light conditions.
 * Good detection with partial face occlusion (using glasses).
 * Reasonable low CPU percentage consumption.

@@ -10,10 +10,11 @@ AiTrack sends data over UDP to opentrack, which in turn, sends it to your game, 
 
 - In order to correct some of the noise AITrack has, it's recommended to use Acella filter on Opentrack with pretty high smoothing (over 2 degrees for rotation and about 1mm for position). However, Kalman filter works also okay (adjust its settings as you like).
 
-- Under `Options>Output` invert Pitch, Roll and Z axes.
+- Under `Options>Output` invert Pitch and Z axes. Also, swap X and Y axes if needed.
 
 Example of Opentrack configuration:
 ![](../Images/OpentrackConfig.png)
+![](../Images/OpentrackConfig1.png)
 
 Then, on AiTrack, jus click "Start tracking". The program will use the default configuration, which assumes that opentrack is on the same machine and it's listening port is 4242 (Opentrack's default). In case you want to use other config, just change it on AiTrack and save it. 
 
