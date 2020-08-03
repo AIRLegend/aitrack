@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
-    <height>564</height>
+    <width>420</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,14 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>801</width>
-    <height>564</height>
+    <width>420</width>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>801</width>
-    <height>564</height>
+    <width>420</width>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -52,10 +52,10 @@
    <widget class="QPushButton" name="trackBtn">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>390</y>
-      <width>211</width>
-      <height>131</height>
+      <x>20</x>
+      <y>340</y>
+      <width>381</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -64,6 +64,12 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="text">
      <string>Start tracking</string>
     </property>
@@ -71,8 +77,8 @@
    <widget class="QLabel" name="cameraView">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>30</y>
+      <x>20</x>
+      <y>20</y>
       <width>381</width>
       <height>301</height>
      </rect>
@@ -86,8 +92,14 @@
     <property name="styleSheet">
      <string notr="true"/>
     </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
     <property name="text">
-     <string>No video feed</string>
+     <string>No active video feed</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -96,10 +108,10 @@
    <widget class="QGroupBox" name="prefsGroupbox">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>350</y>
-      <width>511</width>
-      <height>191</height>
+      <x>20</x>
+      <y>390</y>
+      <width>381</width>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -111,14 +123,14 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>180</x>
        <y>30</y>
-       <width>261</width>
-       <height>111</height>
+       <width>191</width>
+       <height>91</height>
       </rect>
      </property>
      <property name="title">
-      <string>Custom Opentrack address</string>
+      <string>Use remote OpenTrack client</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -129,9 +141,9 @@
      <widget class="QLineEdit" name="ipField">
       <property name="geometry">
        <rect>
-        <x>40</x>
+        <x>90</x>
         <y>30</y>
-        <width>201</width>
+        <width>91</width>
         <height>21</height>
        </rect>
       </property>
@@ -143,6 +155,9 @@
       </property>
       <property name="whatsThis">
        <string>asadf</string>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
       </property>
       <property name="text">
        <string>192.168.1.10</string>
@@ -166,7 +181,7 @@
        <rect>
         <x>20</x>
         <y>60</y>
-        <width>81</width>
+        <width>21</width>
         <height>16</height>
        </rect>
       </property>
@@ -177,11 +192,14 @@
      <widget class="QLineEdit" name="portField">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>140</x>
         <y>60</y>
-        <width>131</width>
+        <width>41</width>
         <height>21</height>
        </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
       </property>
       <property name="text">
        <string>4242</string>
@@ -191,10 +209,10 @@
     <widget class="QGroupBox" name="paramsGroupBox">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>10</x>
        <y>30</y>
-       <width>221</width>
-       <height>111</height>
+       <width>161</width>
+       <height>131</height>
       </rect>
      </property>
      <property name="title">
@@ -203,7 +221,7 @@
      <widget class="QLineEdit" name="pitchField">
       <property name="geometry">
        <rect>
-        <x>50</x>
+        <x>90</x>
         <y>30</y>
         <width>41</width>
         <height>20</height>
@@ -216,7 +234,7 @@
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>31</y>
         <width>31</width>
         <height>16</height>
@@ -229,9 +247,9 @@
      <widget class="QLabel" name="label_4">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>53</y>
-        <width>31</width>
+        <x>10</x>
+        <y>60</y>
+        <width>21</width>
         <height>16</height>
        </rect>
       </property>
@@ -242,8 +260,8 @@
      <widget class="QLineEdit" name="yawField">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>52</y>
+        <x>90</x>
+        <y>60</y>
         <width>41</width>
         <height>20</height>
        </rect>
@@ -255,21 +273,21 @@
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
-        <x>105</x>
-        <y>40</y>
-        <width>41</width>
-        <height>20</height>
+        <x>10</x>
+        <y>90</y>
+        <width>61</width>
+        <height>18</height>
        </rect>
       </property>
       <property name="text">
-       <string>Distance</string>
+       <string>Distance (m)</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="distanceField">
       <property name="geometry">
        <rect>
-        <x>153</x>
-        <y>40</y>
+        <x>90</x>
+        <y>91</y>
         <width>41</width>
         <height>20</height>
        </rect>
@@ -282,9 +300,9 @@
     <widget class="QPushButton" name="saveBtn">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>151</y>
-       <width>161</width>
+       <x>180</x>
+       <y>130</y>
+       <width>191</width>
        <height>31</height>
       </rect>
      </property>
@@ -295,7 +313,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Save config</string>
+      <string>Save</string>
      </property>
     </widget>
    </widget>
