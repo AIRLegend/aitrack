@@ -51,9 +51,9 @@ int main(int argc, char *argv[])
     }
 
     PositionSolver solver = PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);
-    Tracker t = Tracker(&solver, MODEL_DETECT_PATH, MODEL_LANDMARK_PATH);
+    Tracker *t = new Tracker(&solver, MODEL_DETECT_PATH, MODEL_LANDMARK_PATH);
 
-    Presenter p((IView&)w, &t, (ConfigMgr*)&conf_mgr);
+    Presenter p((IView&)w, t, (ConfigMgr*)&conf_mgr);
 
     return app.exec();
 }

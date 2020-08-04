@@ -18,9 +18,8 @@ Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std
 	session_options = new Ort::SessionOptions();
     enviro = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "env");
     
-   
 
-	//session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+	session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 	session = new Ort::Session(*enviro, detection_model_path.data(), *session_options);
 	allocator = new Ort::AllocatorWithDefaultOptions();
     memory_info = (Ort::MemoryInfo*)allocator->GetInfo();
@@ -30,7 +29,6 @@ Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std
     const wchar_t* modelFile2 = std::wstring(landmark_model_path.begin(), landmark_model_path.end()).data();
     session_lm = new Ort::Session(*enviro, landmark_model_path.data(), *session_options);
 
-    
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
 
@@ -48,16 +46,18 @@ Tracker::~Tracker()
 
 void Tracker::predict(cv::Mat& image, FaceData& face_data)
 {
+    cv::Mat img_copy = image.clone();
+    img_copy.convertTo(img_copy, CV_32F);
+    cv::cvtColor(img_copy, img_copy, cv::COLOR_BGR2RGB);
+    improc.normalize(img_copy);
 
-    detect_face(image, face_data);
-
-    //crop_coords = face_data.face_coords;
+    detect_face(img_copy, face_data);
 
     if (face_data.face_detected)
     {
         cv::Point p1(face_data.face_coords[0], face_data.face_coords[1]);
         cv::Point p2(face_data.face_coords[2], face_data.face_coords[3]);
-        cv::Mat cropped = image(cv::Rect(p1, p2));
+        cv::Mat cropped = img_copy(cv::Rect(p1, p2));
 
         int height = face_data.face_coords[2] - face_data.face_coords[0];
         int width = face_data.face_coords[3] - face_data.face_coords[1];
@@ -85,11 +85,6 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
-    resized.convertTo(resized, CV_32F);
-    cv::cvtColor(resized, resized, cv::COLOR_BGR2RGB);
-    improc.normalize(resized);
-    
-
     improc.transpose((float*)resized.data, buffer_data);
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
@@ -120,24 +115,27 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 
 
     face_data.face_detected = c > .6 ? true : false;
-
-    float face[] = { x-r, y-r, 2*r, 2*r };
-
-    //std::cout << face[0] << ", " << face[1] << ", " << face[2] << ", " << face[3] << std::endl;
-    float width =  image.cols;
-    float height = image.rows;
-
-    face[0] *= width / 224;
-    face[2] *= width / 224;
-    face[1] *= height / 224;
-    face[3] *= height / 224;
     
-    proc_face_detect(face, width, height);
+    if (face_data.face_detected)
+    {
+        float face[] = { x - r, y - r, 2 * r, 2 * r };
 
-    face_data.face_coords[0] = face[0];
-    face_data.face_coords[1] = face[1];
-    face_data.face_coords[2] = face[2];
-    face_data.face_coords[3] = face[3];
+        //std::cout << face[0] << ", " << face[1] << ", " << face[2] << ", " << face[3] << std::endl;
+        float width = image.cols;
+        float height = image.rows;
+
+        face[0] *= width / 224;
+        face[2] *= width / 224;
+        face[1] *= height / 224;
+        face[3] *= height / 224;
+
+        proc_face_detect(face, width, height);
+
+        face_data.face_coords[0] = face[0];
+        face_data.face_coords[1] = face[1];
+        face_data.face_coords[2] = face[2];
+        face_data.face_coords[3] = face[3];
+    }
                      
 }
 
@@ -147,12 +145,6 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
-
-    cv::cvtColor(resized, resized, cv::COLOR_BGR2RGB);
-    resized.convertTo(resized, CV_32F);
-    
-    improc.normalize(resized);  
-
     improc.transpose((float*)resized.data, buffer_data);
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
@@ -210,11 +202,8 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
         float conf = heatmaps[offset + argmax];
         float res = 223;
 
-        float er1 = logit(heatmaps[66 * heatmap_size + offset + argmax]);
-        float er2 = logit(heatmaps[2 * 66 * heatmap_size + offset + argmax]);
-
-        int off_x = floor(res * (logit(heatmaps[66 * heatmap_size + offset + argmax])) + 0.1);
-        int off_y = floor(res * (logit(heatmaps[2 * 66 * heatmap_size + offset + argmax])) + 0.1);
+        int off_x = floor(res * (float)(logit(heatmaps[66 * heatmap_size + offset + argmax])) + 0.1);
+        int off_y = floor(res * (float)(logit(heatmaps[2 * 66 * heatmap_size + offset + argmax])) + 0.1);
 
 
         float lm_x = (float)y0 + (float)(scale_x * (res * (float(x) / 27.) + off_x));

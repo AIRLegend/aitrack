@@ -49,6 +49,7 @@ Presenter::~Presenter()
 {
 	delete this->udp_sender; 
 	delete this->camera;
+	delete this->t;
 }
 
 void Presenter::sync_ui_inputs()
@@ -104,7 +105,7 @@ void Presenter::run_loop()
 		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
 		view->paint_video_frame(mat);
 
-		cv::waitKey(5);
+		cv::waitKey(33);
 
 	}
 
