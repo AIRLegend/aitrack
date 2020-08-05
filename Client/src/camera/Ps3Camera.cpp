@@ -13,6 +13,7 @@ Ps3Camera::Ps3Camera(int width, int height, int fps):
 		throw std::runtime_error("No PS3 Camera found.");
 	}
 	ctx.eye->setFlip(true);
+	this->is_valid = true;
 }
 
 Ps3Camera::~Ps3Camera()

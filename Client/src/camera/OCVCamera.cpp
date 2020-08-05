@@ -11,6 +11,7 @@ OCVCamera::OCVCamera(int width, int height, int fps) :
 	}
 	cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+	is_valid = true;
 }
 
 OCVCamera::~OCVCamera()
