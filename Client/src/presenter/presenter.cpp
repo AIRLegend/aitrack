@@ -1,14 +1,9 @@
 #include "presenter.h"
-
-
 #include <string.h>
-
 #include "opencv.hpp"
 
 #include "../model/IPResolver.h"
-
 #include "../camera/CameraFactory.h"
-
 
 
 Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
@@ -36,11 +31,12 @@ Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
 
 	CameraFactory camfactory;
 	camera = camfactory.buildCamera();
-
-	if (camera == NULL)
+	if (!camera->is_valid)
 	{
-		std::cout << "NO CAMERAS AVAILABLE" << std::endl;
-		this->view->show_message("No cameras detected. Make sure you plug one.", MSG_SEVERITY::CRITICAL);
+		std::cout << "[ERROR] NO CAMERAS AVAILABLE" << std::endl;
+		this->view->set_enabled(false);
+		this->view->show_message("No cameras detected. Plug one and restart the program.", MSG_SEVERITY::CRITICAL);
+		
 	}
 	
 }
@@ -105,8 +101,7 @@ void Presenter::run_loop()
 		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
 		view->paint_video_frame(mat);
 
-		cv::waitKey(33);
-
+		cv::waitKey(35);
 	}
 
 	camera->stop_camera();

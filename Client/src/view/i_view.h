@@ -19,5 +19,7 @@ public:
 	virtual ConfigData get_inputs() = 0;
 	virtual void set_inputs(const ConfigData data) = 0;
 
+	virtual void set_enabled(bool enabled) = 0;
+
 	virtual void show_message(const char* msg, MSG_SEVERITY severity) = 0;
 };

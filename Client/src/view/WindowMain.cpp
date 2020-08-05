@@ -144,3 +144,8 @@ void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
 	msgBox.setText(msg);
 	msgBox.exec();
 }
+
+void WindowMain::set_enabled(bool enabled)
+{
+	btn_track->setEnabled(enabled);
+}
