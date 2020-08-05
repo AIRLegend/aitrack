@@ -13,24 +13,19 @@ Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
 
 	this->t = tracker;
 	this->conf_mgr = conf_mgr;
+
 	ConfigData prefs = conf_mgr->getConfig();
 
-	// Get whether a custom IP was saved or we should set the defaults
+
 	std::string ip_str = prefs.ip;
 	int port = prefs.port;
-	if (QString(prefs.ip.data()).simplified().replace(" ", "").size() < 2)
-	{
-		ip_str = network::get_local_ip();
-		port = 4242;
-	}
-
-
-	this->udp_sender = new UDPSender(ip_str.data(), prefs.port);
+	init_sender(ip_str, port);
 
 	this->view->set_inputs(prefs);
 
 	CameraFactory camfactory;
 	camera = camfactory.buildCamera();
+
 	if (!camera->is_valid)
 	{
 		std::cout << "[ERROR] NO CAMERAS AVAILABLE" << std::endl;
@@ -47,6 +42,27 @@ Presenter::~Presenter()
 	delete this->camera;
 	delete this->t;
 }
+
+
+void Presenter::init_sender(std::string &ip, int port)
+{
+
+	if (this->udp_sender != NULL)
+		delete(this->udp_sender);
+
+	std::string ip_str = ip;
+	int port_dest = port;
+	if (QString(ip_str.data()).simplified().replace(" ", "").size() < 2)
+	{
+		ip_str = network::get_local_ip();
+	}
+	
+	if (port_dest == 0)
+		port = 4242;
+
+	this->udp_sender = new UDPSender(ip_str.data(), port_dest);
+}
+
 
 void Presenter::sync_ui_inputs()
 {
@@ -120,6 +136,17 @@ void Presenter::toggle_tracking()
 void Presenter::save_prefs(const ConfigData& data)
 {
 	conf_mgr->updateConfig(data);
+
+	// Update position solver priors
+	this->t->solver->set_prior_pitch(data.prior_pitch);
+	this->t->solver->set_prior_yaw(data.prior_yaw);
+	this->t->solver->set_prior_distance(data.prior_distance);
+
+	// Reset UDPSender to the new IP
+	std::string ip_str = data.ip;
+	int port = data.port;
+	init_sender(ip_str, port);
+
 }
 
 

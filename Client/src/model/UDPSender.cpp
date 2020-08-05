@@ -13,7 +13,7 @@ UDPSender::UDPSender(const char* dest_ip, int dest_port)
 
     this->ip = std::string(dest_ip);
 
-    //std::cout << "ip is " << this->ip << std::endl;
+    std::cout << "ip is " << this->ip << std::endl;
 
     this->port = dest_port;
 
@@ -36,17 +36,17 @@ UDPSender::UDPSender(const char* dest_ip, int dest_port)
 
 UDPSender::~UDPSender()
 {
+    std::cout << "Closing connection" << std::endl;
     closesocket(s);
     WSACleanup();
 }
 
 
-void UDPSender::send_data( double* d)
+void UDPSender::send_data(double* d)
 {
     // Make packet
     const char* pkt = (char*)d;
     sendto(s, pkt, BUFFER_SIZE, 0, (sockaddr*)&dest, sizeof(dest));
 };
-
 
 

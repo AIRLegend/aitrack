@@ -13,14 +13,17 @@ class Presenter : IPresenter
 {
 private:
 	FaceData face_data;
-	UDPSender *udp_sender;
-	Tracker *t;
-	Camera *camera;
+	UDPSender *udp_sender = NULL;
+	Tracker *t = NULL;
+	Camera *camera = NULL;
 	
 	IView* view;
 	bool run = false;
 	
 	void sync_ui_inputs();
+
+	void init_camera();
+	void init_sender(std::string& ip, int port);
 	
 public:
 	ConfigMgr* conf_mgr;

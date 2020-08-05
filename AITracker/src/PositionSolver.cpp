@@ -84,6 +84,24 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
 }
 
+void PositionSolver::set_prior_pitch(float new_pitch)
+{
+    this->prior_pitch = new_pitch;
+    this->rv[0] = this->prior_pitch;
+}
+
+void PositionSolver::set_prior_yaw(float new_yaw)
+{
+    this->prior_yaw = new_yaw;
+    this->rv[1] = this->prior_yaw;
+}
+
+void PositionSolver::set_prior_distance(float new_distance)
+{
+    this->prior_distance = new_distance;
+    this->tv[2] = this->prior_distance;
+}
+
 
 void PositionSolver::get_euler(cv::Mat& rvec, cv::Mat& tvec)
 {

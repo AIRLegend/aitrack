@@ -123,7 +123,7 @@ void WindowMain::set_inputs(const ConfigData data)
 		gp_box_address->setChecked(true);
 
 	gp_box_address->findChild<QLineEdit*>("ipField")->setText(data.ip.data());
-	gp_box_address->findChild<QLineEdit*>("portField")->setText(QString::number(data.port));
+	gp_box_address->findChild<QLineEdit*>("portField")->setText(data.port==0 ? "" : QString::number(data.port));
 	gp_box_priors->findChild<QLineEdit*>("pitchField")->setText(QString::number(data.prior_pitch));
 	gp_box_priors->findChild<QLineEdit*>("yawField")->setText(QString::number(data.prior_yaw));
 	gp_box_priors->findChild<QLineEdit*>("distanceField")->setText(QString::number(data.prior_distance));

@@ -11,13 +11,13 @@ class Tracker
 {
 
 public:
+	PositionSolver* solver;
+
 	Tracker(PositionSolver* solver, std::wstring& detection_model_path, std::wstring& landmark_model_path);
 	~Tracker();
 	void predict(cv::Mat& image, FaceData& face_data);
 
 private:
-	FaceData* facedata; 
-	PositionSolver *solver;
 	ImageProcessor improc;
 
 	std::string detection_model_path;

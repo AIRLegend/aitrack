@@ -31,6 +31,5 @@ public:
 		Sends a data vector to opentrack.
 		@param data: Size 6 array which contains [X,Y,Z,Yaw,Pitch,Roll].
 	*/
-	void send_data( double* data);
+	void send_data(double* data);
 };
-

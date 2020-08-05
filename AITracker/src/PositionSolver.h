@@ -27,6 +27,9 @@ public:
 		@param face_data FaceData instance with 2D landmark coordinates detected
 	*/
 	void solve_rotation(FaceData* face_data);
+	void set_prior_pitch(float new_pitch);
+	void set_prior_yaw(float new_yaw);
+	void set_prior_distance(float new_distance);
 
 private:
 	static const int NB_CONTOUR_POINTS = 18;

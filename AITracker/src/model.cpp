@@ -18,6 +18,7 @@ Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std
 	session_options = new Ort::SessionOptions();
     enviro = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "env");
     
+    enviro->DisableTelemetryEvents();
 
 	session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 	session = new Ort::Session(*enviro, detection_model_path.data(), *session_options);
@@ -202,8 +203,8 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
         float conf = heatmaps[offset + argmax];
         float res = 223;
 
-        int off_x = floor(res * (float)(logit(heatmaps[66 * heatmap_size + offset + argmax])) + 0.1);
-        int off_y = floor(res * (float)(logit(heatmaps[2 * 66 * heatmap_size + offset + argmax])) + 0.1);
+        int off_x = floor(res * (logit(heatmaps[66 * heatmap_size + offset + argmax])) + 0.1);
+        int off_y = floor(res * (logit(heatmaps[2 * 66 * heatmap_size + offset + argmax])) + 0.1);
 
 
         float lm_x = (float)y0 + (float)(scale_x * (res * (float(x) / 27.) + off_x));

@@ -1,5 +1,5 @@
 #ifndef _DEBUG
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif // !_DEBUG
 
 
@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 {
    
     omp_set_num_threads(1);  // Disable ONNX paralelization so we dont steal all cpu cores.
+    omp_set_dynamic(0);
 
 #if defined(Q_OS_WIN)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
