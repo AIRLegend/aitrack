@@ -8,6 +8,7 @@ WindowMain::WindowMain(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
+	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
 	this->presenter = NULL;
 	btn_track = findChild<QPushButton*>("trackBtn");
@@ -19,9 +20,11 @@ WindowMain::WindowMain(QWidget *parent)
 
 	btn_save = gp_box_prefs->findChild<QPushButton*>("saveBtn");
 
+	check_video_preview = findChild<QCheckBox*>("chkVideoPreview");
 	
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
 	connect(btn_save, SIGNAL(released()), this, SLOT(onSaveClick()));
+	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
 
 	statusBar()->setSizeGripEnabled(false);
 }
@@ -39,9 +42,10 @@ void WindowMain::closeEvent(QCloseEvent* event)
 
 void WindowMain::paint_video_frame(cv::Mat& img)
 {
-	tracking_frame->setPixmap(
-		QPixmap::fromImage(QImage(img.data, img.cols, img.rows, img.step, QImage::Format_RGB888))
-	);
+	if (check_video_preview->isChecked())
+		tracking_frame->setPixmap(
+			QPixmap::fromImage(QImage(img.data, img.cols, img.rows, img.step, QImage::Format_RGB888))
+		);
 }
 
 void WindowMain::connect_presenter(IPresenter* presenter)
@@ -71,40 +75,31 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 		// Enable groupbox Fields
 		gp_box_address->setEnabled(true);
 		gp_box_priors->setEnabled(true);
+		//check_video_preview->setCheckable(false);
 
 		// Remove background from label
 		tracking_frame->setPixmap(QPixmap());
-		tracking_frame->setText("No video feed");
+		tracking_frame->setText("No video input");
 	}
 }
 
-std::string WindowMain::get_input_ip()
+
+
+
+void WindowMain::update_view_state(ConfigData conf)
 {
-	return gp_box_address->findChild<QLineEdit*>("ipField")->text().toStdString();
+	set_inputs(conf);
+
+	if (!conf.show_video_feed)
+	{
+		tracking_frame->hide();
+		readjust_size();
+	}
+	else
+	{
+		tracking_frame->show();
+	}
 }
-
-void WindowMain::set_input_ip(std::string& ip)
-{
-	gp_box_address->findChild<QLineEdit*>("ipField")->setText(ip.data());
-}
-
-std::string WindowMain::get_input_port()
-{
-	return gp_box_address->findChild<QLineEdit*>("portField")->text().toStdString();
-}
-
-
-void WindowMain::onTrackClick()
-{
-	presenter->toggle_tracking();
-}
-
-void WindowMain::onSaveClick()
-{
-	presenter->save_prefs(get_inputs());
-}
-
-
 
 ConfigData WindowMain::get_inputs()
 {
@@ -114,12 +109,13 @@ ConfigData WindowMain::get_inputs()
 	inputs.prior_pitch = gp_box_priors->findChild<QLineEdit*>("pitchField")->text().toDouble();
 	inputs.prior_yaw = gp_box_priors->findChild<QLineEdit*>("yawField")->text().toDouble();
 	inputs.prior_distance = gp_box_priors->findChild<QLineEdit*>("distanceField")->text().toDouble();
+	inputs.show_video_feed = check_video_preview->isChecked();
 	return inputs;
 }
 
 void WindowMain::set_inputs(const ConfigData data)
 {
-	if(data.ip != "")
+	if(data.ip != "" || data.port > 0)
 		gp_box_address->setChecked(true);
 
 	gp_box_address->findChild<QLineEdit*>("ipField")->setText(data.ip.data());
@@ -127,18 +123,19 @@ void WindowMain::set_inputs(const ConfigData data)
 	gp_box_priors->findChild<QLineEdit*>("pitchField")->setText(QString::number(data.prior_pitch));
 	gp_box_priors->findChild<QLineEdit*>("yawField")->setText(QString::number(data.prior_yaw));
 	gp_box_priors->findChild<QLineEdit*>("distanceField")->setText(QString::number(data.prior_distance));
-
+	check_video_preview->setChecked(data.show_video_feed);
 }
 
 void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
 {
 	QMessageBox msgBox;
 	switch (severity) {
-	case MSG_SEVERITY::CRITICAL:
+	case CRITICAL:
 		msgBox.setIcon(QMessageBox::Warning);
 		break;
 	default:
 		msgBox.setIcon(QMessageBox::Information);
+		break;
 	}
 
 	msgBox.setText(msg);
@@ -148,4 +145,21 @@ void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
 void WindowMain::set_enabled(bool enabled)
 {
 	btn_track->setEnabled(enabled);
+}
+
+void WindowMain::onTrackClick()
+{
+	presenter->toggle_tracking();
+}
+
+void WindowMain::onSaveClick()
+{
+	ConfigData config = get_inputs();
+	presenter->save_prefs(config);
+}
+
+void WindowMain::readjust_size()
+{
+	findChild<QWidget*>("centralwidget")->adjustSize();
+	adjustSize();
 }

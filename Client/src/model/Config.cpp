@@ -12,6 +12,7 @@ ConfigData ConfigData::getGenericConfig()
 	conf.prior_pitch = 0.0;
 	conf.prior_yaw = 0.0;
 	conf.prior_distance = .6;
+	conf.show_video_feed = true;
 	return conf;
 }
 
@@ -38,6 +39,7 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("prior_pitch", data.prior_pitch);
 	conf.setValue("prior_yaw", data.prior_yaw);
 	conf.setValue("prior_distance", data.prior_distance);
+	conf.setValue("video_feed", data.show_video_feed);
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -48,6 +50,7 @@ ConfigData ConfigMgr::getConfig()
 	c.prior_pitch = conf.value("prior_pitch", 0.0).toDouble();
 	c.prior_yaw = conf.value("prior_yaw", 0.0).toDouble();
 	c.prior_distance = conf.value("prior_distance", 0.0).toDouble();
+	c.show_video_feed = conf.value("video_feed", true).toBool();
 	return c;
 }
 

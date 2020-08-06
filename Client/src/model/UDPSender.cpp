@@ -12,10 +12,9 @@ UDPSender::UDPSender(const char* dest_ip, int dest_port)
 {
 
     this->ip = std::string(dest_ip);
-
-    std::cout << "ip is " << this->ip << std::endl;
-
     this->port = dest_port;
+
+    //std::cout << "ip: " << this->ip << "  port: " <<  this->port << std::endl;
 
     dest = sockaddr_in();
     local = sockaddr_in();
