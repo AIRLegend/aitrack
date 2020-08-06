@@ -8,6 +8,7 @@ struct ConfigData
 	std::string ip;
 	int port;
 	double prior_pitch, prior_yaw, prior_distance;
+	bool show_video_feed;
 
 	static ConfigData getGenericConfig();
 };

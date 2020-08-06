@@ -13,7 +13,7 @@ AITrack uses its own tracking pipeline (based on neural networks) to estimate th
 
 ### Main features
 
-* Hardware (IR LED) free headtracking solution.
+* Hardware (IR LEDs, specific hardware...) free headtracking solution.
 * Good performance under poor light conditions.
 * Good detection with partial face occlusion (using glasses).
 * Reasonable low CPU percentage consumption.
@@ -38,6 +38,11 @@ In case you want to know more, please, head to the `Doc/` directory to find guid
 ## Bugs and Contributing
 
 If you encounter any bug/problem or you have some idea, post it on the [issues page](https://github.com/AIRLegend/aitracker/issues) to find help or further discussion. If you decide to fix something or implement a request, feel free to fork this repo, develop your new feature in a separate branch and then, make a PR to review it, here is the [guide to developers](Doc/DEVELOP.md). 
+
+Also, there is a Discord server you can join to be aware of the news of the project, report problems or request features!
+
+<a href="https://discord.gg/HPZMdcx"><img src="https://image.flaticon.com/icons/svg/2111/2111370.svg" width="30px"/></a> Join the server!
+
 
 Thank you!
 

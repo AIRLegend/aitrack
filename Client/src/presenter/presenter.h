@@ -13,21 +13,48 @@ class Presenter : IPresenter
 {
 private:
 	FaceData face_data;
-	UDPSender *udp_sender;
-	Tracker *t;
-	Camera *camera;
+	UDPSender *udp_sender = NULL;
+	Tracker *t = NULL;
+	Camera *camera = NULL;
 	
 	IView* view;
+
+	// Whether the main recognition loop has to be running.
 	bool run = false;
+	// Whether the main recognition loop has to paint the recognized landmarks
+	bool paint = true;
 	
+	/**
+	* Gets the current configuration state and sets the GUI to match it.
+	*/
 	void sync_ui_inputs();
+
+	/**
+	* Stands for initializing or updating the internal UDP sender.
+	* If the passed IP and port are equal than the already existing, it
+	* does nothing.
+	*/
+	void init_sender(std::string& ip, int port);
+	
+	/**
+	* Uses the internal UDP sender to send the facedata to opentrack.
+	*/
+	void send_data(double* buffer_data, FaceData& facedata);
+
+	/**
+	* runs the recognition loop`.
+	*	- Uses the camera to get a frame
+	*	- Executes the tracker::predict,
+	*	- paints (if needed)  the landmarks on the image
+	*	- updates (if needed) the UI with the painted image.
+	*/
+	void run_loop();
 	
 public:
 	ConfigMgr* conf_mgr;
 
 	Presenter(IView& view, Tracker *tracker, ConfigMgr* conf_mgr);
 	~Presenter();
-	void run_loop();
 
 	//IPresenter
 	void toggle_tracking();

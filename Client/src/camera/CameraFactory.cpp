@@ -2,11 +2,14 @@
 
 #include "Ps3Camera.h"
 #include "OCVCamera.h"
+#include "NullCamera.h"
 
 Camera* CameraFactory::buildCamera()
 {
 	Camera *camera = NULL;
+	bool error = false;
 	bool has_ps3 = true;
+
 	try
 	{
 		camera = new Ps3Camera(640, 480, 30);
@@ -22,8 +25,14 @@ Camera* CameraFactory::buildCamera()
 		}
 		catch (std::exception)
 		{
-			camera = NULL;
+			error = true;
 		}
+	}
+
+	if (error)
+	{
+		delete camera;
+		camera = new NullCamera;
 	}
 
 	return camera;

@@ -6,6 +6,7 @@ class Camera
 {
 public:
 	int width, height, fps;
+	bool is_valid = false;
 
 	virtual void start_camera() = 0;
 	virtual void stop_camera() = 0;

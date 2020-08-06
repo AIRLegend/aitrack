@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 {
    
     omp_set_num_threads(1);  // Disable ONNX paralelization so we dont steal all cpu cores.
+    omp_set_dynamic(0);
 
 #if defined(Q_OS_WIN)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -51,9 +52,9 @@ int main(int argc, char *argv[])
     }
 
     PositionSolver solver = PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);
-    Tracker t = Tracker(&solver, MODEL_DETECT_PATH, MODEL_LANDMARK_PATH);
+    Tracker *t = new Tracker(&solver, MODEL_DETECT_PATH, MODEL_LANDMARK_PATH);
 
-    Presenter p((IView&)w, &t, (ConfigMgr*)&conf_mgr);
+    Presenter p((IView&)w, t, (ConfigMgr*)&conf_mgr);
 
     return app.exec();
 }

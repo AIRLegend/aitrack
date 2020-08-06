@@ -24,24 +24,29 @@ public:
 	IPresenter *presenter;
 	void closeEvent(QCloseEvent* event) override;
 
-	//Iview
-	void paint_video_frame(cv::Mat& img);
+
+	//Iview stuff
 	void connect_presenter(IPresenter* presenter);
-	void set_tracking_mode(bool is_tracking);
-	std::string get_input_ip();
-	void set_input_ip(std::string& ip);
-	std::string get_input_port();
+	void paint_video_frame(cv::Mat& img);
 	ConfigData get_inputs();
-	void set_inputs(ConfigData data);
+	void update_view_state(ConfigData conf);
+	void set_tracking_mode(bool is_tracking);
+	void set_enabled(bool enabled);
 	void show_message(const char* msg, MSG_SEVERITY severity);
 
 
-	
 private:
 	Ui::MainWindow ui;
 	QPushButton *btn_track, *btn_save;
 	QLabel* tracking_frame;
 	QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
+	QCheckBox* check_video_preview;
+
+	/**
+	* Compacting the window to the content.
+	*/
+	void readjust_size();
+	void set_inputs(ConfigData data);
 
 
 private slots:

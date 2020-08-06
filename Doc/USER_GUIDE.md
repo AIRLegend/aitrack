@@ -10,12 +10,25 @@ AiTrack sends data over UDP to opentrack, which in turn, sends it to your game, 
 
 - In order to correct some of the noise AITrack has, it's recommended to use Acella filter on Opentrack with pretty high smoothing (over 2 degrees for rotation and about 1mm for position). However, Kalman filter works also okay (adjust its settings as you like).
 
-- Under `Options>Output` invert Pitch, Roll and Z axes.
-
 Example of Opentrack configuration:
 ![](../Images/OpentrackConfig.png)
+![](../Images/OpentrackConfig1.png)
 
-Then, on AiTrack, jus click "Start tracking". The program will use the default configuration, which assumes that opentrack is on the same machine and it's listening port is 4242 (Opentrack's default). In case you want to use other config, just change it on AiTrack and save it. 
+Then, on AITrack, just click "Start tracking". The program will use the default configuration, which assumes that opentrack is on the same machine and it's listening port is 4242 (Opentrack's default). In case you want to use other config, just change it on AITrack and save it. 
+
+
+## Common problems
+- If you find your head movements are inverted on your game:
+    - Under `Options>Output` invert Pitch and Z axes. Also, swap X and Y axes if needed.
+
+- If you find your view on the game making "strange jumps":
+    - Look at the video preview on AITrack and confirm the facial landmarks are correctly positioned.
+        - If not, check your illumination, and the angle your have your camera.
+    - If the landmarks are recognized correctly try fine-tunning the distance parameter on AITrack.
+
+- If the view makes "jumps" when you move your head try adjusting the curves on Opentrack (`Mapping` button).
+    - See **Tips** section
+    - Here is a video with some tips https://www.youtube.com/watch?v=u0TBI7SoGkc on how to configure your curves.
 
 ## Tips
 

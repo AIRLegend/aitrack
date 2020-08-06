@@ -138,7 +138,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -151,7 +151,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -173,6 +173,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera\NullCamera.cpp" />
     <ClCompile Include="src\camera\OCVCamera.cpp" />
     <ClCompile Include="src\camera\CameraFactory.cpp" />
     <ClCompile Include="src\model\Config.cpp" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera\Camera.h" />
+    <ClInclude Include="src\camera\NullCamera.h" />
     <ClInclude Include="src\camera\OCVCamera.h" />
     <ClInclude Include="src\camera\CameraFactory.h" />
     <ClInclude Include="Include\ps3eye.h" />

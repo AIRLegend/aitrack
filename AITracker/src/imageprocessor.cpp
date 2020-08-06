@@ -17,7 +17,7 @@ void ImageProcessor::normalize(cv::Mat& image)
 }
 
 
-void ImageProcessor::cvt_format(float* from, float* dest, int dim)
+/*void ImageProcessor::cvt_format(float* from, float* dest, int dim_x, int dim_y)
 {
     for (int channel = 1; channel < 4; channel++)
     {
@@ -31,13 +31,41 @@ void ImageProcessor::cvt_format(float* from, float* dest, int dim)
     }
 }
 
-void ImageProcessor::transpose(float* from, float* dest, int dim)
+void ImageProcessor::transpose(float* from, float* dest, int dim_x, int dim_y)
 {
     int stride = 224 * 224;
 
     for (int c = 0; c < 3; c++)
     {
         for (int i = 0; i < 224 * 224; i++)
+        {
+            dest[i + stride*c] = from[c + i*3];
+        }
+    }
+}*/
+
+
+void ImageProcessor::cvt_format(float* from, float* dest, int dim_x, int dim_y)
+{
+    for (int channel = 1; channel < 4; channel++)
+    {
+        for (int row = 0; row < dim_x; row++)
+        {
+            for (int col = 0; col < dim_y; col++)
+            {
+                dest[((channel - 1) * dim_x * dim_y) + (dim_y * col + row)] = from[3 * (dim_y * col + row)];
+            }
+        }
+    }
+}
+
+void ImageProcessor::transpose(float* from, float* dest, int dim_x, int dim_y)
+{
+    int stride = dim_x * dim_y;
+
+    for (int c = 0; c < 3; c++)
+    {
+        for (int i = 0; i < dim_x * dim_y; i++)
         {
             dest[i + stride*c] = from[c + i*3];
         }

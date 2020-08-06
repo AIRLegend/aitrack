@@ -16,6 +16,9 @@
     <ClCompile Include="src\camera\OCVCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\camera\NullCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\ps3eye.h" />
@@ -38,6 +41,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\camera\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\NullCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
