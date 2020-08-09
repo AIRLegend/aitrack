@@ -178,6 +178,9 @@ void Presenter::sync_ui_inputs()
 
 void Presenter::close_program()
 {
+	//Assure we stop tracking loop.
+	run = false;
 	// Assure the camera is released (some cameras have a "recording LED" which can be annoying to have on)
-	camera->stop_camera(); 
+	camera->stop_camera();
+	// The remaining resources will be released on destructor.
 }
