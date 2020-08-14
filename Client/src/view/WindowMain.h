@@ -41,11 +41,16 @@ private:
 	QLabel* tracking_frame;
 	QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
 	QCheckBox* check_video_preview;
+	QComboBox* cb_modelType;
 
 	/**
 	* Compacting the window to the content.
 	*/
 	void readjust_size();
+
+	/**
+	* Updates the view with the corresponding program state / config.
+	*/
 	void set_inputs(ConfigData data);
 
 

@@ -235,12 +235,14 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\filters.cpp" />
     <ClCompile Include="src\PositionSolver.cpp" />
     <ClCompile Include="src\imageprocessor.cpp" />
     <ClCompile Include="src\data.cpp" />
     <ClCompile Include="src\model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\filters.h" />
     <ClInclude Include="src\PositionSolver.h" />
     <ClInclude Include="src\imageprocessor.h" />
     <ClInclude Include="src\data.h" />

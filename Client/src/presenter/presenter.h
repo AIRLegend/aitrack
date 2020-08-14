@@ -8,15 +8,26 @@
 #include "../view/i_view.h"
 #include "../camera/Camera.h"
 
+#include "filters.h"
+
+#include "../tracker/TrackerFactory.h"
+#include "../tracker/ITrackerWrapper.h"
 
 class Presenter : IPresenter
 {
 private:
 	FaceData face_data;
 	UDPSender *udp_sender = NULL;
-	Tracker *t = NULL;
+	TrackerFactory *tracker_factory = NULL;
+	ITrackerWrapper *t = NULL;
 	Camera *camera = NULL;
+
+	// Current program's state + config.
+	ConfigData state;
 	
+	// Filter which will be aplied to the tracking.
+	IFilter *filter;
+
 	IView* view;
 
 	// Whether the main recognition loop has to be running.
@@ -32,9 +43,17 @@ private:
 	/**
 	* Stands for initializing or updating the internal UDP sender.
 	* If the passed IP and port are equal than the already existing, it
-	* does nothing.
+	* does nothing. This method updates the application state.
 	*/
 	void init_sender(std::string& ip, int port);
+
+	/**
+	* Uses the tracker factory to build a new tracker. If the requested one is of the
+	* same type as the old one, the call will be ignored. 
+	* This method updates the application state.
+	* @param type Type ID of the desired model (Fast, medium, heavy)
+	*/
+	void init_tracker(int type);
 	
 	/**
 	* Uses the internal UDP sender to send the facedata to opentrack.
@@ -53,7 +72,7 @@ private:
 public:
 	ConfigMgr* conf_mgr;
 
-	Presenter(IView& view, Tracker *tracker, ConfigMgr* conf_mgr);
+	Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr);
 	~Presenter();
 
 	//IPresenter

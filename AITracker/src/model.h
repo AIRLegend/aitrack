@@ -5,7 +5,7 @@
 #include "data.h"
 #include "imageprocessor.h"
 #include "PositionSolver.h"
-
+#include "filters.h"
 
 class Tracker
 {
@@ -15,7 +15,7 @@ public:
 
 	Tracker(PositionSolver* solver, std::wstring& detection_model_path, std::wstring& landmark_model_path);
 	~Tracker();
-	void predict(cv::Mat& image, FaceData& face_data);
+	void predict(cv::Mat& image, FaceData& face_data, IFilter *filter=nullptr);
 
 private:
 	ImageProcessor improc;

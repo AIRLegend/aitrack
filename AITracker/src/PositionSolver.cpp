@@ -4,7 +4,7 @@
 PositionSolver::PositionSolver(int width, int height,
     float prior_pitch, float prior_yaw, float prior_distance) :
     contour_indices{ 0,1,8,15,16,27,28,29,30,31,32,33,34,35,36,39,42,45 },
-    landmark_points_buffer(18, 1, CV_32FC2),
+    landmark_points_buffer(NB_CONTOUR_POINTS, 1, CV_32FC2),
     rv({ 0, 0, 0 }),
     tv({ 0, 0, 0 })
 {
@@ -37,7 +37,7 @@ PositionSolver::PositionSolver(int width, int height,
         0.13122973, -0.28444737, 0.23423915,
         -0.13122973, -0.28444737, 0.23423915,
         -0.31590518, -0.2983375, 0.2851074
-        );
+     );
 
     camera_matrix = (cv::Mat_<double>(3, 3) <<
         height, 0, height / 2,
@@ -63,6 +63,16 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
     cv::Mat rvec(rv, true), tvec(tv, true);
 
+    /*solvePnP(mat3dcontour,
+        landmark_points_buffer,
+        this->camera_matrix,
+        this->camera_distortion,
+        rvec,
+        tvec,
+        true, //extrinsic guess
+        cv::SOLVEPNP_ITERATIVE
+    );*/
+
     solvePnP(mat3dcontour,
         landmark_points_buffer,
         this->camera_matrix,
@@ -72,6 +82,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         true, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
     );
+
 
     get_euler(rvec, tvec);
 
