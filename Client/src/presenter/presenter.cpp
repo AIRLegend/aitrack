@@ -6,10 +6,6 @@
 #include "../camera/CameraFactory.h"
 
 
-
-
-
-
 Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr)
 {
 	this->conf_mgr = conf_mgr;
@@ -113,6 +109,10 @@ void Presenter::init_tracker(int type)
 				camera->height,
 				state.prior_distance,
 				tracker_factory->get_type(type));
+		}
+		else
+		{
+			this->t->update_distance_param(state.prior_distance);
 		}
 	}
 	else

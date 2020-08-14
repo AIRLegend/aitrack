@@ -18,9 +18,6 @@ ConfigData ConfigData::getGenericConfig()
 }
 
 
-
-
-
 ConfigMgr::ConfigMgr(std::string ini_path):
 	conf(ini_path.data(), QSettings::IniFormat)
 {

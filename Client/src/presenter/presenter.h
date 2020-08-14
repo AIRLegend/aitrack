@@ -22,8 +22,10 @@ private:
 	ITrackerWrapper *t = NULL;
 	Camera *camera = NULL;
 
+	// Current program's state + config.
 	ConfigData state;
 	
+	// Filter which will be aplied to the tracking.
 	IFilter *filter;
 
 	IView* view;
@@ -41,12 +43,15 @@ private:
 	/**
 	* Stands for initializing or updating the internal UDP sender.
 	* If the passed IP and port are equal than the already existing, it
-	* does nothing.
+	* does nothing. This method updates the application state.
 	*/
 	void init_sender(std::string& ip, int port);
 
 	/**
-	* TODO
+	* Uses the tracker factory to build a new tracker. If the requested one is of the
+	* same type as the old one, the call will be ignored. 
+	* This method updates the application state.
+	* @param type Type ID of the desired model (Fast, medium, heavy)
 	*/
 	void init_tracker(int type);
 	

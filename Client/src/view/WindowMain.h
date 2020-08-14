@@ -47,6 +47,10 @@ private:
 	* Compacting the window to the content.
 	*/
 	void readjust_size();
+
+	/**
+	* Updates the view with the corresponding program state / config.
+	*/
 	void set_inputs(ConfigData data);
 
 

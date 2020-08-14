@@ -112,8 +112,6 @@ ConfigData WindowMain::get_inputs()
 	ConfigData inputs = ConfigData();
 	inputs.ip = gp_box_address->findChild<QLineEdit*>("ipField")->text().toStdString();
 	inputs.port= gp_box_address->findChild<QLineEdit*>("portField")->text().toInt();
-	//inputs.prior_pitch = gp_box_priors->findChild<QLineEdit*>("pitchField")->text().toDouble();
-	//inputs.prior_yaw = gp_box_priors->findChild<QLineEdit*>("yawField")->text().toDouble();
 	inputs.prior_distance = gp_box_priors->findChild<QLineEdit*>("distanceField")->text().toDouble();
 	inputs.show_video_feed = check_video_preview->isChecked();
 	inputs.selected_model = cb_modelType->currentIndex();
@@ -127,8 +125,6 @@ void WindowMain::set_inputs(const ConfigData data)
 
 	gp_box_address->findChild<QLineEdit*>("ipField")->setText(data.ip.data());
 	gp_box_address->findChild<QLineEdit*>("portField")->setText(data.port==0 ? "" : QString::number(data.port));
-	//gp_box_priors->findChild<QLineEdit*>("pitchField")->setText(QString::number(data.prior_pitch));
-	//gp_box_priors->findChild<QLineEdit*>("yawField")->setText(QString::number(data.prior_yaw));
 	gp_box_priors->findChild<QLineEdit*>("distanceField")->setText(QString::number(data.prior_distance));
 	check_video_preview->setChecked(data.show_video_feed);
 

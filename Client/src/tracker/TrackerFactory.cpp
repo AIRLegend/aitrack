@@ -35,21 +35,22 @@ ITrackerWrapper* TrackerFactory::buildTracker(int im_width, int im_height, float
 	PositionSolver* solver = new PositionSolver(im_width, im_height, 0, 0, distance);
 
 	Tracker* t = nullptr;
-	//try
-	//{
+	try
+	{
 		t = new Tracker(
 			solver,
 			detect_wstr,
 			landmark_wstr
 		);
-	//}
-	/*catch (std::exception e)
+	}
+	catch (std::exception e)
 	{
 #ifdef _DEBUG
 		std::cout << "PROBLEM BUILDING TRACKER \n" << e.what() << std::endl;
 #endif
 		delete solver;
-	}*/
+		t = nullptr;
+	}
 
 	TrackerWrapper* wrapped = new TrackerWrapper(t, type);
 
