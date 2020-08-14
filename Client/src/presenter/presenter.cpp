@@ -7,16 +7,27 @@
 
 
 
-Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
+
+
+
+Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr)
 {
 	this->conf_mgr = conf_mgr;
-	ConfigData prefs = conf_mgr->getConfig();
+	state = conf_mgr->getConfig();
+
 	this->view = &view;
 	this->view->connect_presenter(this);
-	this->paint = prefs.show_video_feed;
-	sync_ui_inputs();
+	this->paint = state.show_video_feed;
+	
 
-	this->t = tracker;
+	this->tracker_factory = t_factory;
+
+	// Init available model names to show in the GUI
+	this->tracker_factory->get_model_names(state.model_names);
+
+	//this->filter = new MAFilter(3, 66*2);
+	this->filter = new EAFilter(66 * 2);
+	//this->filter = nullptr;
 
 
 	CameraFactory camfactory;
@@ -31,12 +42,26 @@ Presenter::Presenter(IView& view, Tracker* tracker, ConfigMgr* conf_mgr)
 	else
 	{
 		// Request sockets (UDP Sender) only if needed.
-		std::string ip_str = prefs.ip;
-		int port = prefs.port;
+		std::string ip_str = state.ip;
+		int port = state.port;
 		init_sender(ip_str, port);
+
+
+		// Build tracker
+		init_tracker(state.selected_model);
+
+		// Get avilable model types
+		this->tracker_factory->get_model_names(state.model_names);
+
 	}
 	
-
+	// Check if there was a problem initing tracker
+	if (this->t == nullptr)
+	{
+		this->view->set_enabled(false);
+		this->view->show_message("There was a problem initializing the tracker. Check the models folder and restart the program.", MSG_SEVERITY::CRITICAL);
+	}
+	sync_ui_inputs();
 }
 
 Presenter::~Presenter()
@@ -44,6 +69,7 @@ Presenter::~Presenter()
 	delete this->udp_sender; 
 	delete this->camera;
 	delete this->t;
+	delete this->filter;
 }
 
 
@@ -65,7 +91,38 @@ void Presenter::init_sender(std::string &ip, int port)
 	if (port_dest == 0)
 		port_dest = 4242;
 
+	state.ip = ip;
+	state.port = port;
 	this->udp_sender = new UDPSender(ip_str.data(), port_dest);
+}
+
+void Presenter::init_tracker(int type)
+{
+	TRACKER_TYPE newtype = tracker_factory->get_type(type);
+	if (t != nullptr)
+	{
+		if (newtype != t->get_type())
+		{
+#ifdef _DEBUG
+			std::cout << "Resetting old tracker" << std::endl;
+#endif
+
+			delete t;
+
+			this->t = tracker_factory->buildTracker(camera->width,
+				camera->height,
+				state.prior_distance,
+				tracker_factory->get_type(type));
+		}
+	}
+	else
+	{
+		this->t = tracker_factory->buildTracker(camera->width,
+			camera->height,
+			state.prior_distance,
+			tracker_factory->get_type(type));
+	}
+	state.selected_model = type;
 }
 
 
@@ -90,7 +147,7 @@ void Presenter::run_loop()
 		camera->get_frame(video_tex_pixels);
 		cv::Mat mat(camera->height, camera->width, CV_8UC3, video_tex_pixels);
 
-		t->predict(mat, d);
+		t->predict(mat, d, this->filter);
 
 		if (d.face_detected)
 		{
@@ -142,7 +199,7 @@ void Presenter::toggle_tracking()
 {
 	run = !run;
 
-	ConfigData curr_config = this->conf_mgr->getConfig();
+	//ConfigData curr_config = this->conf_mgr->getConfig();
 	view->set_tracking_mode(run);
 
 	if (run)
@@ -151,28 +208,31 @@ void Presenter::toggle_tracking()
 
 void Presenter::save_prefs(const ConfigData& data)
 {
-	conf_mgr->updateConfig(data);
+	// Disable painting parts from the run loop if needed
+	this->paint = data.show_video_feed;
+	state.show_video_feed = data.show_video_feed;
 
-	// Update position solver priors
-	this->t->solver->set_prior_pitch(data.prior_pitch);
-	this->t->solver->set_prior_yaw(data.prior_yaw);
-	this->t->solver->set_prior_distance(data.prior_distance);
+	this->state.prior_distance = data.prior_distance;
 
 	// Reset UDPSender
+	// this will update the state also
 	std::string ip_str = data.ip;
 	int port = data.port;
 	init_sender(ip_str, port);
 
-	// Disable painting parts from the run loop if needed
-	this->paint = data.show_video_feed;
+	// Rebuild tracker if needed. This will take care of updating the 
+	// state also
+	init_tracker(data.selected_model);
 
+
+	conf_mgr->updateConfig(state);
 	sync_ui_inputs();
 }
 
 
 void Presenter::sync_ui_inputs()
 {
-	this->view->update_view_state(conf_mgr->getConfig());
+	this->view->update_view_state(state);
 }
 
 

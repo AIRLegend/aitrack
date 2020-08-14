@@ -8,6 +8,7 @@
 #include "presenter/presenter.h"
 #include "model/Config.h"
 #include <omp.h>
+#include "tracker/TrackerFactory.h"
 
 
 int main(int argc, char *argv[])
@@ -26,7 +27,9 @@ int main(int argc, char *argv[])
     w.show();
 
     ConfigMgr conf_mgr("./prefs.ini");
-    ConfigData conf_prefs = conf_mgr.getConfig();
+    TrackerFactory t_factory("./models/");
+
+    /*ConfigData conf_prefs = conf_mgr.getConfig();
 
 
     int img_width = 640;
@@ -50,11 +53,14 @@ int main(int argc, char *argv[])
         MODEL_DETECT_PATH = QString(ENV_MODEL_D__PATH).toStdWString();
         MODEL_LANDMARK_PATH = QString(ENV_MODEL_LD_PATH).toStdWString();
     }
+    */
+    //PositionSolver solver = PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);
+    //Tracker *t = new Tracker(&solver, MODEL_DETECT_PATH, MODEL_LANDMARK_PATH);
 
-    PositionSolver solver = PositionSolver(img_width, img_heigth, solver_prior_pitch, solver_prior_yaw, solver_prior_distance);
-    Tracker *t = new Tracker(&solver, MODEL_DETECT_PATH, MODEL_LANDMARK_PATH);
+    //Tracker* t = TrackerFactory::buildTracker("./models/", 122, 122, 0.6);
 
-    Presenter p((IView&)w, t, (ConfigMgr*)&conf_mgr);
+    
+    Presenter p((IView&)w, &t_factory, (ConfigMgr*)&conf_mgr);
 
     return app.exec();
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>581</height>
+    <height>578</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -308,72 +308,20 @@
         <widget class="QGroupBox" name="paramsGroupBox">
          <property name="geometry">
           <rect>
-           <x>14</x>
-           <y>26</y>
+           <x>10</x>
+           <y>20</y>
            <width>161</width>
-           <height>150</height>
+           <height>151</height>
           </rect>
          </property>
          <property name="title">
           <string>Initial parameters</string>
          </property>
-         <widget class="QLineEdit" name="pitchField">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>30</y>
-            <width>41</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_3">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>31</y>
-            <width>31</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Pitch</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_4">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>60</y>
-            <width>21</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Yaw</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="yawField">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>60</y>
-            <width>41</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
          <widget class="QLabel" name="label_8">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>90</y>
+            <y>33</y>
             <width>61</width>
             <height>18</height>
            </rect>
@@ -386,13 +334,36 @@
           <property name="geometry">
            <rect>
             <x>90</x>
-            <y>91</y>
-            <width>41</width>
+            <y>34</y>
+            <width>51</width>
             <height>20</height>
            </rect>
           </property>
           <property name="text">
            <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_3">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>82</y>
+            <width>121</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Model type</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="modeltypeSelect">
+          <property name="geometry">
+           <rect>
+            <x>19</x>
+            <y>105</y>
+            <width>121</width>
+            <height>22</height>
+           </rect>
           </property>
          </widget>
         </widget>

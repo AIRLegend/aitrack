@@ -10,6 +10,9 @@ struct ConfigData
 	double prior_pitch, prior_yaw, prior_distance;
 	bool show_video_feed;
 
+	std::vector<std::string> model_names; //= {"Fast", "Medium", "Heavy"};
+	int selected_model;
+
 	static ConfigData getGenericConfig();
 };
 

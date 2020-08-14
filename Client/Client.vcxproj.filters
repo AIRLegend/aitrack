@@ -19,6 +19,12 @@
     <ClCompile Include="src\camera\NullCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tracker\TrackerWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tracker\TrackerFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\ps3eye.h" />
@@ -44,6 +50,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\camera\NullCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tracker\ITrackerWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tracker\TrackerWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tracker\TrackerFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

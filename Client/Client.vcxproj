@@ -183,6 +183,8 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\model\UDPSender.cpp" />
     <ClCompile Include="src\view\WindowMain.cpp" />
+    <ClCompile Include="src\tracker\TrackerFactory.cpp" />
+    <ClCompile Include="src\tracker\TrackerWrapper.cpp" />
     <QtRcc Include="res\Resource.qrc" />
     <QtRcc Include="src\view\qml.qrc" />
   </ItemGroup>
@@ -205,7 +207,10 @@
     <ClInclude Include="src\presenter\i_presenter.h" />
     <ClInclude Include="src\presenter\presenter.h" />
     <ClInclude Include="src\model\UDPSender.h" />
+    <ClInclude Include="src\tracker\ITrackerWrapper.h" />
     <ClInclude Include="src\view\i_view.h" />
+    <ClInclude Include="src\tracker\TrackerFactory.h" />
+    <ClInclude Include="src\tracker\TrackerWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AITracker\AITracker.vcxproj">

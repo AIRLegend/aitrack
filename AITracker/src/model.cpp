@@ -41,11 +41,14 @@ Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std
 
 Tracker::~Tracker()
 {
+    delete this->session_options;
+    delete this->enviro;
     delete this->session;
     delete this->session_lm;
+    delete this->solver;
 }
 
-void Tracker::predict(cv::Mat& image, FaceData& face_data)
+void Tracker::predict(cv::Mat& image, FaceData& face_data, IFilter* filter)
 {
     cv::Mat img_copy = image.clone();
     img_copy.convertTo(img_copy, CV_32F);
@@ -66,6 +69,9 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data)
         float scale_x = (float)width / 224;
         float scale_y = (float)height / 224;
         detect_landmarks(cropped, face_data.face_coords[0], face_data.face_coords[1], scale_x, scale_y, face_data);
+
+        if (filter != nullptr)
+            filter->filter(face_data.landmark_coords, face_data.landmark_coords);
 
         solver->solve_rotation(&face_data);
     }
