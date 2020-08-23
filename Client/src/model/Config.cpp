@@ -14,6 +14,8 @@ ConfigData ConfigData::getGenericConfig()
 	conf.prior_distance = .6;
 	conf.show_video_feed = true;
 	conf.selected_model = 0;
+	conf.video_width = 640;
+	conf.video_height = 480;
 	return conf;
 }
 
@@ -39,6 +41,8 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("prior_distance", data.prior_distance);
 	conf.setValue("video_feed", data.show_video_feed);
 	conf.setValue("model", data.selected_model);
+	conf.setValue("video_width", data.video_width);
+	conf.setValue("video_height", data.video_height);
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -51,6 +55,8 @@ ConfigData ConfigMgr::getConfig()
 	c.prior_distance = conf.value("prior_distance", 0.0).toDouble();
 	c.show_video_feed = conf.value("video_feed", true).toBool();
 	c.selected_model = conf.value("model", 0).toInt();
+	c.video_width = conf.value("video_width", 640).toInt();
+	c.video_height = conf.value("video_height", 480).toInt();
 	return c;
 }
 

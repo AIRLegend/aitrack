@@ -5,6 +5,6 @@
 class CameraFactory
 {
 public:
-	Camera* buildCamera();
+	Camera* buildCamera(int width, int height);
 };
 
