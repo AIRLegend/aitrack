@@ -14,7 +14,7 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 	this->view = &view;
 	this->view->connect_presenter(this);
 	this->paint = state.show_video_feed;
-	
+
 
 	this->tracker_factory = t_factory;
 
@@ -27,7 +27,7 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 
 
 	CameraFactory camfactory;
-	camera = camfactory.buildCamera();
+	camera = camfactory.buildCamera(state.video_width, state.video_height);
 
 	if (!camera->is_valid)
 	{
@@ -50,7 +50,7 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 		this->tracker_factory->get_model_names(state.model_names);
 
 	}
-	
+
 	// Check if there was a problem initing tracker
 	if (this->t == nullptr)
 	{
@@ -62,7 +62,7 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 
 Presenter::~Presenter()
 {
-	delete this->udp_sender; 
+	delete this->udp_sender;
 	delete this->camera;
 	delete this->t;
 	delete this->filter;
@@ -75,7 +75,7 @@ void Presenter::init_sender(std::string &ip, int port)
 	if (this->udp_sender != NULL)
 		if (ip != this->udp_sender->ip && port != this->udp_sender->port)
 			return;
-	
+
 	if (this->udp_sender != NULL)
 		delete(this->udp_sender);
 
@@ -163,7 +163,7 @@ void Presenter::run_loop()
 				cv::Point p2(d.face_coords[2], d.face_coords[3]);
 				cv::rectangle(mat, p1, p2, color_blue, 1);
 			}
-			
+
 
 			send_data(buffer_data, d);
 		}
@@ -220,7 +220,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	int port = data.port;
 	init_sender(ip_str, port);
 
-	// Rebuild tracker if needed. This will take care of updating the 
+	// Rebuild tracker if needed. This will take care of updating the
 	// state also
 	init_tracker(data.selected_model);
 

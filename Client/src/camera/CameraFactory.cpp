@@ -4,7 +4,7 @@
 #include "OCVCamera.h"
 #include "NullCamera.h"
 
-Camera* CameraFactory::buildCamera()
+Camera* CameraFactory::buildCamera(int width, int height)
 {
 	Camera *camera = NULL;
 	bool error = false;
@@ -17,11 +17,11 @@ Camera* CameraFactory::buildCamera()
 	{
 		has_ps3 = false;
 	}
-	
+
 	if (!has_ps3)
 	{
 		try {
-			camera = new OCVCamera;
+			camera = new OCVCamera(width, height);
 		}
 		catch (std::exception)
 		{

@@ -12,6 +12,8 @@ struct ConfigData
 {
 	std::string ip;
 	int port;
+	int video_height;
+	int video_width;
 	double prior_pitch, prior_yaw, prior_distance;
 	bool show_video_feed;
 
