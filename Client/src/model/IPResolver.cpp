@@ -2,15 +2,20 @@
 
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <QNetworkInterface>
 //#include <iostream>
 
 std::string network::get_local_ip()
 {
-    QTcpSocket socket;
-    std::string ip = "127.0.0.1";
-    socket.connectToHost("8.8.8.8", 53); // google DNS
-    if (socket.waitForConnected()) {
-        ip = socket.localAddress().toString().toStdString();
+    const QHostAddress& localhost = QHostAddress(QHostAddress::LocalHost);
+    for (const QHostAddress& address : QNetworkInterface::allAddresses()) {
+        
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != localhost)
+        {
+#ifdef _DEBUG
+            qDebug() << address.toString();
+#endif // _DEBUG
+            return address.toString().toStdString();
+        }   
     }
-    return ip;
 }
