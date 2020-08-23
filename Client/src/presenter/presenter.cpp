@@ -177,7 +177,7 @@ void Presenter::run_loop()
 			view->paint_video_frame(mat);
 		}
 
-		cv::waitKey(35);
+		cv::waitKey(1000/state.video_fps);
 	}
 
 	camera->stop_camera();
