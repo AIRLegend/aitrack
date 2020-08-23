@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>578</height>
+    <height>583</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -68,6 +68,12 @@
     <bool>false</bool>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="spacing">
+     <number>5</number>
+    </property>
+    <property name="bottomMargin">
+     <number>1</number>
+    </property>
     <item>
      <spacer name="verticalSpacerTop">
       <property name="orientation">
@@ -85,7 +91,7 @@
      </spacer>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
       <property name="spacing">
        <number>3</number>
       </property>
@@ -102,7 +108,7 @@
        <number>2</number>
       </property>
       <property name="bottomMargin">
-       <number>2</number>
+       <number>1</number>
       </property>
       <item>
        <widget class="QLabel" name="cameraView">
@@ -315,13 +321,13 @@
           </rect>
          </property>
          <property name="title">
-          <string>Initial parameters</string>
+          <string>Parameters</string>
          </property>
          <widget class="QLabel" name="label_8">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>33</y>
+            <y>26</y>
             <width>61</width>
             <height>18</height>
            </rect>
@@ -334,7 +340,7 @@
           <property name="geometry">
            <rect>
             <x>90</x>
-            <y>34</y>
+            <y>27</y>
             <width>51</width>
             <height>20</height>
            </rect>
@@ -347,7 +353,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>82</y>
+            <y>62</y>
             <width>121</width>
             <height>16</height>
            </rect>
@@ -360,10 +366,32 @@
           <property name="geometry">
            <rect>
             <x>19</x>
-            <y>105</y>
+            <y>85</y>
             <width>121</width>
             <height>22</height>
            </rect>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="landmarkStabChck">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>118</y>
+            <width>131</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Experimental&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Apply a filter to reduce noise on the recognized facial landmarks. Can reduce noise and thus, make you able to reduce the amount of Acella fitlering in Opentrack, gaining responsiveness.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="toolTipDuration">
+           <number>-1</number>
+          </property>
+          <property name="text">
+           <string>Landmark stabilization</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </widget>
@@ -383,7 +411,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Save</string>
+          <string>Apply changes</string>
          </property>
         </widget>
         <widget class="QCheckBox" name="chkVideoPreview">
@@ -408,6 +436,19 @@
           <bool>true</bool>
          </property>
         </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="trackerInfoLbl">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:7pt; color:#6b6b6b;&quot;&gt;X: Y: Z: Pitch: Yaw: Roll:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::RichText</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
        </widget>
       </item>
      </layout>

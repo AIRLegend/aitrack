@@ -16,6 +16,8 @@ ConfigData ConfigData::getGenericConfig()
 	conf.selected_model = 0;
 	conf.video_width = 640;
 	conf.video_height = 480;
+	conf.use_landmark_stab = true;
+	conf.x, conf.y, conf.z, conf.pitch, conf.yaw, conf.roll = 0;
 	return conf;
 }
 
@@ -43,6 +45,7 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("model", data.selected_model);
 	conf.setValue("video_width", data.video_width);
 	conf.setValue("video_height", data.video_height);
+	conf.setValue("stabilize_landmarks", data.use_landmark_stab);
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -54,6 +57,7 @@ ConfigData ConfigMgr::getConfig()
 	c.prior_yaw = conf.value("prior_yaw", 0.0).toDouble();
 	c.prior_distance = conf.value("prior_distance", 0.0).toDouble();
 	c.show_video_feed = conf.value("video_feed", true).toBool();
+	c.use_landmark_stab = conf.value("stabilize_landmarks", true).toBool();
 	c.selected_model = conf.value("model", 0).toInt();
 	c.video_width = conf.value("video_width", 640).toInt();
 	c.video_height = conf.value("video_height", 480).toInt();

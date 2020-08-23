@@ -15,6 +15,7 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 	this->view->connect_presenter(this);
 	this->paint = state.show_video_feed;
 
+	this->filter = nullptr;
 
 	this->tracker_factory = t_factory;
 
@@ -22,8 +23,10 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 	this->tracker_factory->get_model_names(state.model_names);
 
 	//this->filter = new MAFilter(3, 66*2);
-	this->filter = new EAFilter(66 * 2);
+	//this->filter = new EAFilter(66 * 2);
 	//this->filter = nullptr;
+	// Setup a filter to stabilize the recognized facial landmarks if needed.
+	update_stabilizer(state);
 
 
 	CameraFactory camfactory;
@@ -112,7 +115,7 @@ void Presenter::init_tracker(int type)
 		}
 		else
 		{
-			this->t->update_distance_param(state.prior_distance);
+			this->t->update_distance_param(this->state.prior_distance);
 		}
 	}
 	else
@@ -163,9 +166,9 @@ void Presenter::run_loop()
 				cv::Point p2(d.face_coords[2], d.face_coords[3]);
 				cv::rectangle(mat, p1, p2, color_blue, 1);
 			}
-
-
-			send_data(buffer_data, d);
+			
+			update_tracking_data(d);
+			send_data(buffer_data);
 		}
 
 		if (paint)
@@ -182,15 +185,46 @@ void Presenter::run_loop()
 }
 
 
-void Presenter::send_data(double* buffer_data, FaceData& facedata)
+void Presenter::update_tracking_data(FaceData& facedata)
+{
+	this->state.x = facedata.translation[0] * 10;
+	this->state.y = facedata.translation[1] * 10;
+	this->state.z = facedata.translation[2] * 10;
+	this->state.yaw = facedata.rotation[1];   // Yaw
+	this->state.pitch = facedata.rotation[0];   //Pitch
+	this->state.roll = facedata.rotation[2];   //Roll
+}
+
+
+void Presenter::update_stabilizer(const ConfigData& data)
+{
+	// Right now, only enabling/disabling it is supported
+	this->state.use_landmark_stab = data.use_landmark_stab;
+	if (!state.use_landmark_stab)
+	{
+		if (this->filter != nullptr)
+		{
+			delete this->filter;
+			this->filter = nullptr;
+		}
+	}
+	else
+	{
+		if (this->filter == nullptr)
+			this->filter = new EAFilter(66 * 2);
+	}
+}
+
+
+void Presenter::send_data(double* buffer_data)
 {
 	//Send data
-	buffer_data[0] = facedata.translation[0] * 10;
-	buffer_data[1] = facedata.translation[1] * 10;
-	buffer_data[2] = facedata.translation[2] * 10;
-	buffer_data[3] = facedata.rotation[1];   // Yaw
-	buffer_data[4] = facedata.rotation[0];   //Pitch
-	buffer_data[5] = facedata.rotation[2];   //Roll
+	buffer_data[0] = state.x;
+	buffer_data[1] = state.y;
+	buffer_data[2] = state.z;
+	buffer_data[3] = state.yaw;   // Yaw
+	buffer_data[4] = state.pitch;   //Pitch
+	buffer_data[5] = state.roll;   //Roll
 	udp_sender->send_data(buffer_data);
 }
 
@@ -214,16 +248,20 @@ void Presenter::save_prefs(const ConfigData& data)
 
 	this->state.prior_distance = data.prior_distance;
 
+
+	// Change stabilizer configuration. This will update the internal
+	// program state.
+	update_stabilizer(data);
+
 	// Reset UDPSender
 	// this will update the state also
 	std::string ip_str = data.ip;
 	int port = data.port;
 	init_sender(ip_str, port);
 
-	// Rebuild tracker if needed. This will take care of updating the
-	// state also
+	// Rebuild tracker if needed. This also will take care of updating the 
+	// state/distance parameter
 	init_tracker(data.selected_model);
-
 
 	conf_mgr->updateConfig(state);
 	sync_ui_inputs();

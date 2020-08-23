@@ -28,6 +28,7 @@ public:
 	//Iview stuff
 	void connect_presenter(IPresenter* presenter);
 	void paint_video_frame(cv::Mat& img);
+	void show_tracking_data(ConfigData conf);
 	ConfigData get_inputs();
 	void update_view_state(ConfigData conf);
 	void set_tracking_mode(bool is_tracking);
@@ -38,9 +39,9 @@ public:
 private:
 	Ui::MainWindow ui;
 	QPushButton *btn_track, *btn_save;
-	QLabel* tracking_frame;
+	QLabel *tracking_frame, *tracking_info;
 	QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
-	QCheckBox* check_video_preview;
+	QCheckBox *check_video_preview, *check_stabilization_landmarks;
 	QComboBox* cb_modelType;
 
 	/**
