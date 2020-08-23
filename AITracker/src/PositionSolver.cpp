@@ -109,7 +109,7 @@ void PositionSolver::set_prior_yaw(float new_yaw)
 
 void PositionSolver::set_prior_distance(float new_distance)
 {
-    this->prior_distance = new_distance;
+    this->prior_distance = new_distance * -2.;
     this->tv[2] = this->prior_distance;
 }
 
