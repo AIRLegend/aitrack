@@ -10,9 +10,17 @@ ImageProcessor::ImageProcessor() :
 	std_scaling *= 255.0f;
 }
 
-void ImageProcessor::normalize(cv::Mat& image) 
+void ImageProcessor::normalize(cv::Mat& image)
 {
-	cv::divide(image, std_scaling, image);
+    cv::divide(image, std_scaling, image);
+
+    /*float* ptr = image.ptr<float>();
+    for (int channel = 0; channel < 3; channel++){
+        for (int i = 0; i < 224 * 224; i++) {
+            ptr[224*224*channel + i] /= std_scaling[channel];
+        }
+    }*/
+
 	cv::subtract(image, mean_scaling, image);
 }
 

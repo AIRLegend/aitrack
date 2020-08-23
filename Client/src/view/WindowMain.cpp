@@ -14,6 +14,9 @@ WindowMain::WindowMain(QWidget *parent)
 	btn_track = findChild<QPushButton*>("trackBtn");
 	tracking_frame = findChild<QLabel*>("cameraView");
 
+	tracking_info = findChild<QLabel*>("trackerInfoLbl");
+	tracking_info->setHidden(true);
+
 	gp_box_prefs = findChild<QGroupBox*>("prefsGroupbox");
 	gp_box_address = gp_box_prefs->findChild<QGroupBox*>("sendGroupbox");
 	gp_box_priors = gp_box_prefs->findChild<QGroupBox*>("paramsGroupBox");
@@ -22,6 +25,7 @@ WindowMain::WindowMain(QWidget *parent)
 	cb_modelType = gp_box_priors->findChild<QComboBox*>("modeltypeSelect");
 
 	check_video_preview = findChild<QCheckBox*>("chkVideoPreview");
+	check_stabilization_landmarks = findChild<QCheckBox*>("landmarkStabChck");
 	
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
 	connect(btn_save, SIGNAL(released()), this, SLOT(onSaveClick()));
@@ -31,8 +35,7 @@ WindowMain::WindowMain(QWidget *parent)
 }
 
 WindowMain::~WindowMain()
-{
-}
+{}
 
 void WindowMain::closeEvent(QCloseEvent* event)
 {
@@ -48,6 +51,16 @@ void WindowMain::paint_video_frame(cv::Mat& img)
 			QPixmap::fromImage(QImage(img.data, img.cols, img.rows, img.step, QImage::Format_RGB888))
 		);
 }
+
+
+void WindowMain::show_tracking_data(ConfigData conf)
+{
+	tracking_info->setText(QString("X: %1, Y: %2, Z: %3")
+		.arg((int)conf.x)
+		.arg((int)conf.y)
+		.arg((int)conf.z));
+}
+
 
 void WindowMain::connect_presenter(IPresenter* presenter)
 {
@@ -95,6 +108,7 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 void WindowMain::update_view_state(ConfigData conf)
 {
 	set_inputs(conf);
+	show_tracking_data(conf);
 
 	if (!conf.show_video_feed)
 	{
@@ -115,6 +129,7 @@ ConfigData WindowMain::get_inputs()
 	inputs.prior_distance = gp_box_priors->findChild<QLineEdit*>("distanceField")->text().toDouble();
 	inputs.show_video_feed = check_video_preview->isChecked();
 	inputs.selected_model = cb_modelType->currentIndex();
+	inputs.use_landmark_stab = check_stabilization_landmarks->isChecked();
 	return inputs;
 }
 
@@ -132,6 +147,7 @@ void WindowMain::set_inputs(const ConfigData data)
 	for (std::string s:data.model_names)
 		cb_modelType->addItem(QString(s.data()));
 	cb_modelType->setCurrentIndex(data.selected_model);
+	check_stabilization_landmarks->setChecked(data.use_landmark_stab);
 }
 
 void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)

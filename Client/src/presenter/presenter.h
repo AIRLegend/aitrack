@@ -58,7 +58,7 @@ private:
 	/**
 	* Uses the internal UDP sender to send the facedata to opentrack.
 	*/
-	void send_data(double* buffer_data, FaceData& facedata);
+	void send_data(double* buffer_data);
 
 	/**
 	* runs the recognition loop`.
@@ -68,6 +68,16 @@ private:
 	*	- updates (if needed) the UI with the painted image.
 	*/
 	void run_loop();
+
+	/**
+	* Updates presenter state with the current X,Y,Z,Yaw,Pitch,Roll recognized
+	*/
+	void update_tracking_data(FaceData& facedata);
+
+	/**
+	* Updates the stabilizer applied to the recognized facial landmarks.
+	*/
+	void update_stabilizer(const ConfigData &data);
 	
 public:
 	ConfigMgr* conf_mgr;

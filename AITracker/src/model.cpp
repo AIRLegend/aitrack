@@ -14,22 +14,20 @@ Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std
     
     this->solver = solver;
 
-    const wchar_t* modelFile = std::wstring(detection_model_path.begin(), detection_model_path.end()).data();   
+
 	session_options = new Ort::SessionOptions();
+    session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+    session_options->SetInterOpNumThreads(1);
+    session_options->SetInterOpNumThreads(1);
+    allocator = new Ort::AllocatorWithDefaultOptions();
+    memory_info = (Ort::MemoryInfo*)allocator->GetInfo();
     enviro = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "env");
     
     enviro->DisableTelemetryEvents();
 
-	session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+
 	session = new Ort::Session(*enviro, detection_model_path.data(), *session_options);
-	allocator = new Ort::AllocatorWithDefaultOptions();
-    memory_info = (Ort::MemoryInfo*)allocator->GetInfo();
-
-
-   
-    const wchar_t* modelFile2 = std::wstring(landmark_model_path.begin(), landmark_model_path.end()).data();
-    session_lm = new Ort::Session(*enviro, landmark_model_path.data(), *session_options);
-
+    session_lm = new Ort::Session(*enviro, landmark_model_path.data(), *session_options);    
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
 
@@ -53,7 +51,9 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data, IFilter* filter)
     cv::Mat img_copy = image.clone();
     img_copy.convertTo(img_copy, CV_32F);
     cv::cvtColor(img_copy, img_copy, cv::COLOR_BGR2RGB);
-    improc.normalize(img_copy);
+
+    // Normalization complexity is too high (O(mn)), better to normalize scaled images in
+    // detect_face and detect_landmarks functions.
 
     detect_face(img_copy, face_data);
 
@@ -92,6 +92,7 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
+    improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
@@ -152,6 +153,7 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
+    improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);

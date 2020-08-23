@@ -12,8 +12,14 @@ struct ConfigData
 {
 	std::string ip;
 	int port;
+	int video_height;
+	int video_width;
+	int video_fps;
 	double prior_pitch, prior_yaw, prior_distance;
 	bool show_video_feed;
+	bool use_landmark_stab;
+
+	float x, y, z, yaw, pitch, roll;
 
 	std::vector<std::string> model_names;
 	int selected_model;

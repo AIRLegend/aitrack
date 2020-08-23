@@ -3,14 +3,13 @@
 
 OCVCamera::OCVCamera(int width, int height, int fps) :
 	Camera(width, height, fps),
+	size(width, height),
 	cap()
 {
 	if (!is_camera_available())
 	{
 		throw std::runtime_error("No compatible camera found.");
 	}
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 	is_valid = true;
 }
 
@@ -49,6 +48,7 @@ void OCVCamera::get_frame(uint8_t* buffer)
 {
 	cv::Mat frame;
 	cap.read(frame);
+	cv::resize(frame, frame, size);
 	cv::flip(frame, frame, 1);
 	for (int i = 0; i < frame.cols * frame.rows * 3; i++)
 		buffer[i] = frame.data[i];

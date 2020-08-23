@@ -22,6 +22,12 @@ public:
 	virtual void paint_video_frame(cv::Mat& img) = 0;
 
 	/**
+	* Show the tracking data on the UI
+	*/
+	virtual void show_tracking_data(ConfigData conf) = 0;
+
+
+	/**
 	* Sets the view in tracking or not tracking mode 
 	* (make changes on the GUI or update states)
 	*/
