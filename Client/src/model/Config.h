@@ -14,6 +14,7 @@ struct ConfigData
 	int port;
 	int video_height;
 	int video_width;
+	int video_fps;
 	double prior_pitch, prior_yaw, prior_distance;
 	bool show_video_feed;
 	bool use_landmark_stab;
