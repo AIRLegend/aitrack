@@ -28,11 +28,23 @@ AITrack uses its own tracking pipeline (based on neural networks) to estimate th
 5. Run `AITrack.exe` from AITrack and click "Start tracking". 
 6. Look around!
 
+### But... I don't have a webcam :(
+
+No problem. This program supports [Droid Cam](https://www.dev47apps.com/), so you're able to use your smartphone as a camera.
+
+### My webcam is too old
+
+Don't worry. AITrack supports low resolutions pretty well. Anything achieving at least 30fps and 480p will do the job fine.
+
+---
+
 **IMPORTANT:**
 In case you want to know more, please, head to the `Doc/` directory to find guides about usage. If you can't find there what you're looking for, feel free to post your question on the [issues page](https://github.com/AIRLegend/aitracker/issues).
 
+---
+
 ## Showoff videos
-[] TODO
+[<img src="https://img.youtube.com/vi/6uhcg43o7tc/hqdefault.jpg" width="50%">](https://youtu.be/6uhcg43o7tc)
 
 
 ## Bugs and Contributing
