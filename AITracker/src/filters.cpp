@@ -53,7 +53,7 @@ void EAFilter::filter(float* in_array, float* out_array)
 	for (int i = 0; i < array_size; i++)
 	{
 		out_array[i] = 0.6 * in_array[i] + 0.4 * this->last_value[i];
-		this->last_value[i] = out_array[i];
+		this->last_value[i] = in_array[i];
 	}
 
 }
