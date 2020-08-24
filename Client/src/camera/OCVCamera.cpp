@@ -6,11 +6,16 @@ OCVCamera::OCVCamera(int width, int height, int fps) :
 	size(width, height),
 	cap()
 {
+	CV_BACKEND = cv::CAP_DSHOW;
 	if (!is_camera_available())
 	{
-		throw std::runtime_error("No compatible camera found.");
+		// Check again with Media foundation backend
+		CV_BACKEND = cv::CAP_MSMF;
+		if (!is_camera_available())
+			throw std::runtime_error("No compatible camera found.");
 	}
 	is_valid = true;
+	cap.set(cv::CAP_PROP_BUFFERSIZE, 1);
 }
 
 OCVCamera::~OCVCamera()
@@ -22,7 +27,7 @@ bool OCVCamera::is_camera_available()
 {
 	bool available = false;
 
-	cap.open(0, cv::CAP_MSMF);
+	cap.open(0, CV_BACKEND);
 	available = cap.isOpened();
 	if (available)
 		cap.release();
@@ -32,7 +37,7 @@ bool OCVCamera::is_camera_available()
 
 void OCVCamera::start_camera()
 {
-	cap.open(0, cv::CAP_MSMF);
+	cap.open(0, CV_BACKEND);
 	if (!cap.isOpened())
 	{
 		throw std::runtime_error("No compatible camera found.");
