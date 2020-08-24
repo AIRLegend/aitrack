@@ -22,7 +22,7 @@ bool OCVCamera::is_camera_available()
 {
 	bool available = false;
 
-	cap.open(0, 0);
+	cap.open(0, cv::CAP_MSMF);
 	available = cap.isOpened();
 	if (available)
 		cap.release();
@@ -32,7 +32,7 @@ bool OCVCamera::is_camera_available()
 
 void OCVCamera::start_camera()
 {
-	cap.open(0, 0);
+	cap.open(0, cv::CAP_MSMF);
 	if (!cap.isOpened())
 	{
 		throw std::runtime_error("No compatible camera found.");
