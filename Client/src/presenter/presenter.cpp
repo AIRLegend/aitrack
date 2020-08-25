@@ -17,14 +17,12 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 
 	this->filter = nullptr;
 
+
 	this->tracker_factory = t_factory;
 
 	// Init available model names to show in the GUI
 	this->tracker_factory->get_model_names(state.model_names);
 
-	//this->filter = new MAFilter(3, 66*2);
-	//this->filter = new EAFilter(66 * 2);
-	//this->filter = nullptr;
 	// Setup a filter to stabilize the recognized facial landmarks if needed.
 	update_stabilizer(state);
 
@@ -45,12 +43,8 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 		int port = state.port;
 		init_sender(ip_str, port);
 
-
 		// Build tracker
 		init_tracker(state.selected_model);
-
-		// Get avilable model types
-		this->tracker_factory->get_model_names(state.model_names);
 
 	}
 
