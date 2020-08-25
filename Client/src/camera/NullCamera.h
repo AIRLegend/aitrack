@@ -9,4 +9,6 @@ public:
 	void start_camera() {};
 	void stop_camera() {};
 	void get_frame(uint8_t* buffer) {};
+	void set_settings(CameraSettings& settings) {};
+	CameraSettings get_settings() { return CameraSettings(); };
 };

@@ -331,6 +331,10 @@ USBMgr::USBMgr()
 	active_camera_count = 0;
     libusb_init(&usb_context);
     libusb_set_debug(usb_context, 1);
+
+	libusb_set_option(usb_context,
+		LIBUSB_OPTION_LOG_LEVEL,
+		LIBUSB_LOG_LEVEL_INFO);
 }
 
 USBMgr::~USBMgr()
@@ -392,8 +396,13 @@ int USBMgr::listDevices( std::vector<PS3EYECam::PS3EYERef>& list )
 	libusb_device *dev;
 	libusb_device **devs;
 	libusb_device_handle *devhandle;
+
     int i = 0;
     int cnt;
+
+	int res = libusb_init(&usb_context);
+	if (res < 0)
+		return 0;
 
     cnt = (int)libusb_get_device_list(usb_context, &devs);
 
@@ -985,6 +994,7 @@ static void LIBUSB_CALL transfer_completed_callback(struct libusb_transfer *xfr)
 
 bool PS3EYECam::devicesEnumerated = false;
 std::vector<PS3EYECam::PS3EYERef> PS3EYECam::devices;
+
 
 const std::vector<PS3EYECam::PS3EYERef>& PS3EYECam::getDevices( bool forceRefresh )
 {
