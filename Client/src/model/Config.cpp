@@ -19,6 +19,8 @@ ConfigData ConfigData::getGenericConfig()
 	conf.video_fps = 30;
 	conf.use_landmark_stab = true;
 	conf.x, conf.y, conf.z, conf.pitch, conf.yaw, conf.roll = 0;
+	conf.cam_exposure = -1;
+	conf.cam_gain = -1;
 	return conf;
 }
 
@@ -48,6 +50,8 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("video_height", data.video_height);
 	conf.setValue("stabilize_landmarks", data.use_landmark_stab);
 	conf.setValue("fps", data.video_fps);
+	conf.setValue("cam_exposure", data.cam_exposure);
+	conf.setValue("cam_gain", data.cam_gain);
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -64,6 +68,8 @@ ConfigData ConfigMgr::getConfig()
 	c.video_width = conf.value("video_width", 640).toInt();
 	c.video_height = conf.value("video_height", 480).toInt();
 	c.video_fps = conf.value("fps", 30).toInt();
+	c.cam_exposure= conf.value("cam_exposure", -1).toInt();
+	c.cam_gain = conf.value("cam_gain", -1).toInt();
 	return c;
 }
 

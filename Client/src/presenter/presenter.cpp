@@ -28,7 +28,7 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 
 
 	CameraFactory camfactory;
-	camera = camfactory.buildCamera(state.video_width, state.video_height);
+	camera = camfactory.buildCamera(state.video_width, state.video_height, state.cam_exposure, state.cam_gain);
 
 	if (!camera->is_valid)
 	{

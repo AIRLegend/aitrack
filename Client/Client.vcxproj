@@ -173,6 +173,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera\CameraSettings.cpp" />
     <ClCompile Include="src\camera\NullCamera.cpp" />
     <ClCompile Include="src\camera\OCVCamera.cpp" />
     <ClCompile Include="src\camera\CameraFactory.cpp" />
@@ -195,6 +196,7 @@
     <QtUic Include="src\view\MainWindow.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera\CameraSettings.h" />
     <ClInclude Include="src\camera\Camera.h" />
     <ClInclude Include="src\camera\NullCamera.h" />
     <ClInclude Include="src\camera\OCVCamera.h" />

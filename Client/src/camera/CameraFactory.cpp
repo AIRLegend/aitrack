@@ -4,7 +4,7 @@
 #include "OCVCamera.h"
 #include "NullCamera.h"
 
-Camera* CameraFactory::buildCamera(int width, int height)
+Camera* CameraFactory::buildCamera(int width, int height, int exposure, int gain)
 {
 	Camera *camera = NULL;
 	bool error = false;
@@ -34,6 +34,11 @@ Camera* CameraFactory::buildCamera(int width, int height)
 		delete camera;
 		camera = new NullCamera;
 	}
+
+	CameraSettings cam_settings;
+	cam_settings.exposure = exposure;
+	cam_settings.gain = gain;
+	camera->set_settings(cam_settings);
 
 	return camera;
 }

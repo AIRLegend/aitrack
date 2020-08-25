@@ -65,3 +65,13 @@ void OCVCamera::get_frame(uint8_t* buffer)
 		buffer[i] = frame.data[i];
 
 }
+
+void OCVCamera::set_settings(CameraSettings& settings)
+{
+	//TODO
+}
+
+CameraSettings OCVCamera::get_settings()
+{
+	return CameraSettings();
+}

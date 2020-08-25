@@ -37,6 +37,7 @@ class Ps3Camera : public Camera
 
 private:
 	ps3eye_context ctx;
+	CameraSettings setting;
 
 public:
 	Ps3Camera(int width = 640, int height = 480, int fps = 30);
@@ -44,5 +45,7 @@ public:
 	void start_camera();
 	void stop_camera();
 	void get_frame(uint8_t* buffer);
+	void set_settings(CameraSettings& settings);
+	CameraSettings get_settings();
 };
 

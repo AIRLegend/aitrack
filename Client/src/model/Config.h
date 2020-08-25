@@ -21,6 +21,9 @@ struct ConfigData
 
 	float x, y, z, yaw, pitch, roll;
 
+	int cam_exposure;
+	int cam_gain;
+
 	std::vector<std::string> model_names;
 	int selected_model;
 

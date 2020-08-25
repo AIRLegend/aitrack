@@ -3,9 +3,10 @@
 #include <iostream>
 
 
-Ps3Camera::Ps3Camera(int width, int height, int fps):
+Ps3Camera::Ps3Camera(int width, int height, int fps) :
 	Camera(width, height, fps),
-	ctx(width, height, fps)
+	ctx(width, height, fps),
+	setting()
 {
 	if (!this->ctx.hasDevices())
 	{
@@ -13,6 +14,9 @@ Ps3Camera::Ps3Camera(int width, int height, int fps):
 	}
 	ctx.eye->setFlip(true);
 	this->is_valid = true;
+
+	setting.exposure = 140;
+	setting.gain = 1;
 }
 
 Ps3Camera::~Ps3Camera()
@@ -34,4 +38,24 @@ void Ps3Camera::stop_camera()
 void Ps3Camera::get_frame(uint8_t *buffer) 
 {
 	this->ctx.eye->getFrame(buffer);
+}
+
+void Ps3Camera::set_settings(CameraSettings& settings)
+{
+	if (settings.exposure >= 0)
+	{
+		setting.exposure = min(settings.exposure, 254);
+		ctx.eye->setExposure(setting.exposure);
+	}
+
+	if (settings.gain >= 0)
+	{
+		setting.gain = min(settings.gain, 60);
+		ctx.eye->setGain(setting.gain);
+	}
+}
+
+CameraSettings Ps3Camera::get_settings()
+{
+	return CameraSettings(setting);
 }
