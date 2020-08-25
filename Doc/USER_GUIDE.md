@@ -1,5 +1,22 @@
 # User guide: Setup, common problems and tips
 
+## Video version
+
+Thanks to Sims Smith, for making a tutorial on how to setup this software to work with XPlane and Flight Simulator 2020. Although it's made for AITrack v0.4, the core process is almost the same.
+
+Although this tutorial covers pretty much everything, it's worth pointing out that:
+
+
+<center>
+
+[<img src="https://img.youtube.com/vi/LPlahUVPx4o/hqdefault.jpg" width="50%">](https://youtu.be/LPlahUVPx4o)
+
+</center>
+
+1) You don't need to configure "Use remote client" anymore if you're running Opentrack in your local machine.
+2) You should take you time for [tweaking your curves in Opentrack](https://www.youtube.com/watch?v=u0TBI7SoGkc) to your preferences.
+3) Experiment with Opentrack's built in filters. Acella it's the recommended one at the moment. Configure it's smoothing parameter to reduce camera shaking.
+
 ## Configuring opentrack and AiTrack
 
 AiTrack sends data over UDP to opentrack, which in turn, sends it to your game, so both of them need to be running.
