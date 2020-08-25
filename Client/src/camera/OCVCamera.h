@@ -7,6 +7,8 @@ class OCVCamera : public Camera
 private:
 	cv::VideoCapture cap;
 	cv::Size size;
+	float w_scale;
+	int cam_native_width;
 	int CV_BACKEND;
 
 	bool is_camera_available();

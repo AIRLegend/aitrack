@@ -3,7 +3,7 @@
 
 OCVCamera::OCVCamera(int width, int height, int fps) :
 	Camera(width, height, fps),
-	size(width, height),
+	size(0, 0),
 	cap()
 {
 	CV_BACKEND = cv::CAP_DSHOW;
@@ -15,7 +15,8 @@ OCVCamera::OCVCamera(int width, int height, int fps) :
 			throw std::runtime_error("No compatible camera found.");
 	}
 	is_valid = true;
-	cap.set(cv::CAP_PROP_BUFFERSIZE, 1);
+
+	w_scale = (float)width/(float)cam_native_width;
 }
 
 OCVCamera::~OCVCamera()
@@ -30,8 +31,10 @@ bool OCVCamera::is_camera_available()
 	cap.open(0, CV_BACKEND);
 	available = cap.isOpened();
 	if (available)
+	{
+		cam_native_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
 		cap.release();
-
+	}
 	return available;
 }
 
@@ -53,7 +56,10 @@ void OCVCamera::get_frame(uint8_t* buffer)
 {
 	cv::Mat frame;
 	cap.read(frame);
-	cv::resize(frame, frame, size);
+	//Scale maintaining aspect ratio. If distorted, the model will get confused.
+	//TODO: Maybe cropping (width,height) section from the center is better.
+	//cv::resize(frame, frame, size, w_scale, w_scale);
+	cv::resize(frame, frame, size, w_scale, w_scale);
 	cv::flip(frame, frame, 1);
 	for (int i = 0; i < frame.cols * frame.rows * 3; i++)
 		buffer[i] = frame.data[i];

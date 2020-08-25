@@ -9,7 +9,6 @@ Ps3Camera::Ps3Camera(int width, int height, int fps):
 {
 	if (!this->ctx.hasDevices())
 	{
-		std::cout << "SOME ERROR BUILDING" << std::endl;
 		throw std::runtime_error("No PS3 Camera found.");
 	}
 	ctx.eye->setFlip(true);
