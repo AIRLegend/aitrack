@@ -1,24 +1,23 @@
-#include "presenter.h"
+#include <memory>
 #include <string.h>
+
+#include "presenter.h"
 #include "opencv.hpp"
 
 #include "../model/IPResolver.h"
 #include "../camera/CameraFactory.h"
 
 
-Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr)
+Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr)
 {
-	this->conf_mgr = conf_mgr;
-	state = conf_mgr->getConfig();
+	this->tracker_factory = std::move(t_factory);
+	this->conf_mgr = std::move(conf_mgr);
+	state = this->conf_mgr->getConfig();
 
 	this->view = &view;
 	this->view->connect_presenter(this);
 	this->paint = state.show_video_feed;
-
 	this->filter = nullptr;
-
-
-	this->tracker_factory = t_factory;
 
 	// Init available model names to show in the GUI
 	this->tracker_factory->get_model_names(state.model_names);
@@ -57,24 +56,14 @@ Presenter::Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr
 	sync_ui_inputs();
 }
 
-Presenter::~Presenter()
-{
-	delete this->udp_sender;
-	delete this->camera;
-	delete this->t;
-	delete this->filter;
-}
-
-
 void Presenter::init_sender(std::string &ip, int port)
 {
 	// Updata only if needed.
-	if (this->udp_sender != NULL)
+	if (this->udp_sender)
+	{
 		if (ip != this->udp_sender->ip && port != this->udp_sender->port)
 			return;
-
-	if (this->udp_sender != NULL)
-		delete(this->udp_sender);
+	}
 
 	std::string ip_str = ip;
 	int port_dest = port;
@@ -86,7 +75,7 @@ void Presenter::init_sender(std::string &ip, int port)
 
 	state.ip = ip;
 	state.port = port;
-	this->udp_sender = new UDPSender(ip_str.data(), port_dest);
+	this->udp_sender = std::make_unique<UDPSender>(ip_str.data(), port_dest);
 }
 
 void Presenter::init_tracker(int type)
@@ -99,9 +88,6 @@ void Presenter::init_tracker(int type)
 #ifdef _DEBUG
 			std::cout << "Resetting old tracker" << std::endl;
 #endif
-
-			delete t;
-
 			this->t = tracker_factory->buildTracker(camera->width,
 				camera->height,
 				state.prior_distance,
@@ -128,7 +114,7 @@ void Presenter::run_loop()
 	FaceData d = FaceData();
 
 	int video_frame_buff_size = camera->width * camera->height * 3;
-	uint8_t *video_tex_pixels = new uint8_t[video_frame_buff_size];
+	auto video_tex_pixels = std::make_unique<uint8_t[]>(video_frame_buff_size);
 
 
 	cv::Scalar color_blue(255, 0, 0);
@@ -141,8 +127,8 @@ void Presenter::run_loop()
 
 	while(run)
 	{
-		camera->get_frame(video_tex_pixels);
-		cv::Mat mat(camera->height, camera->width, CV_8UC3, video_tex_pixels);
+		camera->get_frame(video_tex_pixels.get());
+		cv::Mat mat(camera->height, camera->width, CV_8UC3, video_tex_pixels.get());
 
 		t->predict(mat, d, this->filter);
 
@@ -160,7 +146,7 @@ void Presenter::run_loop()
 				cv::Point p2(d.face_coords[2], d.face_coords[3]);
 				cv::rectangle(mat, p1, p2, color_blue, 1);
 			}
-			
+
 			update_tracking_data(d);
 			send_data(buffer_data);
 		}
@@ -175,7 +161,7 @@ void Presenter::run_loop()
 	}
 
 	camera->stop_camera();
-	delete[] video_tex_pixels;
+	video_tex_pixels;
 }
 
 
@@ -196,16 +182,11 @@ void Presenter::update_stabilizer(const ConfigData& data)
 	this->state.use_landmark_stab = data.use_landmark_stab;
 	if (!state.use_landmark_stab)
 	{
-		if (this->filter != nullptr)
-		{
-			delete this->filter;
-			this->filter = nullptr;
-		}
+		this->filter.reset();
 	}
 	else
 	{
-		if (this->filter == nullptr)
-			this->filter = new EAFilter(66 * 2);
+		this->filter = std::make_unique<EAFilter>(66 * 2);
 	}
 }
 
@@ -253,7 +234,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	int port = data.port;
 	init_sender(ip_str, port);
 
-	// Rebuild tracker if needed. This also will take care of updating the 
+	// Rebuild tracker if needed. This also will take care of updating the
 	// state/distance parameter
 	init_tracker(data.selected_model);
 
