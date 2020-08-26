@@ -14,7 +14,7 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
     this->solver = std::move(solver);
 
 
-	auto session_options = Ort::SessionOptions();
+    auto session_options = Ort::SessionOptions();
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
     session_options.SetInterOpNumThreads(1);
     session_options.SetInterOpNumThreads(1);
@@ -23,7 +23,7 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
     enviro = std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "env");
     enviro->DisableTelemetryEvents();
 
-	session = std::make_unique<Ort::Session>(*enviro, detection_model_path.data(), session_options);
+    session = std::make_unique<Ort::Session>(*enviro, detection_model_path.data(), session_options);
     session_lm = std::make_unique<Ort::Session>(*enviro, landmark_model_path.data(), session_options);
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
