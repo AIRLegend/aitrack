@@ -4,15 +4,15 @@
 #include "OCVCamera.h"
 #include "NullCamera.h"
 
-Camera* CameraFactory::buildCamera(int width, int height, int exposure, int gain)
+std::unique_ptr<Camera> CameraFactory::buildCamera(int width, int height, int exposure, int gain)
 {
-	Camera *camera = NULL;
+	std::unique_ptr<Camera> camera;
 	bool error = false;
 	bool has_ps3 = true;
 
 	try
 	{
-		camera = new Ps3Camera(640, 480, 30);
+		camera = std::make_unique<Ps3Camera>(640, 480, 30);
 	} catch (std::exception)
 	{
 		has_ps3 = false;
@@ -21,7 +21,7 @@ Camera* CameraFactory::buildCamera(int width, int height, int exposure, int gain
 	if (!has_ps3)
 	{
 		try {
-			camera = new OCVCamera(width, height);
+			camera = std::make_unique<OCVCamera>(width, height);
 		}
 		catch (std::exception)
 		{
@@ -31,8 +31,7 @@ Camera* CameraFactory::buildCamera(int width, int height, int exposure, int gain
 
 	if (error)
 	{
-		delete camera;
-		camera = new NullCamera;
+		camera = std::make_unique<NullCamera>();
 	}
 
 	CameraSettings cam_settings;

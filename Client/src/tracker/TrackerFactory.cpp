@@ -6,7 +6,7 @@
 
 #include "TrackerWrapper.h"
 
-ITrackerWrapper* TrackerFactory::buildTracker(int im_width, int im_height, float distance, TRACKER_TYPE type)
+std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(int im_width, int im_height, float distance, TRACKER_TYPE type)
 {
 	std::string landmark_path = model_dir;
 	std::string detect_path = model_dir + "detection.onnx";
@@ -26,18 +26,18 @@ ITrackerWrapper* TrackerFactory::buildTracker(int im_width, int im_height, float
 		landmark_path += "lm_m.onnx";
 		break;
 	}
-	
+
 	std::wstring detect_wstr = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(detect_path);
 	std::wstring landmark_wstr = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(landmark_path);
 
 
-	PositionSolver* solver = new PositionSolver(im_width, im_height, 0, 0, distance);
+	auto solver = std::make_unique<PositionSolver>(im_width, im_height, 0, 0, distance);
 
-	Tracker* t = nullptr;
+	std::unique_ptr<Tracker> t;
 	try
 	{
-		t = new Tracker(
-			solver,
+		t = std::make_unique<Tracker>(
+			std::move(solver),
 			detect_wstr,
 			landmark_wstr
 		);
@@ -47,13 +47,10 @@ ITrackerWrapper* TrackerFactory::buildTracker(int im_width, int im_height, float
 #ifdef _DEBUG
 		std::cout << "PROBLEM BUILDING TRACKER \n" << e.what() << std::endl;
 #endif
-		delete solver;
-		t = nullptr;
+		t.reset();
 	}
 
-	TrackerWrapper* wrapped = new TrackerWrapper(t, type);
-
-	return (ITrackerWrapper*)wrapped;
+	return std::make_unique<TrackerWrapper>(std::move(t), type);
 }
 
 

@@ -11,22 +11,21 @@ class Tracker
 {
 
 public:
-	PositionSolver* solver;
+	std::unique_ptr<PositionSolver> solver;
 
-	Tracker(PositionSolver* solver, std::wstring& detection_model_path, std::wstring& landmark_model_path);
-	~Tracker();
-	void predict(cv::Mat& image, FaceData& face_data, IFilter *filter=nullptr);
+	Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path);
+
+	void predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter = {});
 
 private:
 	ImageProcessor improc;
+	Ort::AllocatorWithDefaultOptions allocator = {};
+	const OrtMemoryInfo* memory_info;
 
 	std::string detection_model_path;
-	Ort::Env* enviro;
-	Ort::SessionOptions* session_options;
-	Ort::Session* session;
-	Ort::Session* session_lm;
-	Ort::AllocatorWithDefaultOptions* allocator;
-	Ort::MemoryInfo* memory_info;
+	std::unique_ptr<Ort::Env> enviro;
+	std::unique_ptr<Ort::Session> session;
+	std::unique_ptr<Ort::Session> session_lm;
 
 	std::vector<const char*> detection_input_node_names;
 	std::vector<const char*> detection_output_node_names;
