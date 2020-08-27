@@ -28,6 +28,9 @@
     <ClCompile Include="src\camera\CameraSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\view\ConfigWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\ps3eye.h" />
@@ -70,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\view\WindowMain.h" />
+    <QtMoc Include="src\view\ConfigWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="src\view\qml.qrc" />
@@ -79,6 +85,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="src\view\MainWindow.ui" />
+    <QtUic Include="src\view\ConfigWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -95,6 +104,11 @@
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>true</ParseFiles>
     </Filter>
   </ItemGroup>
   <ItemGroup>

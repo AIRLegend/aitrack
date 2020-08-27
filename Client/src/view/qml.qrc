@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>MainWindow.ui</file>
+        <file>ConfigWindow.ui</file>
     </qresource>
 </RCC>

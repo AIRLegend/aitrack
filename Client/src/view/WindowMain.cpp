@@ -4,24 +4,28 @@
 #include <iostream>
 #include <QMessageBox>
 
+
 WindowMain::WindowMain(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
+	this->conf_win = new ConfigWindow();
+	this->conf_win->show();
+
 	this->presenter = NULL;
+
 	btn_track = findChild<QPushButton*>("trackBtn");
 	tracking_frame = findChild<QLabel*>("cameraView");
 
-	tracking_info = findChild<QLabel*>("trackerInfoLbl");
-	tracking_info->setHidden(true);
 
 	gp_box_prefs = findChild<QGroupBox*>("prefsGroupbox");
 	gp_box_address = gp_box_prefs->findChild<QGroupBox*>("sendGroupbox");
 	gp_box_priors = gp_box_prefs->findChild<QGroupBox*>("paramsGroupBox");
 
 	btn_save = gp_box_prefs->findChild<QPushButton*>("saveBtn");
+	btn_config = findChild<QPushButton*>("btnConfig");
 	cb_modelType = gp_box_priors->findChild<QComboBox*>("modeltypeSelect");
 
 	check_video_preview = findChild<QCheckBox*>("chkVideoPreview");
@@ -29,6 +33,7 @@ WindowMain::WindowMain(QWidget *parent)
 	
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
 	connect(btn_save, SIGNAL(released()), this, SLOT(onSaveClick()));
+	connect(btn_config, SIGNAL(released()), this, SLOT(onSaveClick()));
 	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
 
 	statusBar()->setSizeGripEnabled(false);
@@ -108,7 +113,7 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 void WindowMain::update_view_state(ConfigData conf)
 {
 	set_inputs(conf);
-	show_tracking_data(conf);
+	//show_tracking_data(conf);
 
 	if (!conf.show_video_feed)
 	{
@@ -180,6 +185,11 @@ void WindowMain::onSaveClick()
 {
 	ConfigData config = get_inputs();
 	presenter->save_prefs(config);
+}
+
+void WindowMain::onConfigClick()
+{
+
 }
 
 void WindowMain::readjust_size()

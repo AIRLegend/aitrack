@@ -55,3 +55,10 @@ public:
 	*/
 	virtual void show_message(const char* msg, MSG_SEVERITY severity) = 0;
 };
+
+
+class IObserver
+{
+public:
+	virtual void notify() = 0;
+};
