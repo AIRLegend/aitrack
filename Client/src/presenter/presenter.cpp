@@ -181,8 +181,8 @@ void Presenter::run_loop()
 
 void Presenter::update_tracking_data(FaceData& facedata)
 {
-	this->state.x = facedata.translation[0] * 10;
-	this->state.y = facedata.translation[1] * 10;
+	this->state.x = facedata.translation[1] * 10;
+	this->state.y = facedata.translation[0] * 10;
 	this->state.z = facedata.translation[2] * 10;
 	this->state.yaw = facedata.rotation[1];   // Yaw
 	this->state.pitch = facedata.rotation[0];   //Pitch
