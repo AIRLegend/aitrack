@@ -2,6 +2,7 @@
 
 #include "ITrackerWrapper.h"
 #include <string.h>
+#include <memory>
 #include <vector>
 
 
@@ -14,7 +15,7 @@ private:
 	std::string model_dir;
 public:
 	TrackerFactory(std::string modeldir);
-	ITrackerWrapper* buildTracker(int im_width, int im_height, float distance, TRACKER_TYPE type= TRACKER_TYPE::TRACKER_FAST);
+	std::unique_ptr<ITrackerWrapper> buildTracker(int im_width, int im_height, float distance, TRACKER_TYPE type= TRACKER_TYPE::TRACKER_FAST);
 
 	/**
 	* Set the list with the string identifiers of the available models.

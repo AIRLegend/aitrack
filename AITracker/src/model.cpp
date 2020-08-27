@@ -8,45 +8,31 @@
 
 
 
-Tracker::Tracker(PositionSolver* solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
-    improc()
+Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
+    improc(),
+    memory_info(allocator.GetInfo()),
+    enviro(std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "env")),
+    detection_input_node_names{ "input" },
+    detection_output_node_names{ "output", "maxpool" },
+    landmarks_input_node_names{ "input" },
+    landmarks_output_node_names{ "output" }
 {
-    
-    this->solver = solver;
+    this->solver = std::move(solver);
 
+    auto session_options = Ort::SessionOptions();
+    session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+    session_options.SetInterOpNumThreads(1);
+    session_options.SetIntraOpNumThreads(1);
 
-	session_options = new Ort::SessionOptions();
-    session_options->SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-    session_options->SetInterOpNumThreads(1);
-    session_options->SetInterOpNumThreads(1);
-    allocator = new Ort::AllocatorWithDefaultOptions();
-    memory_info = (Ort::MemoryInfo*)allocator->GetInfo();
-    enviro = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "env");
-    
     enviro->DisableTelemetryEvents();
 
-
-	session = new Ort::Session(*enviro, detection_model_path.data(), *session_options);
-    session_lm = new Ort::Session(*enviro, landmark_model_path.data(), *session_options);    
+    session = std::make_unique<Ort::Session>(*enviro, detection_model_path.data(), session_options);
+    session_lm = std::make_unique<Ort::Session>(*enviro, landmark_model_path.data(), session_options);
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
-
-    detection_input_node_names = {"input"};
-    detection_output_node_names = {"output", "maxpool"};
-    landmarks_input_node_names = {"input"};
-    landmarks_output_node_names = {"output"};
 }
 
-Tracker::~Tracker()
-{
-    delete this->session_options;
-    delete this->enviro;
-    delete this->session;
-    delete this->session_lm;
-    delete this->solver;
-}
-
-void Tracker::predict(cv::Mat& image, FaceData& face_data, IFilter* filter)
+void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
 {
     cv::Mat img_copy = image.clone();
     img_copy.convertTo(img_copy, CV_32F);
@@ -95,7 +81,7 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
     improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
 
-    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
+    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
 
 
     auto output_tensors = session->Run(Ort::RunOptions{ nullptr },
@@ -107,7 +93,7 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 
     cv::Mat out(4, tensor_detection_output_dims, CV_32F, output_arr);
     cv::Mat maxpool(4, tensor_detection_output_dims, CV_32F, maxpool_arr);
-    
+
 
     cv::Mat first(56, 56, CV_32F, out.ptr<float>(0,0));
     cv::Mat second(56, 56, CV_32F, out.ptr<float>(0,1));
@@ -123,7 +109,7 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 
 
     face_data.face_detected = c > .6 ? true : false;
-    
+
     if (face_data.face_detected)
     {
         float face[] = { x - r, y - r, 2 * r, 2 * r };
@@ -144,7 +130,7 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
         face_data.face_coords[2] = face[2];
         face_data.face_coords[3] = face[3];
     }
-                     
+
 }
 
 
@@ -156,10 +142,10 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
     improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
 
-    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(*memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
+    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
 
 
-    auto output_tensors = session_lm->Run(Ort::RunOptions{ nullptr }, 
+    auto output_tensors = session_lm->Run(Ort::RunOptions{ nullptr },
         landmarks_input_node_names.data(), &input_tensor, 1, landmarks_output_node_names.data(), 1);
 
     float* output_arr = output_tensors[0].GetTensorMutableData<float>();
