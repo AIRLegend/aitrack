@@ -19,12 +19,13 @@ public:
 
 private:
 	ImageProcessor improc;
+	Ort::AllocatorWithDefaultOptions allocator = {};
+	const OrtMemoryInfo* memory_info;
 
 	std::string detection_model_path;
 	std::unique_ptr<Ort::Env> enviro;
 	std::unique_ptr<Ort::Session> session;
 	std::unique_ptr<Ort::Session> session_lm;
-	std::unique_ptr<Ort::AllocatorWithDefaultOptions> allocator;
 
 	std::vector<const char*> detection_input_node_names;
 	std::vector<const char*> detection_output_node_names;

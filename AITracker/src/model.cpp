@@ -9,29 +9,27 @@
 
 
 Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
-    improc()
+    improc(),
+    memory_info(allocator.GetInfo()),
+    enviro(std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "env")),
+    detection_input_node_names{ "input" },
+    detection_output_node_names{ "output", "maxpool" },
+    landmarks_input_node_names{ "input" },
+    landmarks_output_node_names{ "output" }
 {
     this->solver = std::move(solver);
-
 
     auto session_options = Ort::SessionOptions();
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
     session_options.SetInterOpNumThreads(1);
-    session_options.SetInterOpNumThreads(1);
-    allocator = std::make_unique<Ort::AllocatorWithDefaultOptions>();
+    session_options.SetIntraOpNumThreads(1);
 
-    enviro = std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "env");
     enviro->DisableTelemetryEvents();
 
     session = std::make_unique<Ort::Session>(*enviro, detection_model_path.data(), session_options);
     session_lm = std::make_unique<Ort::Session>(*enviro, landmark_model_path.data(), session_options);
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
-
-    detection_input_node_names = {"input"};
-    detection_output_node_names = {"output", "maxpool"};
-    landmarks_input_node_names = {"input"};
-    landmarks_output_node_names = {"output"};
 }
 
 void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
@@ -83,7 +81,7 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
     improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
 
-    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(allocator->GetInfo(), buffer_data, tensor_input_size, tensor_input_dims, 4);
+    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
 
 
     auto output_tensors = session->Run(Ort::RunOptions{ nullptr },
@@ -144,7 +142,7 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
     improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
 
-    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(allocator->GetInfo(), buffer_data, tensor_input_size, tensor_input_dims, 4);
+    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
 
 
     auto output_tensors = session_lm->Run(Ort::RunOptions{ nullptr },
