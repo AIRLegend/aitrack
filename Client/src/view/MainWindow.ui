@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>583</height>
+    <height>590</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -439,15 +439,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="trackerInfoLbl">
+       <widget class="QPushButton" name="btnConfig">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:7pt; color:#6b6b6b;&quot;&gt;X: Y: Z: Pitch: Yaw: Roll:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="textFormat">
-         <enum>Qt::RichText</enum>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>🔧 Configuration⚙️</string>
         </property>
        </widget>
       </item>
