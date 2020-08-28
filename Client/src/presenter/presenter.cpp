@@ -27,9 +27,13 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 
 
 	CameraFactory camfactory;
-	camera = camfactory.buildCamera(state.video_width, state.video_height, state.cam_exposure, state.cam_gain);
 
-	if (!camera->is_valid)
+	all_cameras = camfactory.getCameras();
+
+	///camera = camfactory.buildCamera(state.video_width, state.selected_camera, state.video_height, state.cam_exposure, state.cam_gain);
+
+	//if (!camera->is_valid)
+	if (all_cameras.size() == 0)
 	{
 		std::cout << "[ERROR] NO CAMERAS AVAILABLE" << std::endl;
 		this->view->set_enabled(false);
@@ -37,6 +41,11 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	}
 	else
 	{
+		// Choose the camera index we want
+		//camera = std::move(all_cameras[state.selected_camera]);
+		//Change the number of available cameras
+		state.num_cameras_detected = (int)all_cameras.size();
+
 		// Request sockets (UDP Sender) only if needed.
 		std::string ip_str = state.ip;
 		int port = state.port;
@@ -81,6 +90,7 @@ void Presenter::init_sender(std::string &ip, int port)
 void Presenter::init_tracker(int type)
 {
 	TRACKER_TYPE newtype = tracker_factory->get_type(type);
+
 	if (t != nullptr)
 	{
 		if (newtype != t->get_type())
@@ -88,21 +98,23 @@ void Presenter::init_tracker(int type)
 #ifdef _DEBUG
 			std::cout << "Resetting old tracker" << std::endl;
 #endif
-			this->t = tracker_factory->buildTracker(camera->width,
-				camera->height,
-				state.prior_distance,
-				tracker_factory->get_type(type));
+			this->t = tracker_factory->
+				buildTracker(all_cameras[state.selected_camera]->width,
+							 all_cameras[state.selected_camera]->height,
+							 (float)state.prior_distance,
+							 tracker_factory->get_type(type)
+				);
 		}
 		else
 		{
-			this->t->update_distance_param(this->state.prior_distance);
+			this->t->update_distance_param((float)(this->state.prior_distance));
 		}
 	}
 	else
 	{
-		this->t = tracker_factory->buildTracker(camera->width,
-			camera->height,
-			state.prior_distance,
+		this->t = tracker_factory->buildTracker(all_cameras[state.selected_camera]->width,
+			all_cameras[state.selected_camera]->height,
+			(float)state.prior_distance,
 			tracker_factory->get_type(type));
 	}
 	state.selected_model = type;
@@ -113,7 +125,9 @@ void Presenter::run_loop()
 {
 	FaceData d = FaceData();
 
-	int video_frame_buff_size = camera->width * camera->height * 3;
+	auto cam = all_cameras[state.selected_camera];
+
+	int video_frame_buff_size = cam->width * cam->height * 3;
 	auto video_tex_pixels = std::make_unique<uint8_t[]>(video_frame_buff_size);
 
 
@@ -122,13 +136,13 @@ void Presenter::run_loop()
 
 	double buffer_data[6];
 
-	camera->start_camera();
+	cam->start_camera();
 
 
 	while(run)
 	{
-		camera->get_frame(video_tex_pixels.get());
-		cv::Mat mat(camera->height, camera->width, CV_8UC3, video_tex_pixels.get());
+		cam->get_frame(video_tex_pixels.get());
+		cv::Mat mat(cam->height, cam->width, CV_8UC3, video_tex_pixels.get());
 
 		t->predict(mat, d, this->filter);
 
@@ -160,8 +174,7 @@ void Presenter::run_loop()
 		cv::waitKey(1000/state.video_fps);
 	}
 
-	camera->stop_camera();
-	video_tex_pixels;
+	cam->stop_camera();
 }
 
 
@@ -234,6 +247,8 @@ void Presenter::save_prefs(const ConfigData& data)
 	int port = data.port;
 	init_sender(ip_str, port);
 
+	this->state.selected_camera = data.selected_camera;
+
 	// Rebuild tracker if needed. This also will take care of updating the
 	// state/distance parameter
 	init_tracker(data.selected_model);
@@ -253,7 +268,8 @@ void Presenter::close_program()
 {
 	//Assure we stop tracking loop.
 	run = false;
-	// Assure the camera is released (some cameras have a "recording LED" which can be annoying to have on)
-	camera->stop_camera();
-	// The remaining resources will be released on destructor.
+	// Assure all cameras are released (some cameras have a "recording LED" which can be annoying to have on)
+
+	for(std::shared_ptr<Camera> cam : all_cameras)
+		cam->stop_camera();
 }

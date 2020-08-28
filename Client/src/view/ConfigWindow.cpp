@@ -5,7 +5,6 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 {
 	ui.setupUi(this);
 
-
 	this->parentView = prev_window;
 
 	// References to UI objects
@@ -19,7 +18,6 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	fps_selector = gp_box_camera_prefs->findChild<QSpinBox*>("fpsSelector");
 	gain_slider = gp_box_camera_prefs->findChild<QSlider*>("sliderGain");
 	exposure_slider = gp_box_camera_prefs->findChild<QSlider*>("sliderExposure");
-
 
 	connect(btn_apply, SIGNAL(released()), this, SLOT(onApplyClick()));
 }
@@ -52,8 +50,7 @@ ConfigData ConfigWindow::get_inputs()
 	conf.video_fps = fps_selector->value();
 	conf.video_width = width_selector->value();
 	conf.video_height = height_selector->value();
-	//TODO: Add cameras
-
+	conf.selected_camera = input_camera->currentIndex();
 	return conf;
 }
 
@@ -64,11 +61,10 @@ void ConfigWindow::update_view_state(ConfigData conf)
 	fps_selector->setValue(conf.video_fps);
 	width_selector->setValue(conf.video_width);
 	height_selector->setValue(conf.video_height);
-
-	//TODO: Add available cameras to input_camera
-	input_camera->addItem("0", QVariant('0'));
-	input_camera->addItem("1", QVariant('1'));
-
+	input_camera->clear();
+	for (int  i = 0; i < conf.num_cameras_detected; i++)
+		input_camera->addItem(QString("Camera %1").arg(i), i);
+	input_camera->setCurrentIndex(conf.selected_camera);
 }
 
 void ConfigWindow::set_enabled(bool enabled)

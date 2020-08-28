@@ -9,12 +9,13 @@ private:
 	cv::Size size;
 	float w_scale;
 	int cam_native_width;
+	int cam_index;
 	int CV_BACKEND;
 
 	bool is_camera_available();
 
 public:
-	OCVCamera(int width = 640, int height = 480, int fps = 30);
+	OCVCamera(int width = 640, int height = 480, int fps = 30, int index = 0);
 	~OCVCamera();
 	void start_camera();
 	void stop_camera();

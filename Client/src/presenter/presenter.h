@@ -20,7 +20,8 @@ private:
 	std::unique_ptr<UDPSender> udp_sender;
 	std::unique_ptr<TrackerFactory> tracker_factory;
 	std::unique_ptr<ITrackerWrapper> t;
-	std::unique_ptr<Camera> camera;
+	//std::unique_ptr<Camera> camera;
+	std::vector<std::shared_ptr<Camera>> all_cameras;
 
 	// Current program's state + config.
 	ConfigData state;
