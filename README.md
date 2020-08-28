@@ -41,7 +41,7 @@ Don't worry. AITrack supports low resolutions pretty well. Anything achieving at
 **IMPORTANT:**
 In case you want to know more, please, head to the `Doc/` directory to find guides about usage. If you can't find there what you're looking for, feel free to post your question on the [issues page](https://github.com/AIRLegend/aitracker/issues).
 
-**Thanks to Sims Smith**, who made a [video tutorial on how to setting up AITrack (v0.4)](https://img.youtube.com/vi/LPlahUVPx4o/hqdefault.jpg). You can check it out.
+**Thanks to Sims Smith**, who made a [video tutorial on how to setting up AITrack (v0.4)](https://youtu.be/LPlahUVPx4o) and **Stream Flight**, with a [tutorial for v0.5](https://www.youtube.com/watch?v=CMIwUg8NAlg). You can check them out.
 
 **ALSO IMPORTANT AND NOT COVERED IN THE VIDEO TUTORIAL**
 
