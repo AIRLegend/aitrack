@@ -38,7 +38,7 @@ private:
 	QPushButton *btn_apply;
 	QComboBox *input_camera;
 
-	QGroupBox *gp_box_camera_prefs;
+	QGroupBox *gp_box_camera_prefs, *gp_box_image_prefs;
 
 	QSpinBox *width_selector, *height_selector, *fps_selector;
 	QSlider *gain_slider, *exposure_slider;

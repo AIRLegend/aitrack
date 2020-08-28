@@ -9,6 +9,7 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 
 	// References to UI objects
 	gp_box_camera_prefs = findChild<QGroupBox*>("gbCamera");
+	gp_box_image_prefs = gp_box_camera_prefs->findChild<QGroupBox*>("gbImageParams");
 
 	btn_apply = findChild<QPushButton*>("applyBtn");
 
@@ -16,8 +17,8 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	width_selector = gp_box_camera_prefs->findChild<QSpinBox*>("imgWidthSelector");
 	height_selector = gp_box_camera_prefs->findChild<QSpinBox*>("imgHeightSelector"); 
 	fps_selector = gp_box_camera_prefs->findChild<QSpinBox*>("fpsSelector");
-	gain_slider = gp_box_camera_prefs->findChild<QSlider*>("sliderGain");
-	exposure_slider = gp_box_camera_prefs->findChild<QSlider*>("sliderExposure");
+	gain_slider = gp_box_image_prefs->findChild<QSlider*>("sliderGain");
+	exposure_slider = gp_box_image_prefs->findChild<QSlider*>("sliderExposure");
 
 	connect(btn_apply, SIGNAL(released()), this, SLOT(onApplyClick()));
 }
@@ -45,8 +46,8 @@ void ConfigWindow::set_tracking_mode(bool is_tracking)
 ConfigData ConfigWindow::get_inputs()
 {
 	ConfigData conf = ConfigData();
-	conf.cam_gain = gain_slider->value();
-	conf.cam_exposure = exposure_slider->value();
+	conf.cam_gain = gp_box_image_prefs->isChecked() ? gain_slider->value() : -1;
+	conf.cam_exposure = gp_box_image_prefs->isChecked() ? exposure_slider->value() : -1;
 	conf.video_fps = fps_selector->value();
 	conf.video_width = width_selector->value();
 	conf.video_height = height_selector->value();
@@ -57,8 +58,16 @@ ConfigData ConfigWindow::get_inputs()
 void ConfigWindow::update_view_state(ConfigData conf)
 {
 	std::cout << conf.cam_gain << std::endl;
-	gain_slider->setValue(conf.cam_gain);
-	exposure_slider->setValue(conf.cam_exposure);
+	if (conf.cam_gain > 0 && conf.cam_exposure > 0)
+	{
+		gain_slider->setValue(conf.cam_gain);
+		exposure_slider->setValue(conf.cam_exposure);
+		gp_box_image_prefs->setChecked(true);
+	}
+	else
+	{
+		gp_box_image_prefs->setChecked(false);
+	}
 	fps_selector->setValue(conf.video_fps);
 	width_selector->setValue(conf.video_width);
 	height_selector->setValue(conf.video_height);
