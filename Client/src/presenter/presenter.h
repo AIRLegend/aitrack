@@ -80,6 +80,18 @@ private:
 	*/
 	void update_stabilizer(const ConfigData &data);
 
+	/**
+	* Helper function. Returns a CameraSettings config given the current application
+	* state
+	* @returns camera config given the application state
+	*/
+	CameraSettings build_camera_params();
+
+	/**
+	* Updates the condifuration of the currently selected camera
+	*/
+	void update_camera_params();
+
 public:
 	std::unique_ptr<ConfigMgr> conf_mgr;
 

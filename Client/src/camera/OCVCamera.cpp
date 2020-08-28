@@ -68,7 +68,7 @@ void OCVCamera::get_frame(uint8_t* buffer)
 
 void OCVCamera::set_settings(CameraSettings& settings)
 {
-	//TODO
+	//this->width = settings
 }
 
 CameraSettings OCVCamera::get_settings()

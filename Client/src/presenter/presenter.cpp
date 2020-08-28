@@ -26,13 +26,13 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	update_stabilizer(state);
 
 
+	/*
+	;*/
+
 	CameraFactory camfactory;
+	CameraSettings camera_settings = build_camera_params();
+	all_cameras = camfactory.getCameras(camera_settings);
 
-	all_cameras = camfactory.getCameras();
-
-	///camera = camfactory.buildCamera(state.video_width, state.selected_camera, state.video_height, state.cam_exposure, state.cam_gain);
-
-	//if (!camera->is_valid)
 	if (all_cameras.size() == 0)
 	{
 		std::cout << "[ERROR] NO CAMERAS AVAILABLE" << std::endl;
@@ -41,8 +41,6 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	}
 	else
 	{
-		// Choose the camera index we want
-		//camera = std::move(all_cameras[state.selected_camera]);
 		//Change the number of available cameras
 		state.num_cameras_detected = (int)all_cameras.size();
 
@@ -98,6 +96,7 @@ void Presenter::init_tracker(int type)
 #ifdef _DEBUG
 			std::cout << "Resetting old tracker" << std::endl;
 #endif
+			this->t.release();
 			this->t = tracker_factory->
 				buildTracker(all_cameras[state.selected_camera]->width,
 							 all_cameras[state.selected_camera]->height,
@@ -203,6 +202,22 @@ void Presenter::update_stabilizer(const ConfigData& data)
 	}
 }
 
+CameraSettings Presenter::build_camera_params()
+{
+	CameraSettings camera_settings;
+	camera_settings.exposure = state.cam_exposure;
+	camera_settings.gain = state.cam_gain;
+	camera_settings.fps = state.video_fps;
+	camera_settings.width = state.video_width;
+	camera_settings.height = state.video_height;
+	return camera_settings;
+}
+
+void Presenter::update_camera_params()
+{
+	all_cameras[state.selected_camera]->set_settings(build_camera_params());
+}
+
 
 void Presenter::send_data(double* buffer_data)
 {
@@ -247,7 +262,14 @@ void Presenter::save_prefs(const ConfigData& data)
 	int port = data.port;
 	init_sender(ip_str, port);
 
-	this->state.selected_camera = data.selected_camera;
+	state.selected_camera = data.selected_camera;
+	state.cam_exposure = data.cam_exposure;
+	state.cam_gain = data.cam_gain;
+	state.video_fps = data.video_fps;
+	state.video_height = data.video_height;
+	state.video_width = data.video_width;
+	update_camera_params();
+
 
 	// Rebuild tracker if needed. This also will take care of updating the
 	// state/distance parameter
@@ -269,7 +291,6 @@ void Presenter::close_program()
 	//Assure we stop tracking loop.
 	run = false;
 	// Assure all cameras are released (some cameras have a "recording LED" which can be annoying to have on)
-
 	for(std::shared_ptr<Camera> cam : all_cameras)
 		cam->stop_camera();
 }

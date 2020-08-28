@@ -210,7 +210,6 @@ void WindowMain::onSaveClick()
 void WindowMain::onConfigClick()
 {
 	this->conf_win->show();
-	std::cout << "Config" << std::endl;
 }
 
 void WindowMain::readjust_size()

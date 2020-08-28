@@ -56,6 +56,7 @@ ConfigData ConfigWindow::get_inputs()
 
 void ConfigWindow::update_view_state(ConfigData conf)
 {
+	std::cout << conf.cam_gain << std::endl;
 	gain_slider->setValue(conf.cam_gain);
 	exposure_slider->setValue(conf.cam_exposure);
 	fps_selector->setValue(conf.video_fps);

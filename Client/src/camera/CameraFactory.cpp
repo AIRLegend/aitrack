@@ -12,7 +12,7 @@ std::unique_ptr<Camera> CameraFactory::buildCamera(int width, int height, int ca
 
 	try
 	{
-		camera = std::make_unique<Ps3Camera>(640, 480, 30);
+		camera = std::make_unique<Ps3Camera>(640, 480, 60);
 	} catch (std::exception)
 	{
 		has_ps3 = false;
@@ -34,26 +34,27 @@ std::unique_ptr<Camera> CameraFactory::buildCamera(int width, int height, int ca
 		camera = std::make_unique<NullCamera>();
 	}
 
-	CameraSettings cam_settings;
-	cam_settings.exposure = exposure;
-	cam_settings.gain = gain;
-	camera->set_settings(cam_settings);
-
 	return camera;
 }
 
 
-std::vector<std::shared_ptr<Camera>> CameraFactory::getCameras()
+std::vector<std::shared_ptr<Camera>> CameraFactory::getCameras(CameraSettings& settings)
 {
 	std::vector<std::shared_ptr<Camera>> cams;
 
-	cams.clear();
+	// Search first for any PS3 camera.
+	try
+	{
+		cams.push_back(std::make_shared<Ps3Camera>(640, 480, 60));
+		cams[0]->set_settings(settings);
+	}
+	catch (std::exception){}
 
-	for (int i = 0; i < 10; i++)
+
+	for (int i = 0; i < 5; i++)
 	{
 		try
 		{
-			//c = &OCVCamera(640, 480, 30, i);
 			std::shared_ptr<Camera> c = std::make_shared<OCVCamera>(640, 480, 30, i);
 			cams.push_back(std::move(c));
 			std::cout << "Found ID: " << i << std::endl;
