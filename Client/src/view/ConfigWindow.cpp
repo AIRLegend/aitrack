@@ -119,8 +119,7 @@ void ConfigWindow::update_view_state(ConfigData conf)
 
 void ConfigWindow::set_enabled(bool enabled)
 {
-	gp_box_camera_prefs->setEnabled(enabled);
-	btn_apply->setEnabled(enabled);
+	this->setEnabled(enabled);
 }
 
 void ConfigWindow::show_message(const char* msg, MSG_SEVERITY severity){}
