@@ -96,6 +96,7 @@ void Presenter::init_tracker(int type)
 #ifdef _DEBUG
 			std::cout << "Resetting old tracker" << std::endl;
 #endif
+			this->t.reset();
 			this->t.release();
 			this->t = tracker_factory->
 				buildTracker(all_cameras[state.selected_camera]->width,

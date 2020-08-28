@@ -8,6 +8,7 @@ private:
 	cv::VideoCapture cap;
 	cv::Size size;
 	float w_scale;
+	float exposure, gain;
 	int cam_native_width;
 	int cam_index;
 	int CV_BACKEND;

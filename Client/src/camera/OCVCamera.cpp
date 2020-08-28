@@ -18,6 +18,7 @@ OCVCamera::OCVCamera(int width, int height, int fps, int index) :
 	is_valid = true;
 
 	w_scale = (float)width/(float)cam_native_width;
+	exposure, gain = -1;
 }
 
 OCVCamera::~OCVCamera()
@@ -68,7 +69,16 @@ void OCVCamera::get_frame(uint8_t* buffer)
 
 void OCVCamera::set_settings(CameraSettings& settings)
 {
-	//this->width = settings
+	this->width = settings.width;
+	this->fps = settings.fps;
+	this->height = settings.height;
+	w_scale = (float)width / (float)cam_native_width;
+
+	// Opencv needs [0,1] ranges
+	exposure = settings.exposure < 0 ? -1.0F : (float)settings.exposure/255;
+	gain = settings.gain < 0 ? -1.0F : (float)settings.gain / 64;
+	cap.set(cv::CAP_PROP_EXPOSURE, exposure);
+	cap.set(cv::CAP_PROP_GAIN, gain);
 }
 
 CameraSettings OCVCamera::get_settings()
