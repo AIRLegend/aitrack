@@ -11,8 +11,8 @@ WindowMain::WindowMain(QWidget *parent)
 	ui.setupUi(this);
 	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
-	this->conf_win = new ConfigWindow();
-	this->conf_win->show();
+	this->conf_win = new ConfigWindow(this);
+	this->conf_win->hide();
 
 	this->presenter = NULL;
 
@@ -33,7 +33,7 @@ WindowMain::WindowMain(QWidget *parent)
 	
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
 	connect(btn_save, SIGNAL(released()), this, SLOT(onSaveClick()));
-	connect(btn_config, SIGNAL(released()), this, SLOT(onSaveClick()));
+	connect(btn_config, SIGNAL(released()), this, SLOT(onConfigClick()));
 	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
 
 	statusBar()->setSizeGripEnabled(false);
@@ -105,6 +105,8 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 		tracking_frame->setPixmap(QPixmap());
 		tracking_frame->setText("No video input");
 	}
+
+	conf_win->set_tracking_mode(is_tracking);
 }
 
 
@@ -153,6 +155,8 @@ void WindowMain::set_inputs(const ConfigData data)
 		cb_modelType->addItem(QString(s.data()));
 	cb_modelType->setCurrentIndex(data.selected_model);
 	check_stabilization_landmarks->setChecked(data.use_landmark_stab);
+
+	this->conf_win->update_view_state(data);
 }
 
 void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
@@ -174,6 +178,8 @@ void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
 void WindowMain::set_enabled(bool enabled)
 {
 	btn_track->setEnabled(enabled);
+
+	conf_win->set_enabled(enabled);
 }
 
 void WindowMain::onTrackClick()
@@ -183,17 +189,38 @@ void WindowMain::onTrackClick()
 
 void WindowMain::onSaveClick()
 {
+	// Obtain inputs of children windows
+	ConfigData conf_child = conf_win->get_inputs();
+
+	// Merge with config from this window
 	ConfigData config = get_inputs();
-	presenter->save_prefs(config);
+
+	conf_child.ip = config.ip;
+	conf_child.port = config.port;
+	conf_child.prior_distance = config.prior_distance;
+	conf_child.show_video_feed = config.show_video_feed;
+	conf_child.selected_model = config.selected_model;
+	conf_child.use_landmark_stab = config.use_landmark_stab;
+	
+	presenter->save_prefs(conf_child);
+
+	std::cout << "Saved changes" << std::endl;
 }
 
 void WindowMain::onConfigClick()
 {
-
+	this->conf_win->show();
+	std::cout << "Config" << std::endl;
 }
 
 void WindowMain::readjust_size()
 {
 	findChild<QWidget*>("centralwidget")->adjustSize();
 	adjustSize();
+}
+
+
+void WindowMain::notify(IView* self)
+{
+	this->onSaveClick();
 }

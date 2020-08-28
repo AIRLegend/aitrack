@@ -194,10 +194,6 @@
     <QtMoc Include="src\view\WindowMain.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="src\view\ConfigWindow.ui" />
-    <QtUic Include="src\view\MainWindow.ui" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\camera\CameraSettings.h" />
     <ClInclude Include="src\camera\Camera.h" />
     <ClInclude Include="src\camera\NullCamera.h" />
@@ -231,6 +227,10 @@
   <ItemGroup>
     <Image Include="res\logo.png" />
     <Image Include="res\logo_256px.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="src\view\ConfigWindow.ui" />
+    <QtUic Include="src\view\MainWindow.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(SolutionDir)\QtMsBuild\qt.targets')">

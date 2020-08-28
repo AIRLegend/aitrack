@@ -57,8 +57,13 @@ public:
 };
 
 
-class IObserver
+
+/**
+* Must be implemented by the Main View (or any root view) so its children can comunicate back on input fields
+* changed.
+*/
+class IRootView
 {
 public:
-	virtual void notify() = 0;
+	virtual void notify(IView *self) = 0;   
 };

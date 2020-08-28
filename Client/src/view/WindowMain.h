@@ -16,7 +16,7 @@
 
 class Presenter;
 
-class WindowMain : public QMainWindow, IView, IObserver
+class WindowMain : public QMainWindow, IView, IRootView
 {
 	Q_OBJECT
 
@@ -36,6 +36,9 @@ public:
 	void set_tracking_mode(bool is_tracking);
 	void set_enabled(bool enabled);
 	void show_message(const char* msg, MSG_SEVERITY severity);
+
+	//IRootView
+	void notify(IView *self);
 
 
 private:
