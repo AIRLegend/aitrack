@@ -25,10 +25,6 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	// Setup a filter to stabilize the recognized facial landmarks if needed.
 	update_stabilizer(state);
 
-
-	/*
-	;*/
-
 	CameraFactory camfactory;
 	CameraSettings camera_settings = build_camera_params();
 	all_cameras = camfactory.getCameras(camera_settings);
