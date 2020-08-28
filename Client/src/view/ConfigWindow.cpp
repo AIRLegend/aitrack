@@ -9,6 +9,8 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 
 	// References to UI objects
 	gp_box_camera_prefs = findChild<QGroupBox*>("gbCamera");
+	gp_box_address = findChild<QGroupBox*>("sendGroupbox");
+	gp_box_priors = findChild<QGroupBox*>("paramsGroupBox");
 	gp_box_image_prefs = gp_box_camera_prefs->findChild<QGroupBox*>("gbImageParams");
 
 	btn_apply = findChild<QPushButton*>("applyBtn");
@@ -19,6 +21,17 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	fps_selector = gp_box_camera_prefs->findChild<QSpinBox*>("fpsSelector");
 	gain_slider = gp_box_image_prefs->findChild<QSlider*>("sliderGain");
 	exposure_slider = gp_box_image_prefs->findChild<QSlider*>("sliderExposure");
+
+
+	ip_field = gp_box_address->findChild<QLineEdit*>("ipField");
+	port_field = gp_box_address->findChild<QLineEdit*>("portField");
+
+
+	check_stabilization_landmarks = gp_box_priors->findChild<QCheckBox*>("landmarkStabChck");
+	cb_modelType = gp_box_priors->findChild<QComboBox*>("modeltypeSelect");
+	distance_param = gp_box_priors->findChild<QLineEdit*>("distanceField");
+
+
 
 	connect(btn_apply, SIGNAL(released()), this, SLOT(onApplyClick()));
 }
@@ -52,6 +65,12 @@ ConfigData ConfigWindow::get_inputs()
 	conf.video_width = width_selector->value();
 	conf.video_height = height_selector->value();
 	conf.selected_camera = input_camera->currentIndex();
+	conf.prior_distance = distance_param->text().toDouble();
+	conf.ip = ip_field->text().toStdString();
+	conf.port = port_field->text().toInt();
+	conf.use_landmark_stab = check_stabilization_landmarks->isChecked();
+	conf.selected_model = cb_modelType->currentIndex();
+
 	return conf;
 }
 
@@ -75,6 +94,27 @@ void ConfigWindow::update_view_state(ConfigData conf)
 	for (int  i = 0; i < conf.num_cameras_detected; i++)
 		input_camera->addItem(QString("Camera %1").arg(i), i);
 	input_camera->setCurrentIndex(conf.selected_camera);
+
+	cb_modelType->clear();
+	for (std::string s : conf.model_names)
+		cb_modelType->addItem(QString(s.data()));
+
+	check_stabilization_landmarks->setChecked(conf.use_landmark_stab);
+	distance_param->setText(QString::number(conf.prior_distance));
+
+	if (conf.ip != "" || conf.port > 0)
+	{
+		gp_box_address->setChecked(true);
+		ip_field->setText(QString::fromStdString(conf.ip));
+		port_field->setText(QString("%1").arg(conf.port));
+	}
+	else
+	{
+		gp_box_address->setChecked(false);
+		ip_field->setText("");
+		port_field->setText("");
+	}
+		
 }
 
 void ConfigWindow::set_enabled(bool enabled)

@@ -1,14 +1,12 @@
 #pragma once
 
-#include "ui_ConfigWindow.h"
-
 #include <QWidget>
 #include <QSpinBox>
-/*#include <QtWidgets\qpushbutton.h>
-#include <QtWidgets\qcombobox.h>
-#include <QtWidgets\qgroupbox.h>*/
+#include <QMessageBox>
+#include <QLineEdit>
+#include <QCheckBox>
 
-
+#include "ui_ConfigWindow.h"
 #include "i_view.h"
 
 
@@ -36,12 +34,17 @@ private:
 	IRootView *parentView;
 
 	QPushButton *btn_apply;
-	QComboBox *input_camera;
+	QComboBox *input_camera, *cb_modelType;
 
-	QGroupBox *gp_box_camera_prefs, *gp_box_image_prefs;
+	QCheckBox* check_stabilization_landmarks;
+	QLineEdit* distance_param, * ip_field, * port_field;
+
+	QGroupBox *gp_box_camera_prefs, *gp_box_image_prefs, *gp_box_address, *gp_box_priors;;
 
 	QSpinBox *width_selector, *height_selector, *fps_selector;
 	QSlider *gain_slider, *exposure_slider;
+
+	
 
 private slots:
 	void onApplyClick();

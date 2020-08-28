@@ -45,9 +45,9 @@ private:
 	Ui::MainWindow ui;
 	QPushButton *btn_track, *btn_save, *btn_config;
 	QLabel *tracking_frame, *tracking_info;
-	QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
+	//QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
 	QCheckBox *check_video_preview, *check_stabilization_landmarks;
-	QComboBox* cb_modelType;
+	//QComboBox* cb_modelType;
 
 	ConfigWindow *conf_win;
 	/**

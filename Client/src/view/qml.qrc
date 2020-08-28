@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="/">
-        <file>MainWindow.ui</file>
-        <file>ConfigWindow.ui</file>
-    </qresource>
+  <qresource prefix="newPrefix">
+    <file>logo_256px.ico</file>
+  </qresource>
 </RCC>

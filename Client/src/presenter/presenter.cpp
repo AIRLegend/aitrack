@@ -65,6 +65,9 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 
 void Presenter::init_sender(std::string &ip, int port)
 {
+	state.ip = ip;
+	state.port = port;
+
 	// Updata only if needed.
 	if (this->udp_sender)
 	{
@@ -80,8 +83,6 @@ void Presenter::init_sender(std::string &ip, int port)
 	if (port_dest == 0)
 		port_dest = 4242;
 
-	state.ip = ip;
-	state.port = port;
 	this->udp_sender = std::make_unique<UDPSender>(ip_str.data(), port_dest);
 }
 
@@ -236,10 +237,7 @@ void Presenter::send_data(double* buffer_data)
 void Presenter::toggle_tracking()
 {
 	run = !run;
-
-	//ConfigData curr_config = this->conf_mgr->getConfig();
 	view->set_tracking_mode(run);
-
 	if (run)
 		run_loop();
 }
@@ -257,8 +255,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	// program state.
 	update_stabilizer(data);
 
-	// Reset UDPSender
-	// this will update the state also
+	// Reset UDPSender this will also update the state member.
 	std::string ip_str = data.ip;
 	int port = data.port;
 	init_sender(ip_str, port);

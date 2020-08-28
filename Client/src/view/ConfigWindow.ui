@@ -9,12 +9,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>221</width>
-    <height>373</height>
+    <width>419</width>
+    <height>368</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>419</width>
+    <height>368</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>ConfigWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../res/Resource.qrc">
+    <normaloff>:/logo_256px.ico</normaloff>
+    <normalon>:/logo_256px.ico</normalon>
+    <disabledoff>:/logo_256px.ico</disabledoff>
+    <disabledon>:/logo_256px.ico</disabledon>
+    <activeoff>:/logo_256px.ico</activeoff>
+    <selectedoff>:/newPrefix/logo_256px.ico</selectedoff>
+    <selectedon>:/newPrefix/logo_256px.ico</selectedon>:/logo_256px.ico</iconset>
   </property>
   <widget class="QGroupBox" name="gbCamera">
    <property name="geometry">
@@ -212,8 +228,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>330</y>
-     <width>171</width>
+     <y>320</y>
+     <width>381</width>
      <height>31</height>
     </rect>
    </property>
@@ -221,8 +237,183 @@
     <string>Apply</string>
    </property>
   </widget>
+  <widget class="QGroupBox" name="sendGroupbox">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>30</y>
+     <width>191</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Use remote OpenTrack client</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <widget class="QLineEdit" name="ipField">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>30</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address where Opentrack is running. Leave empty for using local PC IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="whatsThis">
+     <string>asadf</string>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>192.168.1.10</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IP</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Port</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="portField">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>60</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>4242</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="paramsGroupBox">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>130</y>
+     <width>191</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Parameters</string>
+   </property>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>26</y>
+      <width>61</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Distance (m)</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="distanceField">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>27</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>62</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Model type</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="modeltypeSelect">
+    <property name="geometry">
+     <rect>
+      <x>27</x>
+      <y>85</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="landmarkStabChck">
+    <property name="geometry">
+     <rect>
+      <x>13</x>
+      <y>118</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Experimental&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Apply a filter to reduce noise on the recognized facial landmarks. Can reduce noise and thus, make you able to reduce the amount of Acella fitlering in Opentrack, gaining responsiveness.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="toolTipDuration">
+     <number>-1</number>
+    </property>
+    <property name="text">
+     <string>Landmark stabilization</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../res/Resource.qrc"/>
+ </resources>
  <connections/>
 </ui>
