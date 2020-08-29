@@ -184,6 +184,7 @@
         </property>
         <property name="font">
          <font>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -244,8 +245,13 @@
           <height>30</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
-         <string>🔧 Configuration⚙️</string>
+         <string>Configuration ⚙️</string>
         </property>
        </widget>
       </item>

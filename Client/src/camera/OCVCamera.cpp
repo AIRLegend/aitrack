@@ -34,6 +34,11 @@ bool OCVCamera::is_camera_available()
 	available = cap.isOpened();
 	if (available)
 	{
+		cv::Mat frame;
+		cap.read(frame);
+		if (frame.empty())
+			return false;
+
 		cam_native_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
 		cap.release();
 	}

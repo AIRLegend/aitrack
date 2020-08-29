@@ -4,7 +4,6 @@
 #include "presenter.h"
 #include "opencv.hpp"
 
-#include "../model/IPResolver.h"
 #include "../camera/CameraFactory.h"
 
 
@@ -74,7 +73,7 @@ void Presenter::init_sender(std::string &ip, int port)
 	std::string ip_str = ip;
 	int port_dest = port;
 	if (QString(ip_str.data()).simplified().replace(" ", "").size() < 2)
-		ip_str = network::get_local_ip();
+		ip_str = "127.0.0.1";
 
 	if (port_dest == 0)
 		port_dest = 4242;

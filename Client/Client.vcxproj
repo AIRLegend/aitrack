@@ -178,7 +178,6 @@
     <ClCompile Include="src\camera\OCVCamera.cpp" />
     <ClCompile Include="src\camera\CameraFactory.cpp" />
     <ClCompile Include="src\model\Config.cpp" />
-    <ClCompile Include="src\model\IPResolver.cpp" />
     <ClCompile Include="src\camera\Ps3Camera.cpp" />
     <ClCompile Include="src\presenter\presenter.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -188,7 +187,7 @@
     <ClCompile Include="src\tracker\TrackerFactory.cpp" />
     <ClCompile Include="src\tracker\TrackerWrapper.cpp" />
     <QtRcc Include="res\Resource.qrc" />
-    <QtRcc Include="src\view\qml.qrc" />
+    <CustomBuild Include="src\view\Resource.qrc" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\view\WindowMain.h" />
@@ -202,7 +201,6 @@
     <ClInclude Include="Include\ps3eye.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\model\Config.h" />
-    <ClInclude Include="src\model\IPResolver.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
     <ClInclude Include="src\presenter\i_presenter.h" />
     <ClInclude Include="src\presenter\presenter.h" />

@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\model\IPResolver.cpp" />
     <ClCompile Include="src\camera\Ps3Camera.cpp" />
     <ClCompile Include="src\presenter\presenter.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -34,7 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\ps3eye.h" />
-    <ClInclude Include="src\model\IPResolver.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
     <ClInclude Include="src\presenter\i_presenter.h" />
     <ClInclude Include="src\presenter\presenter.h" />
@@ -78,7 +76,6 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="src\view\qml.qrc" />
     <QtRcc Include="res\Resource.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
@@ -119,5 +116,10 @@
     <QtUic Include="src\view\ConfigWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\view\Resource.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
