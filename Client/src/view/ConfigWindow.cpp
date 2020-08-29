@@ -98,6 +98,7 @@ void ConfigWindow::update_view_state(ConfigData conf)
 	cb_modelType->clear();
 	for (std::string s : conf.model_names)
 		cb_modelType->addItem(QString(s.data()));
+	cb_modelType->setCurrentIndex(conf.selected_model);
 
 	check_stabilization_landmarks->setChecked(conf.use_landmark_stab);
 	distance_param->setText(QString::number(conf.prior_distance));
