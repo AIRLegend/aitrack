@@ -1,18 +1,17 @@
 #include "TrackerWrapper.h"
 
 
-TrackerWrapper::TrackerWrapper(Tracker* model, TRACKER_TYPE type)
+TrackerWrapper::TrackerWrapper(std::unique_ptr<Tracker>&& model, TRACKER_TYPE type)
 {
-    this->model = model;
+    this->model = std::move(model);
     this->type = type;
 }
 
 TrackerWrapper::~TrackerWrapper()
 {
-    delete this->model;
 }
 
-void TrackerWrapper::predict(cv::Mat& image, FaceData& face_data, IFilter* filter)
+void TrackerWrapper::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
 {
     model->predict(image, face_data, filter);
 }

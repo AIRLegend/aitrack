@@ -11,10 +11,12 @@
 
 #include "ui_MainWindow.h"
 
+#include "ConfigWindow.h"
+
 
 class Presenter;
 
-class WindowMain : public QMainWindow, IView
+class WindowMain : public QMainWindow, IView, IRootView
 {
 	Q_OBJECT
 
@@ -35,15 +37,19 @@ public:
 	void set_enabled(bool enabled);
 	void show_message(const char* msg, MSG_SEVERITY severity);
 
+	//IRootView
+	void notify(IView *self);
+
 
 private:
 	Ui::MainWindow ui;
-	QPushButton *btn_track, *btn_save;
+	QPushButton *btn_track, *btn_save, *btn_config;
 	QLabel *tracking_frame, *tracking_info;
-	QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
+	//QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
 	QCheckBox *check_video_preview, *check_stabilization_landmarks;
-	QComboBox* cb_modelType;
+	//QComboBox* cb_modelType;
 
+	ConfigWindow *conf_win;
 	/**
 	* Compacting the window to the content.
 	*/
@@ -58,4 +64,5 @@ private:
 private slots:
 	void onTrackClick();
 	void onSaveClick();
+	void onConfigClick();
 };

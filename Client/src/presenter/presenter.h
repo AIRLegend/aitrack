@@ -17,16 +17,17 @@ class Presenter : IPresenter
 {
 private:
 	FaceData face_data;
-	UDPSender *udp_sender = NULL;
-	TrackerFactory *tracker_factory = NULL;
-	ITrackerWrapper *t = NULL;
-	Camera *camera = NULL;
+	std::unique_ptr<UDPSender> udp_sender;
+	std::unique_ptr<TrackerFactory> tracker_factory;
+	std::unique_ptr<ITrackerWrapper> t;
+	//std::unique_ptr<Camera> camera;
+	std::vector<std::shared_ptr<Camera>> all_cameras;
 
 	// Current program's state + config.
 	ConfigData state;
-	
+
 	// Filter which will be aplied to the tracking.
-	IFilter *filter;
+	std::unique_ptr<IFilter> filter;
 
 	IView* view;
 
@@ -34,7 +35,7 @@ private:
 	bool run = false;
 	// Whether the main recognition loop has to paint the recognized landmarks
 	bool paint = true;
-	
+
 	/**
 	* Gets the current configuration state and sets the GUI to match it.
 	*/
@@ -49,12 +50,12 @@ private:
 
 	/**
 	* Uses the tracker factory to build a new tracker. If the requested one is of the
-	* same type as the old one, the call will be ignored. 
+	* same type as the old one, the call will be ignored.
 	* This method updates the application state.
 	* @param type Type ID of the desired model (Fast, medium, heavy)
 	*/
 	void init_tracker(int type);
-	
+
 	/**
 	* Uses the internal UDP sender to send the facedata to opentrack.
 	*/
@@ -78,12 +79,23 @@ private:
 	* Updates the stabilizer applied to the recognized facial landmarks.
 	*/
 	void update_stabilizer(const ConfigData &data);
-	
-public:
-	ConfigMgr* conf_mgr;
 
-	Presenter(IView& view, TrackerFactory* t_factory, ConfigMgr* conf_mgr);
-	~Presenter();
+	/**
+	* Helper function. Returns a CameraSettings config given the current application
+	* state
+	* @returns camera config given the application state
+	*/
+	CameraSettings build_camera_params();
+
+	/**
+	* Updates the condifuration of the currently selected camera
+	*/
+	void update_camera_params();
+
+public:
+	std::unique_ptr<ConfigMgr> conf_mgr;
+
+	Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr);
 
 	//IPresenter
 	void toggle_tracking();

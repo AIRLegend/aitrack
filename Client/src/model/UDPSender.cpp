@@ -1,12 +1,6 @@
-#include "UDPSender.h"
-
-
-
 #include <iostream>
-//#pragma comment (lib, "Ws2_32.lib")
-//#pragma comment (lib, "Mswsock.lib")
-//#pragma comment (lib, "AdvApi32.lib")
 
+#include "UDPSender.h"
 
 UDPSender::UDPSender(const char* dest_ip, int dest_port)
 {

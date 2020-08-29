@@ -53,6 +53,8 @@ void Ps3Camera::set_settings(CameraSettings& settings)
 		setting.gain = min(settings.gain, 60);
 		ctx.eye->setGain(setting.gain);
 	}
+	this->fps = settings.fps;
+	this->ctx.eye->setFrameRate((uint8_t)fps);
 }
 
 CameraSettings Ps3Camera::get_settings()

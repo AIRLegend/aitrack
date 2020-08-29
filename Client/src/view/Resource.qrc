@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>MainWindow.ui</file>
+        <file>logo_256px.ico</file>
     </qresource>
 </RCC>

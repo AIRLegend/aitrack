@@ -1,5 +1,7 @@
 #include "filters.h"
 
+#include <cstring>
+
 MAFilter::MAFilter(int steps, int array_size)
 {
 	this->n_steps = steps;
@@ -41,6 +43,8 @@ EAFilter::EAFilter(int array_size)
 {
 	this->array_size = array_size;
 	this->last_value = new float[array_size];
+	//If the last value is not 0, the first readings could bounce
+	std::memset(last_value, 0, array_size * sizeof(float));  
 }
 
 EAFilter::~EAFilter()

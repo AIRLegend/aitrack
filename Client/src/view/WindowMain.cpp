@@ -4,31 +4,28 @@
 #include <iostream>
 #include <QMessageBox>
 
+
 WindowMain::WindowMain(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
+	this->conf_win = new ConfigWindow(this);
+	this->conf_win->hide();
+
 	this->presenter = NULL;
+
 	btn_track = findChild<QPushButton*>("trackBtn");
 	tracking_frame = findChild<QLabel*>("cameraView");
 
-	tracking_info = findChild<QLabel*>("trackerInfoLbl");
-	tracking_info->setHidden(true);
 
-	gp_box_prefs = findChild<QGroupBox*>("prefsGroupbox");
-	gp_box_address = gp_box_prefs->findChild<QGroupBox*>("sendGroupbox");
-	gp_box_priors = gp_box_prefs->findChild<QGroupBox*>("paramsGroupBox");
-
-	btn_save = gp_box_prefs->findChild<QPushButton*>("saveBtn");
-	cb_modelType = gp_box_priors->findChild<QComboBox*>("modeltypeSelect");
+	btn_config = findChild<QPushButton*>("btnConfig");
 
 	check_video_preview = findChild<QCheckBox*>("chkVideoPreview");
-	check_stabilization_landmarks = findChild<QCheckBox*>("landmarkStabChck");
 	
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
-	connect(btn_save, SIGNAL(released()), this, SLOT(onSaveClick()));
+	connect(btn_config, SIGNAL(released()), this, SLOT(onConfigClick()));
 	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
 
 	statusBar()->setSizeGripEnabled(false);
@@ -41,7 +38,6 @@ void WindowMain::closeEvent(QCloseEvent* event)
 {
 	this->presenter->close_program();
 }
-
 
 
 void WindowMain::paint_video_frame(cv::Mat& img)
@@ -76,30 +72,18 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 	{
 		// Change button name to "stop"
 		btn_track->setText("Stop tracking");
-		
-		// Disable groupbox fields
-		gp_box_address->setEnabled(false);
-		gp_box_priors->setEnabled(false);
-
-		//Disable save button
-		btn_save->setEnabled(false);
 	}
 	else
 	{
 		// Change button name to "start"
 		btn_track->setText("Start tracking");
 
-		btn_save->setEnabled(true);
-
-		// Enable groupbox Fields
-		gp_box_address->setEnabled(true);
-		gp_box_priors->setEnabled(true);
-		//check_video_preview->setCheckable(false);
-
 		// Remove background from label
 		tracking_frame->setPixmap(QPixmap());
 		tracking_frame->setText("No video input");
 	}
+
+	conf_win->set_tracking_mode(is_tracking);
 }
 
 
@@ -108,7 +92,7 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 void WindowMain::update_view_state(ConfigData conf)
 {
 	set_inputs(conf);
-	show_tracking_data(conf);
+	//show_tracking_data(conf);
 
 	if (!conf.show_video_feed)
 	{
@@ -123,31 +107,16 @@ void WindowMain::update_view_state(ConfigData conf)
 
 ConfigData WindowMain::get_inputs()
 {
-	ConfigData inputs = ConfigData();
-	inputs.ip = gp_box_address->findChild<QLineEdit*>("ipField")->text().toStdString();
-	inputs.port= gp_box_address->findChild<QLineEdit*>("portField")->text().toInt();
-	inputs.prior_distance = gp_box_priors->findChild<QLineEdit*>("distanceField")->text().toDouble();
+	// Obtain inputs of children windows
+	ConfigData inputs = conf_win->get_inputs();
 	inputs.show_video_feed = check_video_preview->isChecked();
-	inputs.selected_model = cb_modelType->currentIndex();
-	inputs.use_landmark_stab = check_stabilization_landmarks->isChecked();
 	return inputs;
 }
 
 void WindowMain::set_inputs(const ConfigData data)
 {
-	if(data.ip != "" || data.port > 0)
-		gp_box_address->setChecked(true);
-
-	gp_box_address->findChild<QLineEdit*>("ipField")->setText(data.ip.data());
-	gp_box_address->findChild<QLineEdit*>("portField")->setText(data.port==0 ? "" : QString::number(data.port));
-	gp_box_priors->findChild<QLineEdit*>("distanceField")->setText(QString::number(data.prior_distance));
 	check_video_preview->setChecked(data.show_video_feed);
-
-	cb_modelType->clear();
-	for (std::string s:data.model_names)
-		cb_modelType->addItem(QString(s.data()));
-	cb_modelType->setCurrentIndex(data.selected_model);
-	check_stabilization_landmarks->setChecked(data.use_landmark_stab);
+	this->conf_win->update_view_state(data);
 }
 
 void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
@@ -169,6 +138,8 @@ void WindowMain::show_message(const char* msg, MSG_SEVERITY severity)
 void WindowMain::set_enabled(bool enabled)
 {
 	btn_track->setEnabled(enabled);
+
+	conf_win->set_enabled(enabled);
 }
 
 void WindowMain::onTrackClick()
@@ -178,12 +149,27 @@ void WindowMain::onTrackClick()
 
 void WindowMain::onSaveClick()
 {
+	// Merge with config from this window
 	ConfigData config = get_inputs();
+	
 	presenter->save_prefs(config);
+
+	std::cout << "Saved changes" << std::endl;
+}
+
+void WindowMain::onConfigClick()
+{
+	this->conf_win->show();
 }
 
 void WindowMain::readjust_size()
 {
 	findChild<QWidget*>("centralwidget")->adjustSize();
 	adjustSize();
+}
+
+
+void WindowMain::notify(IView* self)
+{
+	this->onSaveClick();
 }

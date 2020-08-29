@@ -39,11 +39,11 @@ Don't worry. AITrack supports low resolutions pretty well. Anything achieving at
 ---
 
 **IMPORTANT:**
-In case you want to know more, please, head to the `Doc/` directory to find guides about usage. If you can't find there what you're looking for, feel free to post your question on the [issues page](https://github.com/AIRLegend/aitracker/issues).
+In case you want to know more, please, head to the [project's wiki](https://github.com/AIRLegend/aitrack/wiki) to find guides about usage. If you can't find there what you're looking for, feel free to post your question on the [issues page](https://github.com/AIRLegend/aitracker/issues).
 
-**Thanks to Sims Smith**, who made a [video tutorial on how to setting up AITrack (v0.4)](https://img.youtube.com/vi/LPlahUVPx4o/hqdefault.jpg). You can check it out.
+**Thanks to Sims Smith**, who made a [video tutorial on how to setting up AITrack (v0.4)](https://youtu.be/LPlahUVPx4o) and **Stream Flight**, with a [tutorial for v0.5](https://www.youtube.com/watch?v=CMIwUg8NAlg). You can check them out.
 
-**ALSO IMPORTANT AND NOT COVERED IN THE VIDEO TUTORIAL**
+**ALSO IMPORTANT AND NOT COVERED IN THE VIDEO TUTORIALS**
 
 >Because of v0.4 is an older version, several punctualizations have to be made:
 >1) You don't need to configure "Use remote client" anymore if you're running Opentrack in your local machine.
@@ -58,9 +58,9 @@ In case you want to know more, please, head to the `Doc/` directory to find guid
 
 ## Bugs and Contributing
 
-If you encounter any bug/problem or you have some idea, post it on the [issues page](https://github.com/AIRLegend/aitracker/issues) to find help or further discussion. If you decide to fix something or implement a request, feel free to fork this repo, develop your new feature in a separate branch and then, make a PR to review it, here is the [guide to developers](Doc/DEVELOP.md). 
+If you encounter any bug/problem or you have some idea, post it on the [issues page](https://github.com/AIRLegend/aitracker/issues) to find help or further discussion. If you decide to fix something or implement a request, feel free to fork this repo, develop your new feature in a separate branch and then, make a PR to review it, here is the [guide to developers](Doc/DEVELOP.md) (also available in the wiki). 
 
-Also, there is a Discord server you can join to be aware of the news of the project, report problems or request features!
+Besides, there is a Discord server you can join to be aware of the news of the project, report problems or request features!
 
 <a href="https://discord.gg/HPZMdcx"><img src="https://image.flaticon.com/icons/svg/2111/2111370.svg" width="30px"/></a> Join the server!
 

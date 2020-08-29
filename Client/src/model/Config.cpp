@@ -14,6 +14,8 @@ ConfigData ConfigData::getGenericConfig()
 	conf.prior_distance = .6;
 	conf.show_video_feed = true;
 	conf.selected_model = 0;
+	conf.selected_camera = 0;
+	conf.num_cameras_detected = 0;
 	conf.video_width = 640;
 	conf.video_height = 480;
 	conf.video_fps = 30;
@@ -52,6 +54,7 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("fps", data.video_fps);
 	conf.setValue("cam_exposure", data.cam_exposure);
 	conf.setValue("cam_gain", data.cam_gain);
+	conf.setValue("selected_camera", data.selected_camera);
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -65,6 +68,7 @@ ConfigData ConfigMgr::getConfig()
 	c.show_video_feed = conf.value("video_feed", true).toBool();
 	c.use_landmark_stab = conf.value("stabilize_landmarks", true).toBool();
 	c.selected_model = conf.value("model", 0).toInt();
+	c.selected_camera = conf.value("selected_camera", 0).toInt();
 	c.video_width = conf.value("video_width", 640).toInt();
 	c.video_height = conf.value("video_height", 480).toInt();
 	c.video_fps = conf.value("fps", 30).toInt();

@@ -55,3 +55,15 @@ public:
 	*/
 	virtual void show_message(const char* msg, MSG_SEVERITY severity) = 0;
 };
+
+
+
+/**
+* Must be implemented by the Main View (or any root view) so its children can comunicate back on input fields
+* changed.
+*/
+class IRootView
+{
+public:
+	virtual void notify(IView *self) = 0;   
+};

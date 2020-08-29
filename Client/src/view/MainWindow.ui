@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>583</height>
+    <height>459</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -184,6 +184,7 @@
         </property>
         <property name="font">
          <font>
+          <pointsize>10</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -197,257 +198,60 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="prefsGroupbox">
+       <widget class="QCheckBox" name="chkVideoPreview">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
-          <verstretch>1</verstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>You can disable the video preview to further reduce the CPU usage of AITrack.</string>
+        </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
+        <property name="whatsThis">
+         <string>Disables the video preview.</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">margin-left:150%; </string>
+        </property>
+        <property name="text">
+         <string>Enable preview</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnConfig">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>300</width>
-          <height>190</height>
+          <width>0</width>
+          <height>30</height>
          </size>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>399</width>
-          <height>190</height>
-         </size>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
         </property>
-        <property name="title">
-         <string>Preferences</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-        <widget class="QGroupBox" name="sendGroupbox">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>184</x>
-           <y>18</y>
-           <width>191</width>
-           <height>91</height>
-          </rect>
-         </property>
-         <property name="title">
-          <string>Use remote OpenTrack client</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <widget class="QLineEdit" name="ipField">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>30</y>
-            <width>91</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="acceptDrops">
-           <bool>false</bool>
-          </property>
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address where Opentrack is running. Leave empty for using local PC IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="whatsThis">
-           <string>asadf</string>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="text">
-           <string>192.168.1.10</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label">
-          <property name="geometry">
-           <rect>
-            <x>20</x>
-            <y>30</y>
-            <width>21</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>IP</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_2">
-          <property name="geometry">
-           <rect>
-            <x>20</x>
-            <y>60</y>
-            <width>21</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Port</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="portField">
-          <property name="geometry">
-           <rect>
-            <x>140</x>
-            <y>60</y>
-            <width>41</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="text">
-           <string>4242</string>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QGroupBox" name="paramsGroupBox">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>20</y>
-           <width>161</width>
-           <height>151</height>
-          </rect>
-         </property>
-         <property name="title">
-          <string>Parameters</string>
-         </property>
-         <widget class="QLabel" name="label_8">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>26</y>
-            <width>61</width>
-            <height>18</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Distance (m)</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="distanceField">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>27</y>
-            <width>51</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_3">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>62</y>
-            <width>121</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Model type</string>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="modeltypeSelect">
-          <property name="geometry">
-           <rect>
-            <x>19</x>
-            <y>85</y>
-            <width>121</width>
-            <height>22</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QCheckBox" name="landmarkStabChck">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>118</y>
-            <width>131</width>
-            <height>31</height>
-           </rect>
-          </property>
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Experimental&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Apply a filter to reduce noise on the recognized facial landmarks. Can reduce noise and thus, make you able to reduce the amount of Acella fitlering in Opentrack, gaining responsiveness.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="toolTipDuration">
-           <number>-1</number>
-          </property>
-          <property name="text">
-           <string>Landmark stabilization</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QPushButton" name="saveBtn">
-         <property name="geometry">
-          <rect>
-           <x>184</x>
-           <y>144</y>
-           <width>191</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Apply changes</string>
-         </property>
-        </widget>
-        <widget class="QCheckBox" name="chkVideoPreview">
-         <property name="geometry">
-          <rect>
-           <x>234</x>
-           <y>115</y>
-           <width>91</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="toolTip">
-          <string>You can disable the video preview to further reduce the CPU usage of AITrack.</string>
-         </property>
-         <property name="toolTipDuration">
-          <number>-1</number>
-         </property>
-         <property name="text">
-          <string>Enable preview</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="trackerInfoLbl">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:7pt; color:#6b6b6b;&quot;&gt;X: Y: Z: Pitch: Yaw: Roll:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="textFormat">
-         <enum>Qt::RichText</enum>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>Configuration ⚙️</string>
         </property>
        </widget>
       </item>
