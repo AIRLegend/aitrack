@@ -123,6 +123,7 @@ void Presenter::init_tracker(int type)
 			tracker_factory->get_type(type));
 	}
 	state.selected_model = type;
+	this->logger->info("Tracker initialized.");
 }
 
 
@@ -224,8 +225,9 @@ CameraSettings Presenter::build_camera_params()
 
 void Presenter::update_camera_params()
 {
-	this->logger->info("Update camera parameters.");
+	this->logger->info("Updating camera parameters...");
 	all_cameras[state.selected_camera]->set_settings(build_camera_params());
+	this->logger->info("Updated camera parameters.");
 }
 
 
@@ -285,6 +287,7 @@ void Presenter::save_prefs(const ConfigData& data)
 
 	conf_mgr->updateConfig(state);
 	sync_ui_inputs();
+	this->logger->info("Prefs saved");
 }
 
 
