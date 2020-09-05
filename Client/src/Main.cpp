@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     try
     {
         logger = spdlog::basic_logger_mt("aitrack", "log.txt", true);
+        logger->flush_on(spdlog::level::info);
     }
     catch (const spdlog::spdlog_ex& ex)
     {

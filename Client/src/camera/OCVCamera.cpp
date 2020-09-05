@@ -17,7 +17,24 @@ OCVCamera::OCVCamera(int width, int height, int fps, int index) :
 	}
 	is_valid = true;
 
-	w_scale = (float)width/(float)cam_native_width;
+
+	if (width < 0 || height < 0)
+	{
+		this->width = cam_native_width;
+		this->height = cam_native_height;
+	}
+	
+	if (fps < 0)
+		this->fps = cam_native_fps;
+
+
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, this->width);
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, this->height);
+	cap.set(cv::CAP_PROP_FPS, this->fps);
+
+
+
+	//w_scale = (float)width / w;//(float)cam_native_width;
 	exposure, gain = -1;
 }
 
@@ -39,7 +56,9 @@ bool OCVCamera::is_camera_available()
 		if (frame.empty())
 			return false;
 
-		cam_native_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
+		cam_native_width = (int)cap.get(cv::CAP_PROP_FRAME_WIDTH);
+		cam_native_height = (int)cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+		cam_native_fps = (int)cap.get(cv::CAP_PROP_FPS);
 		cap.release();
 	}
 	return available;
@@ -63,9 +82,6 @@ void OCVCamera::get_frame(uint8_t* buffer)
 {
 	cv::Mat frame;
 	cap.read(frame);
-	//Scale maintaining aspect ratio. If distorted, the model will get confused.
-	//TODO: Maybe cropping (width,height) section from the center is better.
-	cv::resize(frame, frame, size, w_scale, w_scale);
 	cv::flip(frame, frame, 1);
 	for (int i = 0; i < frame.cols * frame.rows * 3; i++)
 		buffer[i] = frame.data[i];
@@ -74,16 +90,15 @@ void OCVCamera::get_frame(uint8_t* buffer)
 
 void OCVCamera::set_settings(CameraSettings& settings)
 {
-	this->width = settings.width;
-	this->fps = settings.fps;
-	this->height = settings.height;
-	w_scale = (float)width / (float)cam_native_width;
+	this->width = settings.width > 0 ? settings.width : this->cam_native_width;
+	this->height = settings.height > 0 ? settings.height : this->cam_native_height;
+	this->fps = settings.fps > 0 ? settings.fps : this->cam_native_fps;
 
-	// Opencv needs [0,1] ranges
-	exposure = settings.exposure < 0 ? -1.0F : (float)settings.exposure/255;
-	gain = settings.gain < 0 ? -1.0F : (float)settings.gain / 64;
-	cap.set(cv::CAP_PROP_EXPOSURE, exposure);
-	cap.set(cv::CAP_PROP_GAIN, gain);
+	// Disabled for the moment because of the different ranges in generic cameras.
+	//exposure = settings.exposure < 0 ? -1.0F : (float)settings.exposure/255;
+	//gain = settings.gain < 0 ? -1.0F : (float)settings.gain / 64;
+	//cap.set(cv::CAP_PROP_EXPOSURE, exposure);
+	//cap.set(cv::CAP_PROP_GAIN, gain);
 }
 
 CameraSettings OCVCamera::get_settings()

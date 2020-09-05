@@ -70,13 +70,13 @@
      <item row="2" column="1">
       <widget class="QSpinBox" name="imgWidthSelector">
        <property name="minimum">
-        <number>640</number>
+        <number>-1</number>
        </property>
        <property name="maximum">
         <number>3000</number>
        </property>
        <property name="value">
-        <number>640</number>
+        <number>-1</number>
        </property>
       </widget>
      </item>
@@ -97,26 +97,26 @@
      <item row="3" column="1">
       <widget class="QSpinBox" name="imgHeightSelector">
        <property name="minimum">
-        <number>480</number>
+        <number>-1</number>
        </property>
        <property name="maximum">
         <number>3000</number>
        </property>
        <property name="value">
-        <number>480</number>
+        <number>-1</number>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
       <widget class="QSpinBox" name="fpsSelector">
        <property name="minimum">
-        <number>15</number>
+        <number>-1</number>
        </property>
        <property name="maximum">
         <number>120</number>
        </property>
        <property name="value">
-        <number>30</number>
+        <number>-1</number>
        </property>
       </widget>
      </item>

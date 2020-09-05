@@ -16,9 +16,9 @@ ConfigData ConfigData::getGenericConfig()
 	conf.selected_model = 0;
 	conf.selected_camera = 0;
 	conf.num_cameras_detected = 0;
-	conf.video_width = 640;
-	conf.video_height = 480;
-	conf.video_fps = 30;
+	conf.video_width = -1;
+	conf.video_height = -1;
+	conf.video_fps = -1;
 	conf.use_landmark_stab = true;
 	conf.x, conf.y, conf.z, conf.pitch, conf.yaw, conf.roll = 0;
 	conf.cam_exposure = -1;

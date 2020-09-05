@@ -24,11 +24,9 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	// Init available model names to show in the GUI
 	this->tracker_factory->get_model_names(state.model_names);
 
-	// Setup a filter to stabilize the recognized facial landmarks if needed.
-	update_stabilizer(state);
-
 	CameraFactory camfactory;
 	CameraSettings camera_settings = build_camera_params();
+	logger->info("Searching for cameras...");
 	all_cameras = camfactory.getCameras(camera_settings);
 	logger->info("Number of recognized cameras: {}", all_cameras.size());
 
@@ -51,6 +49,12 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 
 		// Build tracker
 		init_tracker(state.selected_model);
+
+		// Setup a filter to stabilize the recognized facial landmarks if needed.
+		update_stabilizer(state);
+
+		// Sync camera prefs between active camera and state.
+		update_camera_params();
 
 	}
 
@@ -227,6 +231,16 @@ void Presenter::update_camera_params()
 {
 	this->logger->info("Updating camera parameters...");
 	all_cameras[state.selected_camera]->set_settings(build_camera_params());
+
+	//if (state.video_height < 0 || state.video_width < 0)
+	//{
+		// The camera is using its default resolution so we must update our state
+		// to it. If we are using our custom resolution that wont be necessary.
+	state.video_height = all_cameras[state.selected_camera]->height;
+	state.video_width = all_cameras[state.selected_camera]->width;
+	state.video_fps = all_cameras[state.selected_camera]->fps;
+	//}
+
 	this->logger->info("Updated camera parameters.");
 }
 
