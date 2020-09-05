@@ -16,7 +16,7 @@ CameraSettings::CameraSettings(CameraSettings& settings)
 	gain = settings.gain;
 	fps = settings.fps;
 	width = settings.width;
-	height = settings.width;
+	height = settings.height;
 }
 
 CameraSettings::~CameraSettings()

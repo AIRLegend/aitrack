@@ -32,9 +32,6 @@ OCVCamera::OCVCamera(int width, int height, int fps, int index) :
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, this->height);
 	cap.set(cv::CAP_PROP_FPS, this->fps);
 
-
-
-	//w_scale = (float)width / w;//(float)cam_native_width;
 	exposure, gain = -1;
 }
 

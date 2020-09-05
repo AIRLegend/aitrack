@@ -232,16 +232,12 @@ void Presenter::update_camera_params()
 	this->logger->info("Updating camera parameters...");
 	all_cameras[state.selected_camera]->set_settings(build_camera_params());
 
-	//if (state.video_height < 0 || state.video_width < 0)
-	//{
-		// The camera is using its default resolution so we must update our state
-		// to it. If we are using our custom resolution that wont be necessary.
+	// The camera can be using its default resolution so we must sync our state
+	// to it. If we are using our custom resolution that wont be necessary.
 	state.video_height = all_cameras[state.selected_camera]->height;
 	state.video_width = all_cameras[state.selected_camera]->width;
 	state.video_fps = all_cameras[state.selected_camera]->fps;
-	//}
-
-	this->logger->info("Updated camera parameters.");
+	this->logger->info("Updated camera parameters. {}x{}@{}", state.video_width, state.video_height, state.video_fps);
 }
 
 
@@ -292,6 +288,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.video_fps = data.video_fps;
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;
+
 	update_camera_params();
 
 
