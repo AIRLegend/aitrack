@@ -55,7 +55,8 @@ std::vector<std::shared_ptr<Camera>> CameraFactory::getCameras(CameraSettings& s
 	{
 		try
 		{
-			std::shared_ptr<Camera> c = std::make_shared<OCVCamera>(640, 480, 30, i);
+			std::shared_ptr<Camera> c = std::make_shared<OCVCamera>(settings.width, settings.height, settings.fps, i);
+			c->set_settings(settings);  // Brightness / Exposure
 			cams.push_back(std::move(c));
 			std::cout << "Found ID: " << i << std::endl;
 		}

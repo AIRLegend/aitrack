@@ -10,6 +10,8 @@
 #include <omp.h>
 #include "tracker/TrackerFactory.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
 
 int main(int argc, char *argv[])
@@ -23,15 +25,36 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
+
+    
+    std::shared_ptr<spdlog::logger> logger;
+    try
+    {
+        logger = spdlog::basic_logger_mt("aitrack", "log.txt", true);
+        logger->flush_on(spdlog::level::info);
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Log init failed: " << ex.what() << std::endl;
+    }
+
+
+    logger->info(" ----------  AITRACK LOG   ----------");
+
+
     QApplication app(argc, argv);
 
     WindowMain w;
     w.show();
 
+    
     auto conf_mgr = std::make_unique<ConfigMgr>("./prefs.ini");
+    logger->info("Created/Found prefs.ini");
+
     auto t_factory = std::make_unique<TrackerFactory>("./models/");
 
     Presenter p((IView&)w, std::move(t_factory), std::move(conf_mgr));
+    logger->info("App initialized");
 
     return app.exec();
 }

@@ -348,3 +348,4 @@ healthchecksdb
 */Dependencies/*
 Client/models
 prefs.ini
+log.txt

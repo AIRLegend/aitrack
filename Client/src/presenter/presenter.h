@@ -12,6 +12,8 @@
 
 #include "../tracker/TrackerFactory.h"
 #include "../tracker/ITrackerWrapper.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
 class Presenter : IPresenter
 {
@@ -20,8 +22,8 @@ private:
 	std::unique_ptr<UDPSender> udp_sender;
 	std::unique_ptr<TrackerFactory> tracker_factory;
 	std::unique_ptr<ITrackerWrapper> t;
-	//std::unique_ptr<Camera> camera;
 	std::vector<std::shared_ptr<Camera>> all_cameras;
+	std::shared_ptr<spdlog::logger> logger;
 
 	// Current program's state + config.
 	ConfigData state;

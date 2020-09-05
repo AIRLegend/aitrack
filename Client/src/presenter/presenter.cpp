@@ -9,6 +9,9 @@
 
 Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr)
 {
+	
+	logger = spdlog::get("aitrack");
+
 	this->tracker_factory = std::move(t_factory);
 	this->conf_mgr = std::move(conf_mgr);
 	state = this->conf_mgr->getConfig();
@@ -21,18 +24,18 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	// Init available model names to show in the GUI
 	this->tracker_factory->get_model_names(state.model_names);
 
-	// Setup a filter to stabilize the recognized facial landmarks if needed.
-	update_stabilizer(state);
-
 	CameraFactory camfactory;
 	CameraSettings camera_settings = build_camera_params();
+	logger->info("Searching for cameras...");
 	all_cameras = camfactory.getCameras(camera_settings);
+	logger->info("Number of recognized cameras: {}", all_cameras.size());
 
 	if (all_cameras.size() == 0)
 	{
 		std::cout << "[ERROR] NO CAMERAS AVAILABLE" << std::endl;
 		this->view->set_enabled(false);
 		this->view->show_message("No cameras detected. Plug one and restart the program.", MSG_SEVERITY::CRITICAL);
+		logger->info("No cameras were detected");
 	}
 	else
 	{
@@ -46,6 +49,12 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 
 		// Build tracker
 		init_tracker(state.selected_model);
+
+		// Setup a filter to stabilize the recognized facial landmarks if needed.
+		update_stabilizer(state);
+
+		// Sync camera prefs between active camera and state.
+		update_camera_params();
 
 	}
 
@@ -79,6 +88,8 @@ void Presenter::init_sender(std::string &ip, int port)
 		port_dest = 4242;
 
 	this->udp_sender = std::make_unique<UDPSender>(ip_str.data(), port_dest);
+
+	this->logger->info("UDP sender reinitialized. IP: {}  PORT: {}", ip_str, port_dest);
 }
 
 void Presenter::init_tracker(int type)
@@ -92,6 +103,7 @@ void Presenter::init_tracker(int type)
 #ifdef _DEBUG
 			std::cout << "Resetting old tracker" << std::endl;
 #endif
+			this->logger->info("Rebuilding tracker with new parameters");
 			this->t.reset();
 			this->t.release();
 			this->t = tracker_factory->
@@ -108,12 +120,14 @@ void Presenter::init_tracker(int type)
 	}
 	else
 	{
+		this->logger->info("Building Tracker with selected camera: {}", state.selected_camera);
 		this->t = tracker_factory->buildTracker(all_cameras[state.selected_camera]->width,
 			all_cameras[state.selected_camera]->height,
 			(float)state.prior_distance,
 			tracker_factory->get_type(type));
 	}
 	state.selected_model = type;
+	this->logger->info("Tracker initialized.");
 }
 
 
@@ -132,8 +146,9 @@ void Presenter::run_loop()
 
 	double buffer_data[6];
 
+	this->logger->info("Starting camera {} capture", state.selected_camera);
 	cam->start_camera();
-
+	this->logger->info("Camera {} started capturing", state.selected_camera);
 
 	while(run)
 	{
@@ -171,6 +186,7 @@ void Presenter::run_loop()
 	}
 
 	cam->stop_camera();
+	this->logger->info("Stop camera {} capture", state.selected_camera);
 }
 
 
@@ -197,6 +213,7 @@ void Presenter::update_stabilizer(const ConfigData& data)
 	{
 		this->filter = std::make_unique<EAFilter>(66 * 2);
 	}
+	this->logger->info("Updated stabilizer.");
 }
 
 CameraSettings Presenter::build_camera_params()
@@ -212,7 +229,15 @@ CameraSettings Presenter::build_camera_params()
 
 void Presenter::update_camera_params()
 {
+	this->logger->info("Updating camera parameters...");
 	all_cameras[state.selected_camera]->set_settings(build_camera_params());
+
+	// The camera can be using its default resolution so we must sync our state
+	// to it. If we are using our custom resolution that wont be necessary.
+	state.video_height = all_cameras[state.selected_camera]->height;
+	state.video_width = all_cameras[state.selected_camera]->width;
+	state.video_fps = all_cameras[state.selected_camera]->fps;
+	this->logger->info("Updated camera parameters. {}x{}@{}", state.video_width, state.video_height, state.video_fps);
 }
 
 
@@ -239,6 +264,8 @@ void Presenter::toggle_tracking()
 
 void Presenter::save_prefs(const ConfigData& data)
 {
+	this->logger->info("Saving prefs");
+
 	// Disable painting parts from the run loop if needed
 	this->paint = data.show_video_feed;
 	state.show_video_feed = data.show_video_feed;
@@ -261,6 +288,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.video_fps = data.video_fps;
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;
+
 	update_camera_params();
 
 
@@ -270,6 +298,7 @@ void Presenter::save_prefs(const ConfigData& data)
 
 	conf_mgr->updateConfig(state);
 	sync_ui_inputs();
+	this->logger->info("Prefs saved");
 }
 
 

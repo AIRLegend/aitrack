@@ -9,7 +9,7 @@ private:
 	cv::Size size;
 	float w_scale;
 	float exposure, gain;
-	int cam_native_width;
+	int cam_native_height, cam_native_width, cam_native_fps;
 	int cam_index;
 	int CV_BACKEND;
 
