@@ -9,6 +9,9 @@
 
 Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr)
 {
+	
+	logger = spdlog::get("aitrack");
+
 	this->tracker_factory = std::move(t_factory);
 	this->conf_mgr = std::move(conf_mgr);
 	state = this->conf_mgr->getConfig();
@@ -27,12 +30,14 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	CameraFactory camfactory;
 	CameraSettings camera_settings = build_camera_params();
 	all_cameras = camfactory.getCameras(camera_settings);
+	logger->info("Number of recognized cameras: {}", all_cameras.size());
 
 	if (all_cameras.size() == 0)
 	{
 		std::cout << "[ERROR] NO CAMERAS AVAILABLE" << std::endl;
 		this->view->set_enabled(false);
 		this->view->show_message("No cameras detected. Plug one and restart the program.", MSG_SEVERITY::CRITICAL);
+		logger->info("No cameras were detected");
 	}
 	else
 	{
@@ -79,6 +84,8 @@ void Presenter::init_sender(std::string &ip, int port)
 		port_dest = 4242;
 
 	this->udp_sender = std::make_unique<UDPSender>(ip_str.data(), port_dest);
+
+	this->logger->info("UDP sender reinitialized. IP: {}  PORT: {}", ip_str, port_dest);
 }
 
 void Presenter::init_tracker(int type)
@@ -92,6 +99,7 @@ void Presenter::init_tracker(int type)
 #ifdef _DEBUG
 			std::cout << "Resetting old tracker" << std::endl;
 #endif
+			this->logger->info("Rebuilding tracker with new parameters");
 			this->t.reset();
 			this->t.release();
 			this->t = tracker_factory->
@@ -108,6 +116,7 @@ void Presenter::init_tracker(int type)
 	}
 	else
 	{
+		this->logger->info("Building Tracker with selected camera: {}", state.selected_camera);
 		this->t = tracker_factory->buildTracker(all_cameras[state.selected_camera]->width,
 			all_cameras[state.selected_camera]->height,
 			(float)state.prior_distance,
@@ -132,8 +141,9 @@ void Presenter::run_loop()
 
 	double buffer_data[6];
 
+	this->logger->info("Starting camera {} capture", state.selected_camera);
 	cam->start_camera();
-
+	this->logger->info("Camera {} started capturing", state.selected_camera);
 
 	while(run)
 	{
@@ -171,6 +181,7 @@ void Presenter::run_loop()
 	}
 
 	cam->stop_camera();
+	this->logger->info("Stop camera {} capture", state.selected_camera);
 }
 
 
@@ -197,6 +208,7 @@ void Presenter::update_stabilizer(const ConfigData& data)
 	{
 		this->filter = std::make_unique<EAFilter>(66 * 2);
 	}
+	this->logger->info("Updated stabilizer.");
 }
 
 CameraSettings Presenter::build_camera_params()
@@ -212,6 +224,7 @@ CameraSettings Presenter::build_camera_params()
 
 void Presenter::update_camera_params()
 {
+	this->logger->info("Update camera parameters.");
 	all_cameras[state.selected_camera]->set_settings(build_camera_params());
 }
 
@@ -239,6 +252,8 @@ void Presenter::toggle_tracking()
 
 void Presenter::save_prefs(const ConfigData& data)
 {
+	this->logger->info("Saving prefs");
+
 	// Disable painting parts from the run loop if needed
 	this->paint = data.show_video_feed;
 	state.show_video_feed = data.show_video_feed;
