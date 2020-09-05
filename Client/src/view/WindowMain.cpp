@@ -45,6 +45,7 @@ void WindowMain::paint_video_frame(cv::Mat& img)
 	if (check_video_preview->isChecked())
 		tracking_frame->setPixmap(
 			QPixmap::fromImage(QImage(img.data, img.cols, img.rows, img.step, QImage::Format_RGB888))
+				.scaled(400,280, Qt::KeepAspectRatio, Qt::FastTransformation)
 		);
 }
 
@@ -85,8 +86,6 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 
 	conf_win->set_tracking_mode(is_tracking);
 }
-
-
 
 
 void WindowMain::update_view_state(ConfigData conf)
