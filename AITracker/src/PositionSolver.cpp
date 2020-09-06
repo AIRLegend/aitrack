@@ -90,8 +90,10 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     for (int i = 0; i < 3; i++)
     {
         face_data->rotation[i] = rvec.at<double>(i, 0);
-        face_data->translation[i] = tvec.at<double>(i, 0);
+        face_data->translation[i] = tvec.at<double>(i, 0) * 10;
     }
+
+    correct_rotation(*face_data);
 
 }
 
@@ -133,5 +135,18 @@ void PositionSolver::get_euler(cv::Mat& rvec, cv::Mat& tvec)
         rvec
     );
 
+}
+
+void PositionSolver::correct_rotation(FaceData& face_data)
+{
+    float distance = -(face_data.translation[2]);
+    float lateral_offset = face_data.translation[1];
+    float verical_offset = face_data.translation[0];
+
+    float correction_yaw = std::atan(std::tan(lateral_offset / distance)) * TO_DEG;
+    float correction_pitch = std::atan(std::tan(verical_offset / distance)) * TO_DEG;
+
+    face_data.rotation[1] += correction_yaw;
+    face_data.rotation[0] += correction_pitch;
 }
 
