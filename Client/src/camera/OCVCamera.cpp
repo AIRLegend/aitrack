@@ -25,8 +25,7 @@ OCVCamera::OCVCamera(int width, int height, int fps, int index) :
 	}
 	
 	if (fps < 0)
-		this->fps = cam_native_fps;
-
+		this->fps = std::max(cam_native_fps, 30);
 
 	cap.set(cv::CAP_PROP_FRAME_WIDTH, this->width);
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, this->height);
