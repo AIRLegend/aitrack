@@ -342,7 +342,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Parameters</string>
+    <string>Tracker parameters</string>
    </property>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
@@ -415,6 +415,28 @@
      <bool>true</bool>
     </property>
    </widget>
+  </widget>
+  <widget class="QCheckBox" name="updateChckbox">
+   <property name="geometry">
+    <rect>
+     <x>241</x>
+     <y>290</y>
+     <width>131</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check for a newer version of the program on GitHub and notify me if available.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>-1</number>
+   </property>
+   <property name="text">
+    <string>Autocheck updates</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

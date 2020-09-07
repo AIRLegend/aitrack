@@ -113,7 +113,7 @@
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>$(QTDIR)</QtInstall>
-    <QtModules>core;uitools;widgets;quick</QtModules>
+    <QtModules>core;uitools;widgets;quick;</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtLibrarySearchPath>$(QTDIR)\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
     <QtHeaderSearchPath>$(QTDIR)\include</QtHeaderSearchPath>
@@ -179,6 +179,7 @@
     <ClCompile Include="src\camera\CameraFactory.cpp" />
     <ClCompile Include="src\model\Config.cpp" />
     <ClCompile Include="src\camera\Ps3Camera.cpp" />
+    <ClCompile Include="src\model\UpdateChecker.cpp" />
     <ClCompile Include="src\presenter\presenter.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\model\UDPSender.cpp" />
@@ -200,8 +201,10 @@
     <ClInclude Include="src\camera\CameraFactory.h" />
     <ClInclude Include="Include\ps3eye.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\version.h" />
     <ClInclude Include="src\model\Config.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
+    <QtMoc Include="src\model\UpdateChecker.h" />
     <ClInclude Include="src\presenter\i_presenter.h" />
     <ClInclude Include="src\presenter\presenter.h" />
     <ClInclude Include="src\model\UDPSender.h" />

@@ -26,7 +26,7 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	ip_field = gp_box_address->findChild<QLineEdit*>("ipField");
 	port_field = gp_box_address->findChild<QLineEdit*>("portField");
 
-
+	check_auto_update = findChild<QCheckBox*>("updateChckbox");
 	check_stabilization_landmarks = gp_box_priors->findChild<QCheckBox*>("landmarkStabChck");
 	cb_modelType = gp_box_priors->findChild<QComboBox*>("modeltypeSelect");
 	distance_param = gp_box_priors->findChild<QLineEdit*>("distanceField");
@@ -70,6 +70,7 @@ ConfigData ConfigWindow::get_inputs()
 	conf.port = port_field->text().toInt();
 	conf.use_landmark_stab = check_stabilization_landmarks->isChecked();
 	conf.selected_model = cb_modelType->currentIndex();
+	conf.autocheck_updates = check_auto_update->isChecked();
 
 	return conf;
 }
@@ -100,6 +101,7 @@ void ConfigWindow::update_view_state(ConfigData conf)
 		cb_modelType->addItem(QString(s.data()));
 	cb_modelType->setCurrentIndex(conf.selected_model);
 
+	check_auto_update->setChecked(conf.autocheck_updates);
 	check_stabilization_landmarks->setChecked(conf.use_landmark_stab);
 	distance_param->setText(QString::number(conf.prior_distance));
 

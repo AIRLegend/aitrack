@@ -20,6 +20,7 @@ ConfigData ConfigData::getGenericConfig()
 	conf.video_height = -1;
 	conf.video_fps = -1;
 	conf.use_landmark_stab = true;
+	conf.autocheck_updates = true;
 	conf.x, conf.y, conf.z, conf.pitch, conf.yaw, conf.roll = 0;
 	conf.cam_exposure = -1;
 	conf.cam_gain = -1;
@@ -55,6 +56,7 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("cam_exposure", data.cam_exposure);
 	conf.setValue("cam_gain", data.cam_gain);
 	conf.setValue("selected_camera", data.selected_camera);
+	conf.setValue("autocheck_updates", data.autocheck_updates);
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -74,6 +76,7 @@ ConfigData ConfigMgr::getConfig()
 	c.video_fps = conf.value("fps", 30).toInt();
 	c.cam_exposure= conf.value("cam_exposure", -1).toInt();
 	c.cam_gain = conf.value("cam_gain", -1).toInt();
+	c.autocheck_updates = conf.value("autocheck_updates", 1).toBool();
 	return c;
 }
 

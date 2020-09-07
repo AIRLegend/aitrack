@@ -6,6 +6,8 @@
 
 #include "../camera/CameraFactory.h"
 
+#include "../version.h"
+
 
 Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr)
 {
@@ -64,6 +66,14 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 		this->view->set_enabled(false);
 		this->view->show_message("There was a problem initializing the tracker. Check the models folder and restart the program.", MSG_SEVERITY::CRITICAL);
 	}
+
+	if (state.autocheck_updates)
+	{
+		logger->info("Checking for updates");
+		update_chkr = std::make_unique<UpdateChecker>(std::string(AITRACK_VERSION), (IUpdateSub*)this);
+		update_chkr->get_latest_update(std::string("AIRLegend/aitrack"));
+	}
+
 	sync_ui_inputs();
 }
 
@@ -288,6 +298,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.video_fps = data.video_fps;
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;
+	state.autocheck_updates = data.autocheck_updates;
 
 	update_camera_params();
 
@@ -315,4 +326,15 @@ void Presenter::close_program()
 	// Assure all cameras are released (some cameras have a "recording LED" which can be annoying to have on)
 	for(std::shared_ptr<Camera> cam : all_cameras)
 		cam->stop_camera();
+}
+
+
+void Presenter::on_update_check_completed(bool update_exists)
+{
+	if (update_exists)
+	{
+		this->view->show_message("New update available. Check https://github.com/AIRLegend/aitrack/releases", MSG_SEVERITY::NORMAL);
+		this->logger->info("New release has been found.");
+	}
+	
 }

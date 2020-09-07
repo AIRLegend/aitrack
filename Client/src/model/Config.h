@@ -18,6 +18,7 @@ struct ConfigData
 	double prior_pitch, prior_yaw, prior_distance;
 	bool show_video_feed;
 	bool use_landmark_stab;
+	bool autocheck_updates;
 
 	float x, y, z, yaw, pitch, roll;
 

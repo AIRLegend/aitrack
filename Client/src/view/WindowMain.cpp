@@ -1,6 +1,7 @@
 #include "WindowMain.h"
 
 #include "../presenter/presenter.h"
+#include "../version.h"
 #include <iostream>
 #include <QMessageBox>
 
@@ -10,6 +11,8 @@ WindowMain::WindowMain(QWidget *parent)
 {
 	ui.setupUi(this);
 	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+	this->setWindowTitle(QString("AITrack %1").arg(AITRACK_VERSION));
 
 	this->conf_win = new ConfigWindow(this);
 	this->conf_win->hide();

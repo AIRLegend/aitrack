@@ -4,6 +4,7 @@
 
 #include "../model/Config.h"
 #include "../model/UDPSender.h"
+#include "../model/UpdateChecker.h"
 #include "i_presenter.h"
 #include "../view/i_view.h"
 #include "../camera/Camera.h"
@@ -15,7 +16,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-class Presenter : IPresenter
+class Presenter : IPresenter, IUpdateSub
 {
 private:
 	FaceData face_data;
@@ -96,6 +97,7 @@ private:
 
 public:
 	std::unique_ptr<ConfigMgr> conf_mgr;
+	std::unique_ptr<UpdateChecker> update_chkr;
 
 	Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr);
 
@@ -103,4 +105,7 @@ public:
 	void toggle_tracking();
 	void save_prefs(const ConfigData& data);
 	void close_program();
+
+	//IUpdatesub
+	void on_update_check_completed(bool update_exists);
 };

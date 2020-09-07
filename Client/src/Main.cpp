@@ -1,5 +1,5 @@
 #ifndef _DEBUG
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif // !_DEBUG
 
 
@@ -12,6 +12,10 @@
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
+
+
+#include "model/UpdateChecker.h"
+
 
 
 int main(int argc, char *argv[])
