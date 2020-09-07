@@ -87,6 +87,7 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 		tracking_frame->setText("No video input");
 	}
 
+	btn_config->setDisabled(is_tracking);
 	conf_win->set_tracking_mode(is_tracking);
 }
 
