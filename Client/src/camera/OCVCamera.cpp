@@ -25,7 +25,8 @@ OCVCamera::OCVCamera(int width, int height, int fps, int index) :
 	}
 	
 	if (fps < 0)
-		this->fps = std::max(cam_native_fps, 30);
+		this->fps = cam_native_fps;
+
 
 	cap.set(cv::CAP_PROP_FRAME_WIDTH, this->width);
 	cap.set(cv::CAP_PROP_FRAME_HEIGHT, this->height);
@@ -54,7 +55,7 @@ bool OCVCamera::is_camera_available()
 
 		cam_native_width = (int)cap.get(cv::CAP_PROP_FRAME_WIDTH);
 		cam_native_height = (int)cap.get(cv::CAP_PROP_FRAME_HEIGHT);
-		cam_native_fps = (int)cap.get(cv::CAP_PROP_FPS);
+		cam_native_fps = std::max(30, (int)cap.get(cv::CAP_PROP_FPS));
 		cap.release();
 	}
 	return available;
@@ -88,7 +89,7 @@ void OCVCamera::set_settings(CameraSettings& settings)
 {
 	this->width = settings.width > 0 ? settings.width : this->cam_native_width;
 	this->height = settings.height > 0 ? settings.height : this->cam_native_height;
-	this->fps = settings.fps > 0 ? settings.fps : this->cam_native_fps;
+	this->fps = settings.fps > 30 ? settings.fps : this->cam_native_fps;
 
 	// Disabled for the moment because of the different ranges in generic cameras.
 	//exposure = settings.exposure < 0 ? -1.0F : (float)settings.exposure/255;
