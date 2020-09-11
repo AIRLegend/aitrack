@@ -41,20 +41,8 @@ Don't worry. AITrack supports low resolutions pretty well. Anything achieving at
 **IMPORTANT:**
 In case you want to know more, please, head to the [project's wiki](https://github.com/AIRLegend/aitrack/wiki) to find guides about usage. If you can't find there what you're looking for, feel free to post your question on the [issues page](https://github.com/AIRLegend/aitracker/issues).
 
-**Thanks to Sims Smith**, who made a [video tutorial on how to setting up AITrack (v0.4)](https://youtu.be/LPlahUVPx4o) and **Stream Flight**, with a [tutorial for v0.5](https://www.youtube.com/watch?v=CMIwUg8NAlg). You can check them out.
-
-**ALSO IMPORTANT AND NOT COVERED IN THE VIDEO TUTORIALS**
-
->Because of v0.4 is an older version, several punctualizations have to be made:
->1) You don't need to configure "Use remote client" anymore if you're running Opentrack in your local machine.
->2) You should take you time for [tweaking your curves in Opentrack](https://www.youtube.com/watch?v=u0TBI7SoGkc) to your preferences.
->3) Experiment with Opentrack's built in filters. Acella it's the recommended one at the moment. Configure it's smoothing parameter to reduce camera shaking.
-
----
-
 ## Showoff videos
-[<img src="https://img.youtube.com/vi/6uhcg43o7tc/hqdefault.jpg" width="50%">](https://youtu.be/6uhcg43o7tc)
-
+Check out this [wiki page](https://github.com/AIRLegend/aitrack/wiki/Videos) to see how it behaves.
 
 ## Bugs and Contributing
 

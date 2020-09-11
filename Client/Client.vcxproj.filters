@@ -30,6 +30,9 @@
     <ClCompile Include="src\view\ConfigWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\model\UpdateChecker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\ps3eye.h" />
@@ -68,10 +71,16 @@
     <ClInclude Include="src\camera\CameraSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\view\WindowMain.h" />
     <QtMoc Include="src\view\ConfigWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\model\UpdateChecker.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

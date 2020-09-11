@@ -33,6 +33,7 @@ public:
 
 private:
 	static const int NB_CONTOUR_POINTS = 18;
+	const double TO_DEG = (180.0 / 3.14159265);
 
 	cv::Mat mat3dface;
 	cv::Mat mat3dcontour;
@@ -52,5 +53,11 @@ private:
 		Gets euler angles from rotation matrix.
 	*/
 	void get_euler(cv::Mat& rvec, cv::Mat& tvec);
+
+	/**
+	* Lateral/Vertical offset adds an error to the calculated rotation.
+	* This method corrects them.
+	*/
+	void correct_rotation(FaceData& face_data);
 };
 

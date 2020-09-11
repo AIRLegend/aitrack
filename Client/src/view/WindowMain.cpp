@@ -1,6 +1,7 @@
 #include "WindowMain.h"
 
 #include "../presenter/presenter.h"
+#include "../version.h"
 #include <iostream>
 #include <QMessageBox>
 
@@ -10,6 +11,8 @@ WindowMain::WindowMain(QWidget *parent)
 {
 	ui.setupUi(this);
 	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+	this->setWindowTitle(QString("AITrack %1").arg(AITRACK_VERSION));
 
 	this->conf_win = new ConfigWindow(this);
 	this->conf_win->hide();
@@ -84,6 +87,7 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 		tracking_frame->setText("No video input");
 	}
 
+	btn_config->setDisabled(is_tracking);
 	conf_win->set_tracking_mode(is_tracking);
 }
 
