@@ -24,7 +24,7 @@ OCVCamera::OCVCamera(int width, int height, int fps, int index) :
 		this->height = cam_native_height;
 	}
 	
-	if (fps < 0)
+	if (fps < 30)
 		this->fps = cam_native_fps;
 
 	exposure, gain = -1;
