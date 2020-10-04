@@ -29,7 +29,16 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	CameraFactory camfactory;
 	CameraSettings camera_settings = build_camera_params();
 	logger->info("Searching for cameras...");
-	all_cameras = camfactory.getCameras(camera_settings);
+	try
+	{
+		all_cameras = camfactory.getCameras(camera_settings);
+	}
+	catch (const std::exception& ex)
+	{
+		logger->error("Error querying for cameras");
+		logger->error(ex.what());
+		throw std::runtime_error("Error querying cameras");
+	}
 	logger->info("Number of recognized cameras: {}", all_cameras.size());
 
 	if (all_cameras.size() == 0)
