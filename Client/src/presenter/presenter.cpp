@@ -219,7 +219,6 @@ void Presenter::update_tracking_data(FaceData& facedata)
 	this->state.roll = facedata.rotation[2];   //Roll
 }
 
-
 void Presenter::update_stabilizer(const ConfigData& data)
 {
 	// Right now, only enabling/disabling it is supported
@@ -259,7 +258,6 @@ void Presenter::update_camera_params()
 	this->logger->info("Updated camera parameters. {}x{}@{}", state.video_width, state.video_height, state.video_fps);
 }
 
-
 void Presenter::send_data(double* buffer_data)
 {
 	//Send data
@@ -271,7 +269,6 @@ void Presenter::send_data(double* buffer_data)
 	buffer_data[5] = state.roll;   //Roll
 	udp_sender->send_data(buffer_data);
 }
-
 
 void Presenter::toggle_tracking()
 {
@@ -321,12 +318,10 @@ void Presenter::save_prefs(const ConfigData& data)
 	this->logger->info("Prefs saved");
 }
 
-
 void Presenter::sync_ui_inputs()
 {
 	this->view->update_view_state(state);
 }
-
 
 void Presenter::close_program()
 {
@@ -336,7 +331,6 @@ void Presenter::close_program()
 	for(std::shared_ptr<Camera> cam : all_cameras)
 		cam->stop_camera();
 }
-
 
 void Presenter::on_update_check_completed(bool update_exists)
 {

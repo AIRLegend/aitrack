@@ -9,9 +9,13 @@ PositionSolver::PositionSolver(int width, int height,
     rv({ 0, 0, 0 }),
     tv({ 0, 0, 0 })
 {
-    this->prior_pitch = (1.1f * (prior_pitch + 90.f) / 180.f) - (double)2.5f;
-    this->prior_distance = prior_distance * -2.;
-    this->prior_yaw = (1.84f * (prior_yaw + 90.f) / 180.f) - (double)3.14f;
+    //this->prior_pitch = (1.1f * (prior_pitch + 90.f) / 180.f) - (double)2.5f;
+    //this->prior_yaw = (1.84f * (prior_yaw + 90.f) / 180.f) - (double)3.14f;
+    //this->prior_distance = prior_distance * -2.;
+    
+    this->prior_pitch = -1.57;
+    this->prior_yaw = -1.57;
+    this->prior_distance = prior_distance * -1.;
 
     this->rv[0] = this->prior_pitch;
     this->rv[1] = this->prior_yaw;
@@ -78,12 +82,31 @@ PositionSolver::PositionSolver(int width, int height,
             );
     }
 
+    // Taken from 
+    // https://github.com/opentrack/opentrack/blob/3cc3ef246ad71c463c8952bcc96984b25d85b516/tracker-aruco/ftnoir_tracker_aruco.cpp#L193
+    // Taking into account the camera FOV instead of assuming raw image dims is more clever and
+    // will make the solver more camera-agnostic.
+    float diag_fov = 56 * TO_RAD;
 
-    camera_matrix = (cv::Mat_<double>(3, 3) <<
+    // Get expressed in sensor-size units
+
+    double fov_w = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + height / (double)width * height / (double)width));
+    double fov_h = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + width / (double)height * width / (double)height));
+
+    float i_height = .5 * height / (tan(.5*fov_w));
+    float i_width = .5* width / (tan(.5*fov_h));
+
+    /*camera_matrix = (cv::Mat_<double>(3, 3) <<
         height, 0, height / 2,
         0, height, width / 2,
         0, 0, 1
-        );
+        );*/
+
+    camera_matrix = (cv::Mat_<double>(3, 3) <<
+        i_width, 0, height / 2,
+        0, i_height, width / 2,
+        0, 0, 1
+     );
 
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 
@@ -112,7 +135,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         this->camera_distortion,
         rvec,
         tvec,
-        true, //extrinsic guess
+        false, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
     );
 

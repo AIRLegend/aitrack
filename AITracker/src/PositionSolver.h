@@ -36,6 +36,7 @@ private:
 	static const int NB_CONTOUR_POINTS_COMPLEX = 29;
 	static const int NB_CONTOUR_POINTS_BASE = 18;
 	const double TO_DEG = (180.0 / 3.14159265);
+	const double TO_RAD = (3.14159265 / 180.0);
 
 	cv::Mat mat3dface;
 	cv::Mat mat3dcontour;
