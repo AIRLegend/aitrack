@@ -6,7 +6,7 @@
 
 #include "TrackerWrapper.h"
 
-std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(int im_width, int im_height, float distance, TRACKER_TYPE type)
+std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(int im_width, int im_height, float distance, float fov, TRACKER_TYPE type)
 {
 	std::string landmark_path = model_dir;
 	std::string detect_path = model_dir + "detection.onnx";

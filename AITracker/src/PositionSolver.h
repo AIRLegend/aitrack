@@ -21,7 +21,8 @@ public:
 		float prior_pitch = -2.f,
 		float prior_yaw = -2.f,
 		float prior_distance = -1.f,
-		bool complex = false);
+		bool complex = false,
+		float fov = 56.0f );
 
 	/**
 		Stores solved translation/rotation on the face_data object
@@ -40,8 +41,7 @@ private:
 
 	cv::Mat mat3dface;
 	cv::Mat mat3dcontour;
-	//int contour_indices[NB_CONTOUR_POINTS];  // Facial landmarks that interest us
-	std::vector<int> contour_indices;
+	std::vector<int> contour_indices;  // Facial landmarks that interest us
 
 	//Buffer so we dont have to allocate a list on every solve_rotation call.
 	cv::Mat landmark_points_buffer;

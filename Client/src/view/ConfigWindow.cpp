@@ -30,7 +30,7 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	check_stabilization_landmarks = gp_box_priors->findChild<QCheckBox*>("landmarkStabChck");
 	cb_modelType = gp_box_priors->findChild<QComboBox*>("modeltypeSelect");
 	distance_param = gp_box_priors->findChild<QLineEdit*>("distanceField");
-
+	fov_param = gp_box_priors->findChild<QLineEdit*>("fovField");
 
 
 	connect(btn_apply, SIGNAL(released()), this, SLOT(onApplyClick()));
@@ -66,6 +66,7 @@ ConfigData ConfigWindow::get_inputs()
 	conf.video_height = height_selector->value();
 	conf.selected_camera = input_camera->currentIndex();
 	conf.prior_distance = distance_param->text().toDouble();
+	conf.camera_fov = fov_param->text().toDouble();
 	conf.ip = ip_field->text().toStdString();
 	conf.port = port_field->text().toInt();
 	conf.use_landmark_stab = check_stabilization_landmarks->isChecked();
@@ -104,6 +105,8 @@ void ConfigWindow::update_view_state(ConfigData conf)
 	check_auto_update->setChecked(conf.autocheck_updates);
 	check_stabilization_landmarks->setChecked(conf.use_landmark_stab);
 	distance_param->setText(QString::number(conf.prior_distance));
+	fov_param->setText(QString::number(conf.camera_fov));
+
 
 	if (conf.ip != "" || conf.port > 0)
 	{
@@ -117,7 +120,7 @@ void ConfigWindow::update_view_state(ConfigData conf)
 		ip_field->setText("");
 		port_field->setText("");
 	}
-		
+	
 }
 
 void ConfigWindow::set_enabled(bool enabled)

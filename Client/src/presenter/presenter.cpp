@@ -129,6 +129,7 @@ void Presenter::init_tracker(int type)
 				buildTracker(all_cameras[state.selected_camera]->width,
 							 all_cameras[state.selected_camera]->height,
 							 (float)state.prior_distance,
+							 this->state.camera_fov,
 							 tracker_factory->get_type(type)
 				);
 		}
@@ -143,6 +144,7 @@ void Presenter::init_tracker(int type)
 		this->t = tracker_factory->buildTracker(all_cameras[state.selected_camera]->width,
 			all_cameras[state.selected_camera]->height,
 			(float)state.prior_distance,
+			this->state.camera_fov,
 			tracker_factory->get_type(type));
 	}
 	state.selected_model = type;

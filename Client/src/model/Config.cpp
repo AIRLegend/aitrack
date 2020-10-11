@@ -62,7 +62,7 @@ ConfigData ConfigMgr::getConfig()
 	ConfigData c = ConfigData();
 	c.ip = conf.value("ip", "").toString().toStdString();
 	c.port = conf.value("port", 0).toInt();
-	c.camera_fov = conf.value("camera_fov", 0.0).toDouble();
+	c.camera_fov = conf.value("camera_fov", 56.0).toDouble();
 	c.prior_distance = conf.value("prior_distance", 0.0).toDouble();
 	c.show_video_feed = conf.value("video_feed", true).toBool();
 	c.use_landmark_stab = conf.value("stabilize_landmarks", true).toBool();
