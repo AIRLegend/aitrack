@@ -310,6 +310,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.selected_camera = data.selected_camera;
 	state.cam_exposure = data.cam_exposure;
 	state.cam_gain = data.cam_gain;
+	state.camera_fov = data.camera_fov;
 	state.video_fps = data.video_fps;
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;

@@ -1,5 +1,5 @@
 {
-    "version": "0.6.3-alpha",
-    "url": "https://github.com/AIRLegend/aitrack/releases/download/v0.6.3-alpha/aitrack-v0.6.3-alpha.zip",
-    "bin": "aitrack-v0.6.3-alpha/AITrack.exe"
+    "version": "0.6.4-alpha",
+    "url": "https://github.com/AIRLegend/aitrack/releases/download/v0.6.4-alpha/aitrack-v0.6.4-alpha.zip",
+    "bin": "aitrack-v0.6.4-alpha/AITrack.exe"
 }
