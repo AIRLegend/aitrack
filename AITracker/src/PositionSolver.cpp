@@ -3,16 +3,11 @@
 
 PositionSolver::PositionSolver(int width, int height,
     float prior_pitch, float prior_yaw, float prior_distance, bool complex, float fov) :
-    //contour_indices{ 0,1,8,15,16,27,28,29,30,31,32,33,34,35,36,39,42,45 },
-    //contour_indices{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,27,28,29,30,31,32,33,34,35,36,39,42,45 },
+    //TODO: Refactor removing prior_yaw/pitch parameters
     landmark_points_buffer(complex ? NB_CONTOUR_POINTS_COMPLEX: NB_CONTOUR_POINTS_BASE, 1, CV_32FC2),
     rv({ 0, 0, 0 }),
     tv({ 0, 0, 0 })
 {
-    //this->prior_pitch = (1.1f * (prior_pitch + 90.f) / 180.f) - (double)2.5f;
-    //this->prior_yaw = (1.84f * (prior_yaw + 90.f) / 180.f) - (double)3.14f;
-    //this->prior_distance = prior_distance * -2.;
-    
     this->prior_pitch = -1.57;
     this->prior_yaw = -1.57;
     this->prior_distance = prior_distance * -1.;
@@ -90,7 +85,6 @@ PositionSolver::PositionSolver(int width, int height,
     // https://github.com/opentrack/opentrack/blob/3cc3ef246ad71c463c8952bcc96984b25d85b516/tracker-aruco/ftnoir_tracker_aruco.cpp#L193
     // Taking into account the camera FOV instead of assuming raw image dims is more clever and
     // will make the solver more camera-agnostic.
-    //float diag_fov = 56 * TO_RAD;
     float diag_fov = fov * TO_RAD;
 
     // Get expressed in sensor-size units
