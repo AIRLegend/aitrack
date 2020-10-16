@@ -2,7 +2,7 @@
 
 <p align="center"> - The open head tracker - </p>
 
-[![Build status](https://ci.appveyor.com/api/projects/status/18wa4pqqsge9m0x3?svg=true)](https://ci.appveyor.com/project/AIRLegend/aitracker)
+[![Build status](https://ci.appveyor.com/api/projects/status/18wa4pqqsge9m0x3?svg=true)](https://ci.appveyor.com/project/AIRLegend/aitrack)
 
 
 ## What is this?
