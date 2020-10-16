@@ -2,50 +2,114 @@
 
 
 PositionSolver::PositionSolver(int width, int height,
-    float prior_pitch, float prior_yaw, float prior_distance) :
-    contour_indices{ 0,1,8,15,16,27,28,29,30,31,32,33,34,35,36,39,42,45 },
-    landmark_points_buffer(NB_CONTOUR_POINTS, 1, CV_32FC2),
+    float prior_pitch, float prior_yaw, float prior_distance, bool complex, float fov) :
+    //TODO: Refactor removing prior_yaw/pitch parameters
+    landmark_points_buffer(complex ? NB_CONTOUR_POINTS_COMPLEX: NB_CONTOUR_POINTS_BASE, 1, CV_32FC2),
     rv({ 0, 0, 0 }),
     tv({ 0, 0, 0 })
 {
-    this->prior_pitch = (1.1f * (prior_pitch + 90.f) / 180.f) - (double)2.5f;
-    this->prior_distance = prior_distance * -2.;
-    this->prior_yaw = (1.84f * (prior_yaw + 90.f) / 180.f) - (double)3.14f;
+    this->prior_pitch = -1.57;
+    this->prior_yaw = -1.57;
+    this->prior_distance = prior_distance * -1.;
 
     this->rv[0] = this->prior_pitch;
     this->rv[1] = this->prior_yaw;
+    this->rv[2] = -1.57;
     this->tv[2] = this->prior_distance;
 
-    //std::cout << "PRIORS CALCULATED: \nPITCH: " <<this->prior_pitch << "  YAW: " << this->prior_yaw << "  DISTANCE: " << this->prior_distance;
 
-    mat3dcontour = (cv::Mat_<double>(18, 3) <<
-        0.45517698, -0.30089578, 0.76442945,
-        0.44899884, -0.16699584, 0.765143,
-        0., 0.621079, 0.28729478,
-        -0.44899884, -0.16699584, 0.765143,
-        -0.45517698, -0.30089578, 0.76442945,
-        0., -0.2933326, 0.1375821,
-        0., -0.1948287, 0.06915811,
-        0., -0.10384402, 0.00915182,
-        0., 0., 0.,
-        0.08062635, 0.04127607, 0.13416104,
-        0.04643935, 0.05767522, 0.10299063,
-        0., 0.06875312, 0.09054535,
-        -0.04643935, 0.05767522, 0.10299063,
-        -0.08062635, 0.04127607, 0.13416104,
-        0.31590518, -0.2983375, 0.2851074,
-        0.13122973, -0.28444737, 0.23423915,
-        -0.13122973, -0.28444737, 0.23423915,
-        -0.31590518, -0.2983375, 0.2851074
-     );
+    if (!complex)
+    { 
+        contour_indices = { 0,1,8,15,16,27,28,29,30,31,32,33,34,35,36,39,42,45 };
+        mat3dcontour = (cv::Mat_<double>(NB_CONTOUR_POINTS_BASE, 3) <<
+            0.45517698, -0.30089578, 0.76442945,
+            0.44899884, -0.16699584, 0.765143,
+            0., 0.621079, 0.28729478,
+            -0.44899884, -0.16699584, 0.765143,
+            -0.45517698, -0.30089578, 0.76442945,
+            0., -0.2933326, 0.1375821,
+            0., -0.1948287, 0.06915811,
+            0., -0.10384402, 0.00915182,
+            0., 0., 0.,
+            0.08062635, 0.04127607, 0.13416104,
+            0.04643935, 0.05767522, 0.10299063,
+            0., 0.06875312, 0.09054535,
+            -0.04643935, 0.05767522, 0.10299063,
+            -0.08062635, 0.04127607, 0.13416104,
+            0.31590518, -0.2983375, 0.2851074,
+            0.13122973, -0.28444737, 0.23423915,
+            -0.13122973, -0.28444737, 0.23423915,
+            -0.31590518, -0.2983375, 0.2851074
+            );
+    }
+    else
+    {
+        contour_indices = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,27,28,29,30,31,32,33,34,35,36,39,42,45 };
 
-    camera_matrix = (cv::Mat_<double>(3, 3) <<
+        landmark_points_buffer = cv::Mat(contour_indices.size(), 1, CV_32FC2);
+
+        mat3dcontour = (cv::Mat_<double>(contour_indices.size(), 3) <<
+            0.45517698, -0.30089578, 0.76442945,
+            0.44899884, -0.16699584, 0.76514298,
+            0.43743154, -0.02265548, 0.73926717,
+            0.41503343, 0.08894145, 0.74794745,
+            0.38912359, 0.23238003, 0.70478839,
+            0.3346301, 0.36126539, 0.61558759,
+            0.2637251, 0.46000972, 0.49147922,
+            0.16241622, 0.55803716, 0.33944517,
+            0., 0.62107903, 0.28729478,
+            -0.16241622, 0.55803716, 0.33944517,
+            -0.2637251, 0.46000972, 0.49147922,
+            -0.3346301, 0.36126539, 0.61558759,
+            -0.38912359, 0.23238003, 0.70478839,
+            -0.41503343, 0.08894145, 0.74794745,
+            -0.43743154, -0.02265548, 0.73926717,
+            -0.44899884, -0.16699584, 0.76514298,
+            0., -0.29333261, 0.13758209,
+            0., -0.1948287, 0.06915811,
+            0., -0.10384402, 0.00915182,
+            0., 0., 0.,
+            0.08062635, 0.04127607, 0.13416104,
+            0.04643935, 0.05767522, 0.10299063,
+            0., 0.06875312, 0.09054535,
+            -0.04643935, 0.05767522, 0.10299063,
+            -0.08062635, 0.04127607, 0.13416104,
+            0.31590518, -0.29833749, 0.2851074,
+            0.13122973, -0.28444737, 0.23423915,
+            -0.13122973, -0.28444737, 0.23423915,
+            -0.31590518, -0.29833749, 0.2851074
+            );
+    }
+
+    // Taken from 
+    // https://github.com/opentrack/opentrack/blob/3cc3ef246ad71c463c8952bcc96984b25d85b516/tracker-aruco/ftnoir_tracker_aruco.cpp#L193
+    // Taking into account the camera FOV instead of assuming raw image dims is more clever and
+    // will make the solver more camera-agnostic.
+    float diag_fov = fov * TO_RAD;
+
+    // Get expressed in sensor-size units
+
+    double fov_w = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + height / (double)width * height / (double)width));
+    double fov_h = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + width / (double)height * width / (double)height));
+
+    float i_height = .5 * height / (tan(.5*fov_w));
+    float i_width = .5* width / (tan(.5*fov_h));
+
+    /*camera_matrix = (cv::Mat_<double>(3, 3) <<
         height, 0, height / 2,
         0, height, width / 2,
         0, 0, 1
-        );
+        );*/
+
+    camera_matrix = (cv::Mat_<double>(3, 3) <<
+        i_width, 0, height / 2,
+        0, i_height, width / 2,
+        0, 0, 1
+     );
 
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
+
+    if(complex) std::cout << "Using complex solver" << std::endl;
 }
 
 void PositionSolver::solve_rotation(FaceData* face_data)
@@ -53,7 +117,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     int contour_idx = 0;
     for (int j = 0; j < 2; j++)
     {
-        for (int i = 0; i < NB_CONTOUR_POINTS; i++)
+        for (int i = 0; i < contour_indices.size(); i++)
         {
             contour_idx = contour_indices[i];
             landmark_points_buffer.at<float>(i, j) = (int)face_data->landmark_coords[2 * contour_idx + j];
@@ -63,23 +127,14 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 
     cv::Mat rvec(rv, true), tvec(tv, true);
 
-    /*solvePnP(mat3dcontour,
-        landmark_points_buffer,
-        this->camera_matrix,
-        this->camera_distortion,
-        rvec,
-        tvec,
-        true, //extrinsic guess
-        cv::SOLVEPNP_ITERATIVE
-    );*/
 
-    solvePnP(mat3dcontour,
+   solvePnP(mat3dcontour,
         landmark_points_buffer,
         this->camera_matrix,
         this->camera_distortion,
         rvec,
         tvec,
-        true, //extrinsic guess
+        false, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
     );
 
@@ -92,6 +147,8 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         face_data->rotation[i] = rvec.at<double>(i, 0);
         face_data->translation[i] = tvec.at<double>(i, 0) * 10;
     }
+
+    std::cout << face_data->to_string() << std::endl;
 
     correct_rotation(*face_data);
 

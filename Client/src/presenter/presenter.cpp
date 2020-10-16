@@ -29,7 +29,16 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	CameraFactory camfactory;
 	CameraSettings camera_settings = build_camera_params();
 	logger->info("Searching for cameras...");
-	all_cameras = camfactory.getCameras(camera_settings);
+	try
+	{
+		all_cameras = camfactory.getCameras(camera_settings);
+	}
+	catch (const std::exception& ex)
+	{
+		logger->error("Error querying for cameras");
+		logger->error(ex.what());
+		throw std::runtime_error("Error querying cameras");
+	}
 	logger->info("Number of recognized cameras: {}", all_cameras.size());
 
 	if (all_cameras.size() == 0)
@@ -120,6 +129,7 @@ void Presenter::init_tracker(int type)
 				buildTracker(all_cameras[state.selected_camera]->width,
 							 all_cameras[state.selected_camera]->height,
 							 (float)state.prior_distance,
+							 this->state.camera_fov,
 							 tracker_factory->get_type(type)
 				);
 		}
@@ -134,6 +144,7 @@ void Presenter::init_tracker(int type)
 		this->t = tracker_factory->buildTracker(all_cameras[state.selected_camera]->width,
 			all_cameras[state.selected_camera]->height,
 			(float)state.prior_distance,
+			this->state.camera_fov,
 			tracker_factory->get_type(type));
 	}
 	state.selected_model = type;
@@ -157,46 +168,53 @@ void Presenter::run_loop()
 	double buffer_data[6];
 
 	this->logger->info("Starting camera {} capture", state.selected_camera);
-	cam->start_camera();
-	this->logger->info("Camera {} started capturing", state.selected_camera);
 
-	while(run)
+	try 
 	{
-		cam->get_frame(video_tex_pixels.get());
-		cv::Mat mat(cam->height, cam->width, CV_8UC3, video_tex_pixels.get());
+		cam->start_camera();
+		this->logger->info("Camera {} started capturing", state.selected_camera);
 
-		t->predict(mat, d, this->filter);
-
-		if (d.face_detected)
+		while(run)
 		{
-			if (paint)
+			cam->get_frame(video_tex_pixels.get());
+			cv::Mat mat(cam->height, cam->width, CV_8UC3, video_tex_pixels.get());
+
+			t->predict(mat, d, this->filter);
+
+			if (d.face_detected)
 			{
-				// Paint landmarks
-				for (int i = 0; i < 66; i++)
+				if (paint)
 				{
-					cv::Point p(d.landmark_coords[2 * i + 1], d.landmark_coords[2 * i]);
-					cv::circle(mat, p, 2, color_magenta, 3);
+					// Paint landmarks
+					for (int i = 0; i < 66; i++)
+					{
+						cv::Point p(d.landmark_coords[2 * i + 1], d.landmark_coords[2 * i]);
+						cv::circle(mat, p, 2, color_magenta, 3);
+					}
+					cv::Point p1(d.face_coords[0], d.face_coords[1]);
+					cv::Point p2(d.face_coords[2], d.face_coords[3]);
+					cv::rectangle(mat, p1, p2, color_blue, 1);
 				}
-				cv::Point p1(d.face_coords[0], d.face_coords[1]);
-				cv::Point p2(d.face_coords[2], d.face_coords[3]);
-				cv::rectangle(mat, p1, p2, color_blue, 1);
+
+				update_tracking_data(d);
+				send_data(buffer_data);
 			}
 
-			update_tracking_data(d);
-			send_data(buffer_data);
+			if (paint)
+			{
+				cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+				view->paint_video_frame(mat);
+			}
+
+			cv::waitKey(1000/state.video_fps);
 		}
 
-		if (paint)
-		{
-			cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
-			view->paint_video_frame(mat);
-		}
-
-		cv::waitKey(1000/state.video_fps);
+		cam->stop_camera();
+		this->logger->info("Stop camera {} capture", state.selected_camera);
 	}
-
-	cam->stop_camera();
-	this->logger->info("Stop camera {} capture", state.selected_camera);
+	catch (std::exception& ex) {
+		this->logger->error(ex.what());
+	}
 }
 
 
@@ -209,7 +227,6 @@ void Presenter::update_tracking_data(FaceData& facedata)
 	this->state.pitch = facedata.rotation[0];   //Pitch
 	this->state.roll = facedata.rotation[2];   //Roll
 }
-
 
 void Presenter::update_stabilizer(const ConfigData& data)
 {
@@ -250,7 +267,6 @@ void Presenter::update_camera_params()
 	this->logger->info("Updated camera parameters. {}x{}@{}", state.video_width, state.video_height, state.video_fps);
 }
 
-
 void Presenter::send_data(double* buffer_data)
 {
 	//Send data
@@ -262,7 +278,6 @@ void Presenter::send_data(double* buffer_data)
 	buffer_data[5] = state.roll;   //Roll
 	udp_sender->send_data(buffer_data);
 }
-
 
 void Presenter::toggle_tracking()
 {
@@ -312,12 +327,10 @@ void Presenter::save_prefs(const ConfigData& data)
 	this->logger->info("Prefs saved");
 }
 
-
 void Presenter::sync_ui_inputs()
 {
 	this->view->update_view_state(state);
 }
-
 
 void Presenter::close_program()
 {
@@ -327,7 +340,6 @@ void Presenter::close_program()
 	for(std::shared_ptr<Camera> cam : all_cameras)
 		cam->stop_camera();
 }
-
 
 void Presenter::on_update_check_completed(bool update_exists)
 {

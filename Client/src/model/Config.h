@@ -15,7 +15,7 @@ struct ConfigData
 	int video_height;
 	int video_width;
 	int video_fps;
-	double prior_pitch, prior_yaw, prior_distance;
+	double prior_distance, camera_fov;
 	bool show_video_feed;
 	bool use_landmark_stab;
 	bool autocheck_updates;

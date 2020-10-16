@@ -250,7 +250,7 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>30</y>
+     <y>21</y>
      <width>191</width>
      <height>91</height>
     </rect>
@@ -336,9 +336,9 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>130</y>
+     <y>120</y>
      <width>191</width>
-     <height>151</height>
+     <height>171</height>
     </rect>
    </property>
    <property name="title">
@@ -348,7 +348,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>26</y>
+      <y>21</y>
       <width>61</width>
       <height>18</height>
      </rect>
@@ -361,7 +361,7 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>27</y>
+      <y>22</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -374,7 +374,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>62</y>
+      <y>76</y>
       <width>121</width>
       <height>16</height>
      </rect>
@@ -387,7 +387,7 @@
     <property name="geometry">
      <rect>
       <x>27</x>
-      <y>85</y>
+      <y>94</y>
       <width>121</width>
       <height>22</height>
      </rect>
@@ -415,12 +415,38 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QLineEdit" name="fovField">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>51</y>
+      <width>60</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>71</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Camera FOV</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QCheckBox" name="updateChckbox">
    <property name="geometry">
     <rect>
      <x>241</x>
-     <y>290</y>
+     <y>295</y>
      <width>131</width>
      <height>21</height>
     </rect>
