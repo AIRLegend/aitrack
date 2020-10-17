@@ -108,13 +108,11 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
     int y = p.y * 4;
 
 
-    face_data.face_detected = c > .6 ? true : false;
+    face_data.face_detected = c > .7 ? true : false;
 
     if (face_data.face_detected)
     {
         float face[] = { x - r, y - r, 2 * r, 2 * r };
-
-        //std::cout << face[0] << ", " << face[1] << ", " << face[2] << ", " << face[3] << std::endl;
         float width = image.cols;
         float height = image.rows;
 

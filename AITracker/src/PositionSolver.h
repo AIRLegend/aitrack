@@ -52,6 +52,7 @@ private:
 	
 	cv::Mat camera_matrix, camera_distortion;
 
+	bool complex;
 
 	/**
 		Gets euler angles from rotation matrix.
