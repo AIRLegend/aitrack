@@ -28,6 +28,11 @@ AITrack uses its own tracking pipeline (based on neural networks) to estimate th
 5. Run `AITrack.exe` from AITrack and click "Start tracking". 
 6. Look around!
 
+There is also a video tutorial version (in case you don't want to read):
+
+[<img src="http://i3.ytimg.com/vi/1B2dlzTlpus/hqdefault.jpg" width="50%">](https://www.youtube.com/watch?v=1B2dlzTlpus&feature=youtu.be)
+
+
 ### But... I don't have a webcam :(
 
 No problem. This program supports [Droid Cam](https://www.dev47apps.com/), so you're able to use your smartphone as a camera.
