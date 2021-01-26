@@ -26,10 +26,16 @@ WindowMain::WindowMain(QWidget *parent)
 	btn_config = findChild<QPushButton*>("btnConfig");
 
 	check_video_preview = findChild<QCheckBox*>("chkVideoPreview");
+
+	//Shortcuts
+	this->shortcut_mgr = new QGlobalShortcut();
+	this->shortcut_mgr->setKey(QKeySequence("Ctrl+Alt+Space"));
 	
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
 	connect(btn_config, SIGNAL(released()), this, SLOT(onConfigClick()));
 	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
+	
+	connect(shortcut_mgr, SIGNAL(activated()), SLOT(onTrackClick()));
 
 	statusBar()->setSizeGripEnabled(false);
 }

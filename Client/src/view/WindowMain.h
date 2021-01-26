@@ -13,6 +13,7 @@
 
 #include "ConfigWindow.h"
 
+#include "../utils/qglobalshortcuts/qglobalshortcut.h"
 
 class Presenter;
 
@@ -26,6 +27,8 @@ public:
 	IPresenter *presenter;
 	void closeEvent(QCloseEvent* event) override;
 
+	//Shortcuts
+	QGlobalShortcut *shortcut_mgr;
 
 	//Iview stuff
 	void connect_presenter(IPresenter* presenter);
