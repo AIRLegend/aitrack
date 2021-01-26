@@ -17,6 +17,9 @@ WindowMain::WindowMain(QWidget *parent)
 	this->conf_win = new ConfigWindow(this);
 	this->conf_win->hide();
 
+	//Shortcuts
+	this->toggle_tracking_shortcut = new QGlobalShortcut();
+
 	this->presenter = NULL;
 
 	btn_track = findChild<QPushButton*>("trackBtn");
@@ -26,16 +29,12 @@ WindowMain::WindowMain(QWidget *parent)
 	btn_config = findChild<QPushButton*>("btnConfig");
 
 	check_video_preview = findChild<QCheckBox*>("chkVideoPreview");
-
-	//Shortcuts
-	this->shortcut_mgr = new QGlobalShortcut();
-	this->shortcut_mgr->setKey(QKeySequence("Ctrl+Alt+Space"));
 	
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
 	connect(btn_config, SIGNAL(released()), this, SLOT(onConfigClick()));
 	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
 	
-	connect(shortcut_mgr, SIGNAL(activated()), SLOT(onTrackClick()));
+	register_shortcuts();
 
 	statusBar()->setSizeGripEnabled(false);
 }
@@ -45,6 +44,7 @@ WindowMain::~WindowMain()
 
 void WindowMain::closeEvent(QCloseEvent* event)
 {
+	delete(this->toggle_tracking_shortcut);
 	this->presenter->close_program();
 }
 
@@ -153,6 +153,7 @@ void WindowMain::set_enabled(bool enabled)
 
 void WindowMain::onTrackClick()
 {
+	std::cout << "TOGGLE TRACKING" << std::endl;
 	presenter->toggle_tracking();
 }
 
@@ -181,4 +182,12 @@ void WindowMain::readjust_size()
 void WindowMain::notify(IView* self)
 {
 	this->onSaveClick();
+}
+
+void WindowMain::register_shortcuts()
+{
+	// TODO: Unhardcode
+	this->toggle_tracking_shortcut->setKey(QKeySequence("Ctrl+Alt+Space"));
+
+	connect(this->toggle_tracking_shortcut, SIGNAL(activated()), SLOT(onTrackClick()));
 }
