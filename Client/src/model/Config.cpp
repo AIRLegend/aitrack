@@ -23,6 +23,12 @@ ConfigData ConfigData::getGenericConfig()
 	conf.x, conf.y, conf.z, conf.pitch, conf.yaw, conf.roll = 0;
 	conf.cam_exposure = -1;
 	conf.cam_gain = -1;
+	conf.set_env_threads = true;
+	conf.env_threads = 1;
+	conf.set_num_threads = true;
+	conf.num_threads = 1;
+	conf.set_dynamic = true;
+	conf.dynamic = 0;
 	return conf;
 }
 
@@ -55,6 +61,12 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("cam_gain", data.cam_gain);
 	conf.setValue("selected_camera", data.selected_camera);
 	conf.setValue("autocheck_updates", data.autocheck_updates);
+	conf.setValue("set_env_threads", data.set_env_threads);
+	conf.setValue("env_threads", data.env_threads);
+	conf.setValue("set_num_threads", data.set_num_threads);
+	conf.setValue("num_threads", data.num_threads);
+	conf.setValue("set_dynamic", data.set_dynamic);
+	conf.setValue("dynamic", data.dynamic);
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -74,6 +86,12 @@ ConfigData ConfigMgr::getConfig()
 	c.cam_exposure= conf.value("cam_exposure", -1).toInt();
 	c.cam_gain = conf.value("cam_gain", -1).toInt();
 	c.autocheck_updates = conf.value("autocheck_updates", 1).toBool();
+	c.set_env_threads = conf.value("set_env_threads", true).toBool();
+	c.env_threads = conf.value("env_threads", 1).toInt();
+	c.set_num_threads = conf.value("set_num_threads", true).toBool();
+	c.num_threads = conf.value("num_threads", 1).toInt();
+	c.set_dynamic = conf.value("set_dynamic", true).toBool();
+	c.dynamic = conf.value("dynamic", 0).toInt();
 	return c;
 }
 

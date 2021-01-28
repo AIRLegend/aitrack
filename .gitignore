@@ -349,3 +349,4 @@ healthchecksdb
 Client/models
 prefs.ini
 log.txt
+/cmake-build-debug/
