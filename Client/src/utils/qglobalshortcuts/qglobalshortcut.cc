@@ -1,3 +1,9 @@
+/**
+* This file is part of https://github.com/mitei/qglobalshortcut
+* Code is provided as copy/paste solution
+* Kudos to mitei :)
+*/
+
 #include "qglobalshortcut.h"
 #include <QCoreApplication>
 #include <QKeySequence>
