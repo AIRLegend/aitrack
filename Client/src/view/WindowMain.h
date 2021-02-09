@@ -69,7 +69,6 @@ private:
 
 private slots:
 	void onTrackClick();
-	void onTrackClick2();
 	void onSaveClick();
 	void onConfigClick();
 };
