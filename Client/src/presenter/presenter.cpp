@@ -22,7 +22,7 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	this->view->connect_presenter(this);
 	this->paint = state.show_video_feed;
 	this->filter = nullptr;
-
+	
 	// Init available model names to show in the GUI
 	this->tracker_factory->get_model_names(state.model_names);
 
@@ -52,6 +52,14 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	{
 		//Change the number of available cameras
 		state.num_cameras_detected = (int)all_cameras.size();
+
+		//Reset selected camera if saved camera is out of detected cameras' bounds
+		if (state.selected_camera >= state.num_cameras_detected) {
+			logger->info("Previously selected camera {} is no longer available, resetting.", state.selected_camera);
+			state.selected_camera = 0;
+			save_prefs(state);
+			this->view->show_message("Previously selected camera is no longer available.\nPlease choose another camera in Configuration menu.", MSG_SEVERITY::NORMAL);
+		}
 
 		// Request sockets (UDP Sender) only if needed.
 		std::string ip_str = state.ip;
@@ -310,6 +318,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.selected_camera = data.selected_camera;
 	state.cam_exposure = data.cam_exposure;
 	state.cam_gain = data.cam_gain;
+	state.camera_fov = data.camera_fov;
 	state.video_fps = data.video_fps;
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;

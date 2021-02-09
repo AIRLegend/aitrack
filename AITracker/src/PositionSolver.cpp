@@ -17,6 +17,7 @@ PositionSolver::PositionSolver(int width, int height,
     this->rv[2] = -1.57;
     this->tv[2] = this->prior_distance;
 
+    this->complex = complex;
 
     if (!complex)
     { 
@@ -134,7 +135,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         this->camera_distortion,
         rvec,
         tvec,
-        false, //extrinsic guess
+        !this->complex, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
     );
 

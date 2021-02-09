@@ -13,6 +13,7 @@ struct ps3eye_context {
 		, last_frames(0)
 	{
 		if (hasDevices()) {
+			// TODO: Maybe this is nullptr
 			eye = devices[0];
 			eye->init(width, height, (uint16_t)fps);
 		}

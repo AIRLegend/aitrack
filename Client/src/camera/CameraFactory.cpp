@@ -48,7 +48,11 @@ std::vector<std::shared_ptr<Camera>> CameraFactory::getCameras(CameraSettings& s
 		cams.push_back(std::make_shared<Ps3Camera>(640, 480, 60));
 		cams[0]->set_settings(settings);
 	}
-	catch (std::exception){}
+	catch (...)
+	{
+		std::cout << "No PS3 camera available." << std::endl;
+		cams.clear();
+	}
 
 
 	for (int i = 0; i < 5; i++)

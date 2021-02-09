@@ -73,6 +73,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(ProjectDir)\Vendor\spdlog\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;$(Platform)\$(Configuration)\uic;$(Platform)\$(Configuration)\moc;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(Qt_LIBPATH_);$(SolutionDir)Dependencies\libusb\MS64\static;$(SolutionDir)Dependencies\OpenCV\lib;$(SolutionDir)Dependencies\spdlog\lib\;$(SolutionDir)Dependencies\onnxruntime\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -106,6 +108,8 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);$(SolutionDir)Dependencies\libusb\include\libusb-1.0;$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;$(ProjectDir)Vendor\spdlog\include\;$(SolutionDir)PS3Driver\include\;$(SolutionDir)AITracker\src\;$(ProjectDir)Include;$(QTDIR)\include;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtCore;$(QTDIR)\mkspecs\win32-msvc;$(Platform)\$(Configuration)\uic;$(Platform)\$(Configuration)\moc;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -183,6 +187,7 @@
     <ClCompile Include="src\presenter\presenter.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\model\UDPSender.cpp" />
+    <ClCompile Include="src\utils\qglobalshortcuts\qglobalshortcut.cc" />
     <ClCompile Include="src\view\ConfigWindow.cpp" />
     <ClCompile Include="src\view\WindowMain.cpp" />
     <ClCompile Include="src\tracker\TrackerFactory.cpp" />
@@ -201,6 +206,7 @@
     <ClInclude Include="src\camera\CameraFactory.h" />
     <ClInclude Include="Include\ps3eye.h" />
     <ClInclude Include="resource.h" />
+    <QtMoc Include="src\utils\qglobalshortcuts\qglobalshortcut.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\model\Config.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
