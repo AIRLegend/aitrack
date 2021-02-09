@@ -187,7 +187,7 @@ void WindowMain::notify(IView* self)
 void WindowMain::register_shortcuts()
 {
 	// TODO: Unhardcode
-	this->toggle_tracking_shortcut->setKey(QKeySequence("Ctrl+Alt+Space"));
+	this->toggle_tracking_shortcut->setKey(QKeySequence("Ctrl+T"));
 
 	connect(this->toggle_tracking_shortcut, SIGNAL(activated()), SLOT(onTrackClick()));
 }

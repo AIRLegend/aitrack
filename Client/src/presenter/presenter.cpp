@@ -22,7 +22,7 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	this->view->connect_presenter(this);
 	this->paint = state.show_video_feed;
 	this->filter = nullptr;
-
+	
 	// Init available model names to show in the GUI
 	this->tracker_factory->get_model_names(state.model_names);
 
