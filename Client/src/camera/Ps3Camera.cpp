@@ -8,7 +8,7 @@ Ps3Camera::Ps3Camera(int width, int height, int fps) :
 	ctx(width, height, fps),
 	setting()
 {
-	if (!this->ctx.hasDevices())
+	if (!this->ctx.hasDevices() || ctx.eye == nullptr)
 	{
 		throw std::runtime_error("No PS3 Camera found.");
 	}
