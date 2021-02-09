@@ -13,6 +13,7 @@
 
 #include "ConfigWindow.h"
 
+#include "../utils/qglobalshortcuts/qglobalshortcut.h"
 
 class Presenter;
 
@@ -26,6 +27,8 @@ public:
 	IPresenter *presenter;
 	void closeEvent(QCloseEvent* event) override;
 
+	//Shortcuts
+	QGlobalShortcut *toggle_tracking_shortcut;
 
 	//Iview stuff
 	void connect_presenter(IPresenter* presenter);
@@ -39,6 +42,9 @@ public:
 
 	//IRootView
 	void notify(IView *self);
+
+	//Binds app shortcuts
+	void register_shortcuts();
 
 
 private:
