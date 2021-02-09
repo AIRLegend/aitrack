@@ -187,6 +187,7 @@
     <ClCompile Include="src\presenter\presenter.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\model\UDPSender.cpp" />
+    <ClCompile Include="src\utils\qglobalshortcuts\qglobalshortcut.cc" />
     <ClCompile Include="src\view\ConfigWindow.cpp" />
     <ClCompile Include="src\view\WindowMain.cpp" />
     <ClCompile Include="src\tracker\TrackerFactory.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="src\camera\CameraFactory.h" />
     <ClInclude Include="Include\ps3eye.h" />
     <ClInclude Include="resource.h" />
+    <QtMoc Include="src\utils\qglobalshortcuts\qglobalshortcut.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\model\Config.h" />
     <ClInclude Include="src\camera\Ps3Camera.h" />
