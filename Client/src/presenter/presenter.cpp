@@ -8,6 +8,8 @@
 
 #include "../version.h"
 
+#include <QThread>
+#include <qapplication.h>
 
 Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr)
 {
@@ -214,7 +216,8 @@ void Presenter::run_loop()
 				view->paint_video_frame(mat);
 			}
 
-			cv::waitKey(1000/state.video_fps);
+			QApplication::processEvents();
+			QThread::msleep(1000 / state.video_fps);
 		}
 
 		cam->stop_camera();
