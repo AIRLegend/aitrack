@@ -21,10 +21,6 @@
 int main(int argc, char *argv[])
 {
 
-    SetEnvironmentVariable(LPWSTR("OMP_NUM_THREADS"), LPWSTR("1"));
-    omp_set_num_threads(1);  // Disable ONNX paralelization so we dont steal all cpu cores.
-    omp_set_dynamic(0);
-
 #if defined(Q_OS_WIN)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
@@ -45,15 +41,25 @@ int main(int argc, char *argv[])
 
     logger->info(" ----------  AITRACK LOG   ----------");
 
+    auto conf_mgr = std::make_unique<ConfigMgr>("./prefs.ini");
+    logger->info("Created/Found prefs.ini");
+
+    auto state = conf_mgr->getConfig();
+    if (state.set_env_threads) {
+        std::wstring ws = std::to_wstring(state.env_threads);
+        SetEnvironmentVariable(LPWSTR(L"OMP_NUM_THREADS"), ws.c_str());
+    }
+    if (state.set_num_threads) {
+        omp_set_num_threads(state.num_threads);
+    }
+    if (state.set_dynamic) {
+        omp_set_dynamic(state.dynamic);
+    }
 
     QApplication app(argc, argv);
 
     WindowMain w;
     w.show();
-
-    
-    auto conf_mgr = std::make_unique<ConfigMgr>("./prefs.ini");
-    logger->info("Created/Found prefs.ini");
 
     auto t_factory = std::make_unique<TrackerFactory>("./models/");
 
