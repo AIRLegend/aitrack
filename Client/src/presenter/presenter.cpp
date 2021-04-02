@@ -1,3 +1,4 @@
+#include <chrono>
 #include <memory>
 #include <string.h>
 
@@ -184,8 +185,10 @@ void Presenter::run_loop()
 		cam->start_camera();
 		this->logger->info("Camera {} started capturing", state.selected_camera);
 
+		std::chrono::milliseconds frame_duration(1000 / state.video_fps);
 		while(run)
 		{
+			auto loop_start_time = std::chrono::steady_clock::now();
 			cam->get_frame(video_tex_pixels.get());
 			cv::Mat mat(cam->height, cam->width, CV_8UC3, video_tex_pixels.get());
 
@@ -217,7 +220,11 @@ void Presenter::run_loop()
 			}
 
 			QApplication::processEvents();
-			QThread::msleep(1000 / state.video_fps);
+
+			auto loop_end_time = std::chrono::steady_clock::now();
+			std::chrono::milliseconds loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop_end_time - loop_start_time);
+			if (loop_duration < frame_duration)
+				QThread::msleep((frame_duration - loop_duration).count());
 		}
 
 		cam->stop_camera();
