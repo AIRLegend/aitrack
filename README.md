@@ -55,7 +55,7 @@ If you encounter any bug/problem or you have some idea, post it on the [issues p
 
 Besides, there is a Discord server you can join to be aware of the news of the project, report problems or request features!
 
-<a href="https://discord.gg/HPZMdcx"><img src="https://image.flaticon.com/icons/svg/2111/2111370.svg" width="30px"/></a> Join the server!
+<a href="https://discord.gg/3XHY4xSDGv"><img src="https://image.flaticon.com/icons/svg/2111/2111370.svg" width="30px"/></a> Join the server!
 
 
 Thank you!
