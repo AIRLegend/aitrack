@@ -22,7 +22,10 @@ public:
 		float prior_yaw = -2.f,
 		float prior_distance = -1.f,
 		bool complex = false,
-		float fov = 56.0f );
+		float fov = 56.0f,
+		float x_scale = 1.0f,
+		float y_scal = 1.0f,
+		float z_scale = 1.0f);
 
 	/**
 		Stores solved translation/rotation on the face_data object
@@ -42,6 +45,7 @@ private:
 	cv::Mat mat3dface;
 	cv::Mat mat3dcontour;
 	std::vector<int> contour_indices;  // Facial landmarks that interest us
+	cv::Mat head3dScale;               // This will let us scale the 3d model so a better PnP can be acomplished
 
 	//Buffer so we dont have to allocate a list on every solve_rotation call.
 	cv::Mat landmark_points_buffer;

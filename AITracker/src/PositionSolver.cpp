@@ -1,8 +1,18 @@
 #include "PositionSolver.h"
 
 
-PositionSolver::PositionSolver(int width, int height,
-    float prior_pitch, float prior_yaw, float prior_distance, bool complex, float fov) :
+PositionSolver::PositionSolver(
+    int width, 
+    int height,
+    float prior_pitch, 
+    float prior_yaw, 
+    float prior_distance, 
+    bool complex, 
+    float fov,
+    float x_scale,
+    float y_scale, 
+    float z_scale) :
+
     //TODO: Refactor removing prior_yaw/pitch parameters
     landmark_points_buffer(complex ? NB_CONTOUR_POINTS_COMPLEX: NB_CONTOUR_POINTS_BASE, 1, CV_32FC2),
     rv({ 0, 0, 0 }),
@@ -10,12 +20,18 @@ PositionSolver::PositionSolver(int width, int height,
 {
     this->prior_pitch = -1.57;
     this->prior_yaw = -1.57;
-    this->prior_distance = prior_distance * -1.;
+    this->prior_distance = prior_distance * -2.;
 
     this->rv[0] = this->prior_pitch;
     this->rv[1] = this->prior_yaw;
     this->rv[2] = -1.57;
     this->tv[2] = this->prior_distance;
+
+    head3dScale = (cv::Mat_<double>(3, 3) <<
+        x_scale, 0.0, 0,
+        0.0, y_scale, 0,
+        0.0, 0.0, z_scale
+    );
 
     this->complex = complex;
 
@@ -110,6 +126,8 @@ PositionSolver::PositionSolver(int width, int height,
 
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 
+    mat3dcontour =  mat3dcontour * head3dScale;
+
     if(complex) std::cout << "Using complex solver" << std::endl;
 }
 
@@ -148,6 +166,9 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         face_data->rotation[i] = rvec.at<double>(i, 0);
         face_data->translation[i] = tvec.at<double>(i, 0) * 10;
     }
+
+    // We dont want the Z axis oversaturated.
+    face_data->translation[2] /= 100;
 
     std::cout << face_data->to_string() << std::endl;
 
