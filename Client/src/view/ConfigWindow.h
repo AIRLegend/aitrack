@@ -36,7 +36,7 @@ private:
 	QPushButton *btn_apply;
 	QComboBox *input_camera, *cb_modelType;
 
-	QCheckBox *check_stabilization_landmarks, *check_auto_update;
+	QCheckBox *check_stabilization_landmarks, *check_auto_update, *check_enable_tracking_shortcut;
 	QLineEdit *distance_param, *fov_param, * ip_field, * port_field;
 
 	QGroupBox *gp_box_camera_prefs, *gp_box_image_prefs, *gp_box_address, *gp_box_priors;;

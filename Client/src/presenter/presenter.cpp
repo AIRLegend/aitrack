@@ -333,6 +333,7 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;
 	state.autocheck_updates = data.autocheck_updates;
+	state.tracking_shortcut_enabled = data.tracking_shortcut_enabled;
 
 	update_camera_params();
 
@@ -358,6 +359,11 @@ void Presenter::close_program()
 	// Assure all cameras are released (some cameras have a "recording LED" which can be annoying to have on)
 	for(std::shared_ptr<Camera> cam : all_cameras)
 		cam->stop_camera();
+}
+
+const ConfigData& Presenter::get_state()
+{
+	return state;
 }
 
 void Presenter::on_update_check_completed(bool update_exists)

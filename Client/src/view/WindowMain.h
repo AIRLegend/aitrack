@@ -27,9 +27,6 @@ public:
 	IPresenter *presenter;
 	void closeEvent(QCloseEvent* event) override;
 
-	//Shortcuts
-	QGlobalShortcut *toggle_tracking_shortcut;
-
 	//Iview stuff
 	void connect_presenter(IPresenter* presenter);
 	void paint_video_frame(cv::Mat& img);
@@ -43,12 +40,14 @@ public:
 	//IRootView
 	void notify(IView *self);
 
-	//Binds app shortcuts
-	void register_shortcuts();
-
-
 private:
 	Ui::MainWindow ui;
+
+	bool tracking_shortcut_active_cache;
+
+	//Shortcuts
+	QGlobalShortcut *toggle_tracking_shortcut{nullptr};
+
 	QPushButton *btn_track, *btn_save, *btn_config;
 	QLabel *tracking_frame, *tracking_info;
 	//QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
@@ -66,6 +65,7 @@ private:
 	*/
 	void set_inputs(ConfigData data);
 
+	void syncTrackingShortcutState();
 
 private slots:
 	void onTrackClick();

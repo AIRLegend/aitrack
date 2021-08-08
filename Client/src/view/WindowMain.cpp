@@ -17,9 +17,6 @@ WindowMain::WindowMain(QWidget *parent)
 	this->conf_win = new ConfigWindow(this);
 	this->conf_win->hide();
 
-	//Shortcuts
-	this->toggle_tracking_shortcut = new QGlobalShortcut();
-
 	this->presenter = NULL;
 
 	btn_track = findChild<QPushButton*>("trackBtn");
@@ -34,8 +31,6 @@ WindowMain::WindowMain(QWidget *parent)
 	connect(btn_config, SIGNAL(released()), this, SLOT(onConfigClick()));
 	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
 	
-	register_shortcuts();
-
 	statusBar()->setSizeGripEnabled(false);
 }
 
@@ -44,6 +39,7 @@ WindowMain::~WindowMain()
 
 void WindowMain::closeEvent(QCloseEvent* event)
 {
+	// note: deleting nullptr has no effect
 	delete(this->toggle_tracking_shortcut);
 	this->presenter->close_program();
 }
@@ -112,6 +108,8 @@ void WindowMain::update_view_state(ConfigData conf)
 	{
 		tracking_frame->show();
 	}
+
+	syncTrackingShortcutState();
 }
 
 ConfigData WindowMain::get_inputs()
@@ -182,12 +180,28 @@ void WindowMain::readjust_size()
 void WindowMain::notify(IView* self)
 {
 	this->onSaveClick();
+	syncTrackingShortcutState();
 }
 
-void WindowMain::register_shortcuts()
-{
-	// TODO: Unhardcode
-	this->toggle_tracking_shortcut->setKey(QKeySequence("Ctrl+T"));
 
-	connect(this->toggle_tracking_shortcut, SIGNAL(activated()), SLOT(onTrackClick()));
+void WindowMain::syncTrackingShortcutState()
+{
+	// referer to program state instead to avoid QT routines
+	if (presenter->get_state().tracking_shortcut_enabled) {
+		if (this->toggle_tracking_shortcut == nullptr) {
+			std::cout << "Enabling tracking shortcut" << std::endl;
+			this->toggle_tracking_shortcut = new QGlobalShortcut();
+			this->toggle_tracking_shortcut->setKey(QKeySequence("Ctrl+T"));
+			connect(this->toggle_tracking_shortcut, SIGNAL(activated()), SLOT(onTrackClick()));
+		}
+		else {
+			std::cerr << "Tracking shortcut has already been enabled!" << std::endl;
+		}
+	}
+	else {
+		std::cout << "Disabling tracking shortcut" << std::endl;
+		// note: deleting nullptr has no effect
+		delete this->toggle_tracking_shortcut;
+		this->toggle_tracking_shortcut = nullptr;
+	}
 }
