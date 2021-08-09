@@ -333,9 +333,12 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;
 	state.autocheck_updates = data.autocheck_updates;
+	state.tracking_shortcut_enabled = data.tracking_shortcut_enabled;
 
 	update_camera_params();
 
+	// Notify UI to enable/disable shortcut signals
+	view->set_shortcuts(state.tracking_shortcut_enabled);
 
 	// Rebuild tracker if needed. This also will take care of updating the
 	// state/distance parameter
