@@ -43,8 +43,6 @@ public:
 private:
 	Ui::MainWindow ui;
 
-	bool tracking_shortcut_active_cache;
-
 	//Shortcuts
 	QGlobalShortcut *toggle_tracking_shortcut{nullptr};
 
