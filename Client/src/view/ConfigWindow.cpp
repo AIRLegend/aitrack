@@ -28,6 +28,7 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 
 	check_auto_update = findChild<QCheckBox*>("updateChckbox");
 	check_stabilization_landmarks = gp_box_priors->findChild<QCheckBox*>("landmarkStabChck");
+	check_enable_tracking_shortcut = findChild<QCheckBox*>("enableTrackingCheckbox");
 	cb_modelType = gp_box_priors->findChild<QComboBox*>("modeltypeSelect");
 	distance_param = gp_box_priors->findChild<QLineEdit*>("distanceField");
 	fov_param = gp_box_priors->findChild<QLineEdit*>("fovField");
@@ -51,6 +52,8 @@ void ConfigWindow::paint_video_frame(cv::Mat& img) { }
 
 void ConfigWindow::show_tracking_data(ConfigData conf) { }
 
+void ConfigWindow::set_shortcuts(bool enabled) { }
+
 void ConfigWindow::set_tracking_mode(bool is_tracking)
 {
 	set_enabled(!is_tracking);
@@ -72,6 +75,7 @@ ConfigData ConfigWindow::get_inputs()
 	conf.use_landmark_stab = check_stabilization_landmarks->isChecked();
 	conf.selected_model = cb_modelType->currentIndex();
 	conf.autocheck_updates = check_auto_update->isChecked();
+	conf.tracking_shortcut_enabled = check_enable_tracking_shortcut->isChecked();
 
 	return conf;
 }
@@ -103,6 +107,7 @@ void ConfigWindow::update_view_state(ConfigData conf)
 	cb_modelType->setCurrentIndex(conf.selected_model);
 
 	check_auto_update->setChecked(conf.autocheck_updates);
+	check_enable_tracking_shortcut->setChecked(conf.tracking_shortcut_enabled);
 	check_stabilization_landmarks->setChecked(conf.use_landmark_stab);
 	distance_param->setText(QString::number(conf.prior_distance));
 	fov_param->setText(QString::number(conf.camera_fov));
@@ -127,5 +132,4 @@ void ConfigWindow::set_enabled(bool enabled)
 {
 	this->setEnabled(enabled);
 }
-
 void ConfigWindow::show_message(const char* msg, MSG_SEVERITY severity){}

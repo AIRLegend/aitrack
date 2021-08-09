@@ -54,6 +54,11 @@ public:
 	* For showing dialogs or alerts to the user.
 	*/
 	virtual void show_message(const char* msg, MSG_SEVERITY severity) = 0;
+
+	/**
+	* Enables / Disables shortcuts
+	*/
+	virtual void set_shortcuts(bool enabled) = 0;
 };
 
 
