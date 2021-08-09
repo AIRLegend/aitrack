@@ -36,6 +36,7 @@ public:
 	void set_tracking_mode(bool is_tracking);
 	void set_enabled(bool enabled);
 	void show_message(const char* msg, MSG_SEVERITY severity);
+	void set_shortcuts(bool enabled);
 
 	//IRootView
 	void notify(IView *self);
@@ -62,8 +63,6 @@ private:
 	* Updates the view with the corresponding program state / config.
 	*/
 	void set_inputs(ConfigData data);
-
-	void syncTrackingShortcutState();
 
 private slots:
 	void onTrackClick();

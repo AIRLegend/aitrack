@@ -6,7 +6,6 @@
 #include <QJsonArray>
 #include <iostream>
 #include <QObject>
-#include <QDebug>
 
 
 UpdateChecker::UpdateChecker(std::string& version, IUpdateSub *obs):

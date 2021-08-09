@@ -106,7 +106,6 @@ public:
 	void toggle_tracking();
 	void save_prefs(const ConfigData& data);
 	void close_program();
-	const ConfigData& get_state();
 
 	//IUpdatesub
 	void on_update_check_completed(bool update_exists);

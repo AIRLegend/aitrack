@@ -337,6 +337,8 @@ void Presenter::save_prefs(const ConfigData& data)
 
 	update_camera_params();
 
+	// Notify UI to enable/disable shortcut signals
+	view->set_shortcuts(state.tracking_shortcut_enabled);
 
 	// Rebuild tracker if needed. This also will take care of updating the
 	// state/distance parameter
@@ -359,11 +361,6 @@ void Presenter::close_program()
 	// Assure all cameras are released (some cameras have a "recording LED" which can be annoying to have on)
 	for(std::shared_ptr<Camera> cam : all_cameras)
 		cam->stop_camera();
-}
-
-const ConfigData& Presenter::get_state()
-{
-	return state;
 }
 
 void Presenter::on_update_check_completed(bool update_exists)

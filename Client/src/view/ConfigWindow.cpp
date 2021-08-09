@@ -52,6 +52,8 @@ void ConfigWindow::paint_video_frame(cv::Mat& img) { }
 
 void ConfigWindow::show_tracking_data(ConfigData conf) { }
 
+void ConfigWindow::set_shortcuts(bool enabled) { }
+
 void ConfigWindow::set_tracking_mode(bool is_tracking)
 {
 	set_enabled(!is_tracking);

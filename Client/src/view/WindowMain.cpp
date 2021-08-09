@@ -108,8 +108,6 @@ void WindowMain::update_view_state(ConfigData conf)
 	{
 		tracking_frame->show();
 	}
-
-	syncTrackingShortcutState();
 }
 
 ConfigData WindowMain::get_inputs()
@@ -180,14 +178,13 @@ void WindowMain::readjust_size()
 void WindowMain::notify(IView* self)
 {
 	this->onSaveClick();
-	syncTrackingShortcutState();
 }
 
 
-void WindowMain::syncTrackingShortcutState()
+void WindowMain::set_shortcuts(bool enabled)
 {
 	// referer to program state instead to avoid QT routines
-	if (presenter->get_state().tracking_shortcut_enabled) {
+	if (enabled) {
 		if (this->toggle_tracking_shortcut == nullptr) {
 			std::cout << "Enabling tracking shortcut" << std::endl;
 			this->toggle_tracking_shortcut = new QGlobalShortcut();

@@ -27,6 +27,7 @@ public:
 	virtual void update_view_state(ConfigData conf) override;
 	virtual void set_enabled(bool enabled) override;
 	virtual void show_message(const char* msg, MSG_SEVERITY severity) override;
+	virtual void set_shortcuts(bool enabled) override;
 
 private:
 	Ui::ConfigWindow ui;
