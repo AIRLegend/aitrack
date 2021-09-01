@@ -23,6 +23,8 @@ struct ConfigData
 
 	float x, y, z, yaw, pitch, roll;
 
+	double head_scale_x, head_scale_y, head_scale_z;
+
 	int selected_camera;
 	int num_cameras_detected;
 	int cam_exposure;

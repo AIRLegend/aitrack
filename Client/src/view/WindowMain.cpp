@@ -86,7 +86,7 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 
 		// Remove background from label
 		tracking_frame->setPixmap(QPixmap());
-		tracking_frame->setText("No video input");
+		tracking_frame->setText("Tracking stopped.");
 	}
 
 	btn_config->setDisabled(is_tracking);

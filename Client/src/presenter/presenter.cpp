@@ -141,7 +141,10 @@ void Presenter::init_tracker(int type)
 							 all_cameras[state.selected_camera]->height,
 							 (float)state.prior_distance,
 							 this->state.camera_fov,
-							 tracker_factory->get_type(type)
+							 tracker_factory->get_type(type),
+							 state.head_scale_x,
+							 state.head_scale_y,
+							 state.head_scale_z
 				);
 		}
 		else

@@ -152,7 +152,7 @@
          <enum>QFrame::Plain</enum>
         </property>
         <property name="text">
-         <string>No active video feed</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tracking stopped&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="scaledContents">
          <bool>false</bool>

@@ -24,6 +24,9 @@ ConfigData ConfigData::getGenericConfig()
 	conf.x, conf.y, conf.z, conf.pitch, conf.yaw, conf.roll = 0;
 	conf.cam_exposure = -1;
 	conf.cam_gain = -1;
+	conf.head_scale_x = 1.0;
+	conf.head_scale_y = 1.0;
+	conf.head_scale_z = 1.0;
 	return conf;
 }
 
@@ -56,6 +59,9 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("cam_gain", data.cam_gain);
 	conf.setValue("selected_camera", data.selected_camera);
 	conf.setValue("autocheck_updates", data.autocheck_updates);
+	conf.setValue("head_3d_scale_x", data.head_scale_x);
+	conf.setValue("head_3d_scale_y", data.head_scale_y);
+	conf.setValue("head_3d_scale_z", data.head_scale_z);
 	conf.setValue("tracking_shortcut_enabled", data.tracking_shortcut_enabled);
 }
 
@@ -76,6 +82,9 @@ ConfigData ConfigMgr::getConfig()
 	c.cam_exposure= conf.value("cam_exposure", -1).toInt();
 	c.cam_gain = conf.value("cam_gain", -1).toInt();
 	c.autocheck_updates = conf.value("autocheck_updates", 1).toBool();
+	c.head_scale_x = conf.value("head_3d_scale_x", 1.0).toDouble();
+	c.head_scale_y = conf.value("head_3d_scale_y", 1.0).toDouble();
+	c.head_scale_z = conf.value("head_3d_scale_z", 1.0).toDouble();
 	c.tracking_shortcut_enabled= conf.value("tracking_shortcut_enabled", false).toBool();
 	return c;
 }
