@@ -1,5 +1,6 @@
 #include "PositionSolver.h"
 
+#define OPTIMIZE_PositionSolver 1
 
 PositionSolver::PositionSolver(
     int width, 
@@ -20,7 +21,7 @@ PositionSolver::PositionSolver(
 {
     this->prior_pitch = -1.57;
     this->prior_yaw = -1.57;
-    this->prior_distance = prior_distance * -2.;
+    this->prior_distance = prior_distance * -2.0;
 
     this->rv[0] = this->prior_pitch;
     this->rv[1] = this->prior_yaw;
@@ -63,9 +64,9 @@ PositionSolver::PositionSolver(
     {
         contour_indices = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,27,28,29,30,31,32,33,34,35,36,39,42,45 };
 
-        landmark_points_buffer = cv::Mat(contour_indices.size(), 1, CV_32FC2);
+        landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
 
-        mat3dcontour = (cv::Mat_<double>(contour_indices.size(), 3) <<
+        mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
             0.45517698, -0.30089578, 0.76442945,
             0.44899884, -0.16699584, 0.76514298,
             0.43743154, -0.02265548, 0.73926717,
@@ -102,15 +103,21 @@ PositionSolver::PositionSolver(
     // https://github.com/opentrack/opentrack/blob/3cc3ef246ad71c463c8952bcc96984b25d85b516/tracker-aruco/ftnoir_tracker_aruco.cpp#L193
     // Taking into account the camera FOV instead of assuming raw image dims is more clever and
     // will make the solver more camera-agnostic.
-    float diag_fov = fov * TO_RAD;
+    float diag_fov = (float)(fov * TO_RAD);
 
     // Get expressed in sensor-size units
 
+    #ifdef OPTIMIZE_PositionSolver
+    // instead of performing all operations as double, some can be peformed faster as int64_t
+    double fov_w = 2.0 * atan(tan(diag_fov / 2.0) / sqrt(1.0 + (double)((int64_t)height * height) / (double)((int64_t)width * width)));
+    double fov_h = 2.0 * atan(tan(diag_fov / 2.0) / sqrt(1.0 + (double)((int64_t)width * width) / (double)((int64_t)height * height)));
+    #else
     double fov_w = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + height / (double)width * height / (double)width));
     double fov_h = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + width / (double)height * width / (double)height));
+    #endif
 
-    float i_height = .5 * height / (tan(.5*fov_w));
-    float i_width = .5* width / (tan(.5*fov_h));
+    float i_height = (float)(0.5f * height / (tan(0.5 * fov_w)));
+    float i_width = (float)(0.5f * width / (tan(0.5 * fov_h)));
 
     /*camera_matrix = (cv::Mat_<double>(3, 3) <<
         height, 0, height / 2,
@@ -131,6 +138,7 @@ PositionSolver::PositionSolver(
     if(complex) std::cout << "Using complex solver" << std::endl;
 }
 
+#define FIX_WARNING_PositionSolver 1
 void PositionSolver::solve_rotation(FaceData* face_data)
 {
     int contour_idx = 0;
@@ -139,7 +147,11 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         for (int i = 0; i < contour_indices.size(); i++)
         {
             contour_idx = contour_indices[i];
+#ifdef FIX_WARNING_PositionSolver
+            landmark_points_buffer.at<float>(i, j) = (float)(int)face_data->landmark_coords[2 * contour_idx + j]; // is the (int) typecast intentional to discard fractional value ?
+#else
             landmark_points_buffer.at<float>(i, j) = (int)face_data->landmark_coords[2 * contour_idx + j];
+#endif
 
         }
     }
@@ -170,7 +182,9 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     // We dont want the Z axis oversaturated.
     face_data->translation[2] /= 100;
 
-    std::cout << face_data->to_string() << std::endl;
+#ifdef DEBUG_OUTPUT_FACE_DATA
+    std::cout << face_data->to_string() << std::endl; // disable copy constructor and output to std::cout
+#endif
 
     correct_rotation(*face_data);
 
@@ -218,12 +232,12 @@ void PositionSolver::get_euler(cv::Mat& rvec, cv::Mat& tvec)
 
 void PositionSolver::correct_rotation(FaceData& face_data)
 {
-    float distance = -(face_data.translation[2]);
-    float lateral_offset = face_data.translation[1];
-    float verical_offset = face_data.translation[0];
+    float distance = (float) -(face_data.translation[2]);
+    float lateral_offset = (float)face_data.translation[1];
+    float verical_offset = (float)face_data.translation[0];
 
-    float correction_yaw = std::atan(std::tan(lateral_offset / distance)) * TO_DEG;
-    float correction_pitch = std::atan(std::tan(verical_offset / distance)) * TO_DEG;
+    float correction_yaw = (float)(std::atan(std::tan(lateral_offset / distance)) * TO_DEG);
+    float correction_pitch = (float)(std::atan(std::tan(verical_offset / distance)) * TO_DEG);
 
     face_data.rotation[1] += correction_yaw;
     face_data.rotation[0] += correction_pitch;
