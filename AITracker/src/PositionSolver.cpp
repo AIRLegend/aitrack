@@ -182,7 +182,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     // We dont want the Z axis oversaturated.
     face_data->translation[2] /= 100;
 
-#ifdef DEBUG_OUTPUT_FACE_DATA
+#ifdef _DEBUG
     std::cout << face_data->to_string() << std::endl; // disable copy constructor and output to std::cout
 #endif
 
