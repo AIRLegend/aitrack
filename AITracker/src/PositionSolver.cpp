@@ -28,11 +28,19 @@ PositionSolver::PositionSolver(
     this->rv[2] = -1.57;
     this->tv[2] = this->prior_distance;
 
+#ifdef OPTIMIZE_PositionSolver
+    head3dScale = (cv::Mat_<double>(3, 3) <<
+        y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
+        0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+        0.0, 0.0, z_scale
+    );
+#else
     head3dScale = (cv::Mat_<double>(3, 3) <<
         x_scale, 0.0, 0,
         0.0, y_scale, 0,
         0.0, 0.0, z_scale
-    );
+        );
+#endif
 
     this->complex = complex;
 
@@ -107,14 +115,27 @@ PositionSolver::PositionSolver(
 
     // Get expressed in sensor-size units
 
-    #ifdef OPTIMIZE_PositionSolver
-    // instead of performing all operations as double, some can be peformed faster as int64_t
-    double fov_w = 2.0 * atan(tan(diag_fov / 2.0) / sqrt(1.0 + (double)((int64_t)height * height) / (double)((int64_t)width * width)));
-    double fov_h = 2.0 * atan(tan(diag_fov / 2.0) / sqrt(1.0 + (double)((int64_t)width * width) / (double)((int64_t)height * height)));
-    #else
+ #ifdef OPTIMIZE_PositionSolver
+    double width_squared    = (double)width * width;
+    double height_squared   = (double)height * height;
+    double diagonal_squared = width_squared + height_squared;
+    double diagonal         = sqrt(diagonal_squared); // hypotenuse of triangle
+
+    double fov_w = (double)diag_fov * width / diagonal;
+    double fov_h = (double)diag_fov * height / diagonal;
+    
+    double focalLength_width  = 0.5 * width / tan(0.5 * fov_w);
+    double focalLength_height = 0.5 * height / tan(0.5 * fov_h);
+
+    camera_matrix = (cv::Mat_<double>(3, 3) <<
+        focalLength_height, 0, height / 2,
+        0, focalLength_width, width / 2,
+        0, 0, 1
+        );
+
+ #else
     double fov_w = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + height / (double)width * height / (double)width));
     double fov_h = 2. * atan(tan(diag_fov / 2.) / sqrt(1. + width / (double)height * width / (double)height));
-    #endif
 
     float i_height = (float)(0.5f * height / (tan(0.5 * fov_w)));
     float i_width = (float)(0.5f * width / (tan(0.5 * fov_h)));
@@ -129,7 +150,11 @@ PositionSolver::PositionSolver(
         i_width, 0, height / 2,
         0, i_height, width / 2,
         0, 0, 1
-     );
+        );
+
+ #endif
+
+
 
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 
