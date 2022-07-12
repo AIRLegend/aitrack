@@ -261,10 +261,28 @@ void PositionSolver::correct_rotation(FaceData& face_data)
     float lateral_offset = (float)face_data.translation[1];
     float verical_offset = (float)face_data.translation[0];
 
+#ifdef OPTIMIZE_PositionSolver
+    float correction_yaw = (float)(std::atan(lateral_offset / distance) * TO_DEG); // (lateral_offset / distance) is already tangent, so only need atan to obtain radians
+    float correction_pitch = (float)(std::atan(verical_offset / distance) * TO_DEG); // (verical_offset / distance) is already tangent, so only need atan to obtain radians
+#else
     float correction_yaw = (float)(std::atan(std::tan(lateral_offset / distance)) * TO_DEG);
     float correction_pitch = (float)(std::atan(std::tan(verical_offset / distance)) * TO_DEG);
+#endif
 
     face_data.rotation[1] += correction_yaw;
     face_data.rotation[0] += correction_pitch;
+
+#ifdef OPTIMIZE_PositionSolver
+    // Limit yaw between -90.0 and +90.0 degrees after correction
+    if (face_data.rotation[1] >= 90.0)
+        face_data.rotation[1] = 90.0;
+    else if (face_data.rotation[1] <= -90.0)
+        face_data.rotation[1] = -90.0;
+    // Limit pitch between -90.0 and +90.0 degrees after correction
+    if (face_data.rotation[0] >= 90.0)
+        face_data.rotation[0] = 90.0;
+    else if (face_data.rotation[0] <= -90.0)
+        face_data.rotation[0] = -90.0;
+#endif
 }
 
