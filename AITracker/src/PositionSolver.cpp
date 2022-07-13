@@ -201,10 +201,10 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     for (int i = 0; i < 3; i++)
     {
         face_data->rotation[i] = rvec.at<double>(i, 0);
-        face_data->translation[i] = tvec.at<double>(i, 0) * 10;
+        face_data->translation[i] = tvec.at<double>(i, 0) * 10; // scale solvePnP coordinates to opentrack units in centimeters
     }
 
-    // We dont want the Z axis oversaturated.
+    // We dont want the Z axis oversaturated since opentrack has +/-600 centimeter range
     face_data->translation[2] /= 100;
 
 #ifdef _DEBUG
