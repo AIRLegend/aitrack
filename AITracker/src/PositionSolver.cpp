@@ -116,17 +116,27 @@ PositionSolver::PositionSolver(
     // Get expressed in sensor-size units
 
  #ifdef OPTIMIZE_PositionSolver
+    // field of view is a rectangular viewport with corners on a circular lens
+    // the diagonal of the rectangle can be expressed as the angular field of view or pixels
+    // the width of the rectangle can be expressed as either the field of view width or width in pixels
+    // the height of the rectangle can be expressed as either the field of view height or height in pixes
     double width_squared    = (double)width * width;
     double height_squared   = (double)height * height;
     double diagonal_squared = width_squared + height_squared;
     double diagonal         = sqrt(diagonal_squared); // hypotenuse of triangle
 
-    double fov_w = (double)diag_fov * width / diagonal;
-    double fov_h = (double)diag_fov * height / diagonal;
-    
-    double focalLength_width  = 0.5 * width / tan(0.5 * fov_w);
-    double focalLength_height = 0.5 * height / tan(0.5 * fov_h);
+    // set default focalLength for width and heigh if field of view is not set
+    double focalLength_width = width;
+    double focalLength_height = height;
+    if (fov != 0.0)
+    {
+        double fov_w = (double)diag_fov * width / diagonal;
+        double fov_h = (double)diag_fov * height / diagonal;
 
+        focalLength_width = 0.5 * width / tan(0.5 * fov_w);
+        focalLength_height = 0.5 * height / tan(0.5 * fov_h);
+    }
+ 
     camera_matrix = (cv::Mat_<double>(3, 3) <<
         focalLength_height, 0, height / 2,
         0, focalLength_width, width / 2,
