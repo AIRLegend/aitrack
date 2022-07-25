@@ -24,6 +24,8 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
     session_options.SetInterOpNumThreads(0); // size of the CPU thread pool used for executing multiple request concurrently, 0 = Use default optimal thread count
     session_options.SetIntraOpNumThreads(0); // size of the CPU thread pool used for executing a single graph, 0 = Use default optimal thread count
+    session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
+
 
     enviro->DisableTelemetryEvents();
 
@@ -66,7 +68,7 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr
 
 #define FIX_logit_boundary_conditions 1
 
-float logit(float p)
+float inline logit(float p)
 {
 #ifdef FIX_logit_boundary_conditions
     if (p >= 0.9999999f) // prevent divide by zero, with consistent boundary and resolution

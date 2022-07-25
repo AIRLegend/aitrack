@@ -1,4 +1,5 @@
 #include "ConfigWindow.h"
+#include <stdstring>
 
 ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	: QWidget(parent)
@@ -76,6 +77,11 @@ ConfigData ConfigWindow::get_inputs()
 	conf.selected_model = cb_modelType->currentIndex();
 	conf.autocheck_updates = check_auto_update->isChecked();
 	conf.tracking_shortcut_enabled = check_enable_tracking_shortcut->isChecked();
+
+	if (conf.ip.length() == 0)
+		conf.ip = std::string("127.0.0.1"); /* default to loopback IPv4 on same computer */
+	if (conf.port == 0)
+		conf.port = 4242; /* default to opentrack port */
 
 	return conf;
 }
