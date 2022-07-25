@@ -282,6 +282,9 @@ void PositionSolver::correct_rotation(FaceData& face_data)
     face_data.rotation[1] += correction_yaw;
     face_data.rotation[0] += correction_pitch;
 
+    face_data.rotation[0] = face_data.rotation[0] * 1.5; // compensate for insensitive negative pitch (upwards) which saturates just above -20deg with camera placed above monitor
+
+
 #ifdef OPTIMIZE_PositionSolver
     // Limit yaw between -90.0 and +90.0 degrees after correction
     if (face_data.rotation[1] >= 90.0)
