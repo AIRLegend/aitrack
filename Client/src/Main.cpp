@@ -45,15 +45,15 @@ int main(int argc, char *argv[])
     logger->info("Created/Found prefs.ini");
 
     auto state = conf_mgr->getConfig();
-    if (state.set_env_threads) {
-        std::wstring ws = std::to_wstring(state.env_threads);
+    if (state.onnx_set_env_threads) {
+        std::wstring ws = std::to_wstring(state.onnx_env_threads);
         SetEnvironmentVariable(LPWSTR(L"OMP_NUM_THREADS"), ws.c_str());
     }
-    if (state.set_num_threads) {
-        omp_set_num_threads(state.num_threads);
+    if (state.onnx_set_num_threads) {
+        omp_set_num_threads(state.onnx_num_threads);
     }
-    if (state.set_dynamic) {
-        omp_set_dynamic(state.dynamic);
+    if (state.onnx_set_dynamic) {
+        omp_set_dynamic(state.onnx_dynamic);
     }
 
     QApplication app(argc, argv);
