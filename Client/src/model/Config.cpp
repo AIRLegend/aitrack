@@ -17,7 +17,7 @@ ConfigData ConfigData::getGenericConfig()
 	conf.num_cameras_detected = 0;
 	conf.video_width = -1;
 	conf.video_height = -1;
-	conf.video_fps = -1;
+	conf.video_fps = 30;
 	conf.use_landmark_stab = true;
 	conf.autocheck_updates = true;
 	conf.tracking_shortcut_enabled = false;
