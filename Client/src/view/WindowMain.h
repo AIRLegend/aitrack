@@ -13,6 +13,7 @@
 
 #include "ConfigWindow.h"
 
+#include "../utils/qglobalshortcuts/qglobalshortcut.h"
 
 class Presenter;
 
@@ -26,7 +27,6 @@ public:
 	IPresenter *presenter;
 	void closeEvent(QCloseEvent* event) override;
 
-
 	//Iview stuff
 	void connect_presenter(IPresenter* presenter);
 	void paint_video_frame(cv::Mat& img);
@@ -36,13 +36,17 @@ public:
 	void set_tracking_mode(bool is_tracking);
 	void set_enabled(bool enabled);
 	void show_message(const char* msg, MSG_SEVERITY severity);
+	void set_shortcuts(bool enabled);
 
 	//IRootView
 	void notify(IView *self);
 
-
 private:
 	Ui::MainWindow ui;
+
+	//Shortcuts
+	QGlobalShortcut *toggle_tracking_shortcut{nullptr};
+
 	QPushButton *btn_track, *btn_save, *btn_config;
 	QLabel *tracking_frame, *tracking_info;
 	//QGroupBox *gp_box_prefs, *gp_box_address, *gp_box_priors;
@@ -59,7 +63,6 @@ private:
 	* Updates the view with the corresponding program state / config.
 	*/
 	void set_inputs(ConfigData data);
-
 
 private slots:
 	void onTrackClick();

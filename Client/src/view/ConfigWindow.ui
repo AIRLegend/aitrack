@@ -9,20 +9,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>368</height>
+    <width>411</width>
+    <height>393</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>419</width>
-    <height>368</height>
+    <width>411</width>
+    <height>393</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>419</width>
-    <height>368</height>
+    <width>411</width>
+    <height>393</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
      <x>10</x>
      <y>20</y>
      <width>191</width>
-     <height>291</height>
+     <height>321</height>
     </rect>
    </property>
    <property name="title">
@@ -233,8 +233,8 @@
   <widget class="QPushButton" name="applyBtn">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>320</y>
+     <x>10</x>
+     <y>350</y>
      <width>381</width>
      <height>31</height>
     </rect>
@@ -338,7 +338,7 @@
      <x>210</x>
      <y>120</y>
      <width>191</width>
-     <height>171</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
@@ -442,27 +442,43 @@
     </property>
    </widget>
   </widget>
-  <widget class="QCheckBox" name="updateChckbox">
+  <widget class="QGroupBox" name="generalGroupBox">
    <property name="geometry">
     <rect>
-     <x>241</x>
-     <y>295</y>
-     <width>131</width>
-     <height>21</height>
+     <x>210</x>
+     <y>270</y>
+     <width>191</width>
+     <height>71</height>
     </rect>
    </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check for a newer version of the program on GitHub and notify me if available.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   <property name="title">
+    <string>General</string>
    </property>
-   <property name="toolTipDuration">
-    <number>-1</number>
-   </property>
-   <property name="text">
-    <string>Autocheck updates</string>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QCheckBox" name="updateChckbox">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check for a newer version of the program on GitHub and notify me if available.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="toolTipDuration">
+       <number>-1</number>
+      </property>
+      <property name="text">
+       <string>Autocheck updates</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="enableTrackingCheckbox">
+      <property name="text">
+       <string>Start/Stop Tracking shortcut</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

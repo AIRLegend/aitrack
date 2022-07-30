@@ -95,6 +95,7 @@ private:
 	*/
 	void update_camera_params();
 
+
 public:
 	std::unique_ptr<ConfigMgr> conf_mgr;
 	std::unique_ptr<UpdateChecker> update_chkr;

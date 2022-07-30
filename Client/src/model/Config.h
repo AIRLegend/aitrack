@@ -19,8 +19,11 @@ struct ConfigData
 	bool show_video_feed;
 	bool use_landmark_stab;
 	bool autocheck_updates;
+	bool tracking_shortcut_enabled;
 
 	float x, y, z, yaw, pitch, roll;
+
+	double head_scale_x, head_scale_y, head_scale_z;
 
 	int selected_camera;
 	int num_cameras_detected;

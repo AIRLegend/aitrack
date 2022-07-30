@@ -30,7 +30,7 @@ WindowMain::WindowMain(QWidget *parent)
 	connect(btn_track, SIGNAL(released()), this, SLOT(onTrackClick()));
 	connect(btn_config, SIGNAL(released()), this, SLOT(onConfigClick()));
 	connect(check_video_preview, SIGNAL(released()), this, SLOT(onSaveClick()));
-
+	
 	statusBar()->setSizeGripEnabled(false);
 }
 
@@ -39,6 +39,8 @@ WindowMain::~WindowMain()
 
 void WindowMain::closeEvent(QCloseEvent* event)
 {
+	// note: deleting nullptr has no effect
+	delete(this->toggle_tracking_shortcut);
 	this->presenter->close_program();
 }
 
@@ -84,7 +86,7 @@ void WindowMain::set_tracking_mode(bool is_tracking)
 
 		// Remove background from label
 		tracking_frame->setPixmap(QPixmap());
-		tracking_frame->setText("No video input");
+		tracking_frame->setText("Tracking stopped.");
 	}
 
 	btn_config->setDisabled(is_tracking);
@@ -147,6 +149,7 @@ void WindowMain::set_enabled(bool enabled)
 
 void WindowMain::onTrackClick()
 {
+	std::cout << "TOGGLE TRACKING" << std::endl;
 	presenter->toggle_tracking();
 }
 
@@ -175,4 +178,27 @@ void WindowMain::readjust_size()
 void WindowMain::notify(IView* self)
 {
 	this->onSaveClick();
+}
+
+
+void WindowMain::set_shortcuts(bool enabled)
+{
+	// referer to program state instead to avoid QT routines
+	if (enabled) {
+		if (this->toggle_tracking_shortcut == nullptr) {
+			std::cout << "Enabling tracking shortcut" << std::endl;
+			this->toggle_tracking_shortcut = new QGlobalShortcut();
+			this->toggle_tracking_shortcut->setKey(QKeySequence("Ctrl+T"));
+			connect(this->toggle_tracking_shortcut, SIGNAL(activated()), SLOT(onTrackClick()));
+		}
+		else {
+			std::cerr << "Tracking shortcut has already been enabled!" << std::endl;
+		}
+	}
+	else {
+		std::cout << "Disabling tracking shortcut" << std::endl;
+		// note: deleting nullptr has no effect
+		delete this->toggle_tracking_shortcut;
+		this->toggle_tracking_shortcut = nullptr;
+	}
 }

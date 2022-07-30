@@ -6,7 +6,15 @@
 
 #include "TrackerWrapper.h"
 
-std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(int im_width, int im_height, float distance, float fov, TRACKER_TYPE type)
+std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(
+	int im_width, 
+	int im_height, 
+	float distance, 
+	float fov, 
+	TRACKER_TYPE type,
+	float x_scale,
+	float y_scale,
+	float z_scale)
 {
 	std::string landmark_path = model_dir;
 	std::string detect_path = model_dir + "detection.onnx";
@@ -32,7 +40,8 @@ std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(int im_width, int 
 	std::wstring detect_wstr = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(detect_path);
 	std::wstring landmark_wstr = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(landmark_path);
 
-	auto solver = std::make_unique<PositionSolver>(im_width, im_height, -2, -2, distance, complex_solver);
+	auto solver = std::make_unique<PositionSolver>(im_width, im_height, -2, -2, distance, complex_solver,
+												   x_scale, y_scale, z_scale);
 
 	std::unique_ptr<Tracker> t;
 	try

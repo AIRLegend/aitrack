@@ -1,3 +1,4 @@
+#include <chrono>
 #include <memory>
 #include <string.h>
 
@@ -8,6 +9,8 @@
 
 #include "../version.h"
 
+#include <QThread>
+#include <qapplication.h>
 
 Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, std::unique_ptr<ConfigMgr>&& conf_mgr)
 {
@@ -22,7 +25,7 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	this->view->connect_presenter(this);
 	this->paint = state.show_video_feed;
 	this->filter = nullptr;
-
+	
 	// Init available model names to show in the GUI
 	this->tracker_factory->get_model_names(state.model_names);
 
@@ -138,7 +141,10 @@ void Presenter::init_tracker(int type)
 							 all_cameras[state.selected_camera]->height,
 							 (float)state.prior_distance,
 							 this->state.camera_fov,
-							 tracker_factory->get_type(type)
+							 tracker_factory->get_type(type),
+							 state.head_scale_x,
+							 state.head_scale_y,
+							 state.head_scale_z
 				);
 		}
 		else
@@ -182,8 +188,10 @@ void Presenter::run_loop()
 		cam->start_camera();
 		this->logger->info("Camera {} started capturing", state.selected_camera);
 
+		std::chrono::milliseconds frame_duration(1000 / state.video_fps);
 		while(run)
 		{
+			auto loop_start_time = std::chrono::steady_clock::now();
 			cam->get_frame(video_tex_pixels.get());
 			cv::Mat mat(cam->height, cam->width, CV_8UC3, video_tex_pixels.get());
 
@@ -214,7 +222,12 @@ void Presenter::run_loop()
 				view->paint_video_frame(mat);
 			}
 
-			cv::waitKey(1000/state.video_fps);
+			QApplication::processEvents();
+
+			auto loop_end_time = std::chrono::steady_clock::now();
+			std::chrono::milliseconds loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop_end_time - loop_start_time);
+			if (loop_duration < frame_duration)
+				QThread::msleep((frame_duration - loop_duration).count());
 		}
 
 		cam->stop_camera();
@@ -323,9 +336,12 @@ void Presenter::save_prefs(const ConfigData& data)
 	state.video_height = data.video_height;
 	state.video_width = data.video_width;
 	state.autocheck_updates = data.autocheck_updates;
+	state.tracking_shortcut_enabled = data.tracking_shortcut_enabled;
 
 	update_camera_params();
 
+	// Notify UI to enable/disable shortcut signals
+	view->set_shortcuts(state.tracking_shortcut_enabled);
 
 	// Rebuild tracker if needed. This also will take care of updating the
 	// state/distance parameter
