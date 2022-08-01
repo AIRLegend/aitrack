@@ -70,6 +70,17 @@ void ImageProcessor::transpose(float* from, float* dest, int dim_x, int dim_y)
 {
     int stride = dim_x * dim_y;
 
+#ifdef OPTIMIZE_ImageProcessor
+    for (int c = 0; c < 3; c++)
+    {
+        float * from_by_channel = &from[c];
+        float * dest_by_channel = &dest[stride * c];
+        for (int i = 0; i < stride; i++)
+        {
+            dest_by_channel[i] = from_by_channel[i*3];
+        }
+    }
+#else
     for (int c = 0; c < 3; c++)
     {
         for (int i = 0; i < dim_x * dim_y; i++)
@@ -77,6 +88,7 @@ void ImageProcessor::transpose(float* from, float* dest, int dim_x, int dim_y)
             dest[i + stride*c] = from[c + i*3];
         }
     }
+#endif
 }
 
 #ifdef OPTIMIZE_ImageProcessor
