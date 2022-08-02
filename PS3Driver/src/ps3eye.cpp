@@ -189,7 +189,7 @@ static const uint8_t ov772x_reg_initdata[][2] = {
 	{ 0x11, 0x00 },
 	{ 0x0D, 0x41 },
 
- 	{ 0x8E, 0x00 },		// De-noise threshold - jfrancois 0x00 - orig 0x04
+ 	{ 0x8E, 0x00 }		// De-noise threshold - jfrancois 0x00 - orig 0x04
 };
 
 static const uint8_t bridge_start_vga[][2] = {
@@ -201,7 +201,7 @@ static const uint8_t bridge_start_vga[][2] = {
 	{0x1d, 0x2C},	/* frame size */
 	{0x1d, 0x00},	/* frame size */
 	{0xc0, 0x50},
-	{0xc1, 0x3c},
+	{0xc1, 0x3c}
 };
 static const uint8_t sensor_start_vga[][2] = {
 	{0x12, 0x01},
@@ -211,7 +211,7 @@ static const uint8_t sensor_start_vga[][2] = {
 	{0x1a, 0xf0},
 	{0x29, 0xa0},
 	{0x2c, 0xf0},
-	{0x65, 0x20},
+	{0x65, 0x20}
 };
 static const uint8_t bridge_start_qvga[][2] = {
 	{0x1c, 0x00},
@@ -222,7 +222,7 @@ static const uint8_t bridge_start_qvga[][2] = {
 	{0x1d, 0x4b},	/* frame size */
 	{0x1d, 0x00},	/* frame size */
 	{0xc0, 0x28},
-	{0xc1, 0x1e},
+	{0xc1, 0x1e}
 };
 static const uint8_t sensor_start_qvga[][2] = {
 	{0x12, 0x41},
@@ -232,7 +232,7 @@ static const uint8_t sensor_start_qvga[][2] = {
 	{0x1a, 0x78},
 	{0x29, 0x50},
 	{0x2c, 0x78},
-	{0x65, 0x2f},
+	{0x65, 0x2f}
 };
 
 /* Values for bmHeaderInfo (Video and Still Image Payload Headers, 2.4.3.3) */
@@ -812,10 +812,12 @@ public:
 
 		USBMgr::instance()->cameraStopped();
 
-		free(transfer_buffer);
+		if (transfer_buffer)
+			free(transfer_buffer);
 		transfer_buffer = NULL;
 
-		delete frame_queue;
+		if (frame_queue)
+			delete frame_queue;
 		frame_queue = NULL;
 	}
 
@@ -826,7 +828,7 @@ public:
 		num_active_transfers_condition.notify_one();
 	}
 
-	void frame_add(enum gspca_packet_type packet_type, const uint8_t *data, int len)
+	void inline frame_add(enum gspca_packet_type packet_type, const uint8_t *data, int len)
 	{
 	    if (packet_type == FIRST_PACKET) 
 	    {
@@ -1312,7 +1314,7 @@ uint16_t PS3EYECam::ov534_set_frame_rate(uint16_t frame_rate, bool dry_run)
              {8, 0x02, 0x01, 0x02},
              {5, 0x04, 0x01, 0x02},
              {3, 0x06, 0x01, 0x02},
-             {2, 0x09, 0x01, 0x02},
+             {2, 0x09, 0x01, 0x02}
      };
      static const struct rate_s rate_1[] = { /* 320x240 */
              {290, 0x00, 0xc1, 0x04},
@@ -1336,7 +1338,7 @@ uint16_t PS3EYECam::ov534_set_frame_rate(uint16_t frame_rate, bool dry_run)
              {7, 0x04, 0x01, 0x04},
              {5, 0x06, 0x01, 0x04},
              {3, 0x09, 0x01, 0x04},
-             {2, 0x18, 0x01, 0x02},
+             {2, 0x18, 0x01, 0x02}
      };
 
      if (frame_width == 640) {
@@ -1362,11 +1364,21 @@ uint16_t PS3EYECam::ov534_set_frame_rate(uint16_t frame_rate, bool dry_run)
      return r->fps;
 }
 
-void PS3EYECam::ov534_reg_write(uint16_t reg, uint8_t val)
+#define OPTIMIZE_ov534_reg_write 1
+void inline PS3EYECam::ov534_reg_write(uint16_t reg, uint8_t val)
 {
 	int ret;
 
 	//debug("reg=0x%04x, val=0%02x", reg, val);
+#ifdef OPTIMIZE_ov534_reg_write
+	// usb_buf[0] = val;
+
+	ret = libusb_control_transfer(handle_,
+		LIBUSB_ENDPOINT_OUT |
+		LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
+		0x01, 0x00, reg,
+		&val, 1, 500);
+#else
 	usb_buf[0] = val;
 
   	ret = libusb_control_transfer(handle_,
@@ -1374,12 +1386,13 @@ void PS3EYECam::ov534_reg_write(uint16_t reg, uint8_t val)
 							LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE, 
 							0x01, 0x00, reg,
 							usb_buf, 1, 500);
+#endif
 	if (ret < 0) {
 		debug("write failed\n");
 	}
 }
 
-uint8_t PS3EYECam::ov534_reg_read(uint16_t reg)
+uint8_t inline PS3EYECam::ov534_reg_read(uint16_t reg)
 {
 	int ret;
 
@@ -1396,7 +1409,7 @@ uint8_t PS3EYECam::ov534_reg_read(uint16_t reg)
 	return usb_buf[0];
 }
 
-int PS3EYECam::sccb_check_status()
+int inline PS3EYECam::sccb_check_status()
 {
 	uint8_t data;
 	int i;
@@ -1419,7 +1432,7 @@ int PS3EYECam::sccb_check_status()
 	return 0;
 }
 
-void PS3EYECam::sccb_reg_write(uint8_t reg, uint8_t val)
+void inline PS3EYECam::sccb_reg_write(uint8_t reg, uint8_t val)
 {
 	//debug("reg: 0x%02x, val: 0x%02x", reg, val);
 	ov534_reg_write(OV534_REG_SUBADDR, reg);
@@ -1432,7 +1445,7 @@ void PS3EYECam::sccb_reg_write(uint8_t reg, uint8_t val)
 }
 
 
-uint8_t PS3EYECam::sccb_reg_read(uint16_t reg)
+uint8_t inline PS3EYECam::sccb_reg_read(uint16_t reg)
 {
 	ov534_reg_write(OV534_REG_SUBADDR, (uint8_t)reg);
 	ov534_reg_write(OV534_REG_OPERATION, OV534_OP_WRITE_2);

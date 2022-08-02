@@ -7,6 +7,7 @@
 #include <omp.h>
 
 
+#define OPTIMIZE_Tracker 1
 
 Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
     improc(),
@@ -21,8 +22,10 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
 
     auto session_options = Ort::SessionOptions();
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-    session_options.SetInterOpNumThreads(1);
-    session_options.SetIntraOpNumThreads(1);
+    session_options.SetInterOpNumThreads(0); // size of the CPU thread pool used for executing multiple request concurrently, 0 = Use default optimal thread count
+    session_options.SetIntraOpNumThreads(0); // size of the CPU thread pool used for executing a single graph, 0 = Use default optimal thread count
+    session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
+
 
     enviro->DisableTelemetryEvents();
 
@@ -52,8 +55,8 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr
         int height = face_data.face_coords[2] - face_data.face_coords[0];
         int width = face_data.face_coords[3] - face_data.face_coords[1];
 
-        float scale_x = (float)width / 224;
-        float scale_y = (float)height / 224;
+        float scale_x = (float)width / 224.0f;
+        float scale_y = (float)height / 224.0f;
         detect_landmarks(cropped, face_data.face_coords[0], face_data.face_coords[1], scale_x, scale_y, face_data);
 
         if (filter != nullptr)
@@ -63,8 +66,19 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr
     }
 }
 
-float logit(float p)
+#define FIX_logit_boundary_conditions 1
+
+float inline logit(float p)
 {
+#ifdef FIX_logit_boundary_conditions
+    if (p >= 0.9999999f) // prevent divide by zero, with consistent boundary and resolution
+        p = 0.9999999f; 
+    else if (p <= 0.0000001f) // prevent log(0), with consistent boundary and resolution
+        p = 0.0000001f; 
+
+    p = p / (1.0f - p);
+    return log(p) / 16.0f;
+#else
     if (p >= 1.0)
         p = 0.99999;
     else if (p <= 0.0)
@@ -72,14 +86,19 @@ float logit(float p)
 
     p = p / (1 - p);
     return log(p) / 16;
+#endif
 }
 
 void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
+#ifdef OPTIMIZE_ImageProcessor
+    improc.normalize_and_transpose(resized, buffer_data); // combine methods
+#else
     improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
+#endif
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
 
@@ -108,25 +127,25 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
     int y = p.y * 4;
 
 
-    face_data.face_detected = c > .7 ? true : false;
+    face_data.face_detected = c > 0.7f ? true : false;
 
     if (face_data.face_detected)
     {
         float face[] = { x - r, y - r, 2 * r, 2 * r };
-        float width = image.cols;
-        float height = image.rows;
+        float width = (float)image.cols;
+        float height = (float)image.rows;
 
-        face[0] *= width / 224;
-        face[2] *= width / 224;
-        face[1] *= height / 224;
-        face[3] *= height / 224;
+        face[0] *= width / 224.0f;
+        face[2] *= width / 224.0f;
+        face[1] *= height / 224.0f;
+        face[3] *= height / 224.0f;
 
         proc_face_detect(face, width, height);
 
-        face_data.face_coords[0] = face[0];
-        face_data.face_coords[1] = face[1];
-        face_data.face_coords[2] = face[2];
-        face_data.face_coords[3] = face[3];
+        face_data.face_coords[0] = (int)face[0];
+        face_data.face_coords[1] = (int)face[1];
+        face_data.face_coords[2] = (int)face[2];
+        face_data.face_coords[3] = (int)face[3];
     }
 
 }
@@ -137,8 +156,12 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
+#ifdef OPTIMIZE_ImageProcessor
+    improc.normalize_and_transpose(resized, buffer_data); // combine methods
+#else
     improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
+#endif
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
 
@@ -164,10 +187,10 @@ void Tracker::proc_face_detect(float* face, float width, float height)
     int crop_x2 = (int)(x + w + w * 0.09f);
     int crop_y2 = (int)(y + h + h * 0.450f);
 
-    face[0] = std::max(0, crop_x1);
-    face[1] = std::max(0, crop_y1);
-    face[2] = std::min((int)width, crop_x2);
-    face[3] = std::min((int)height, crop_y2);
+    face[0] = (float)std::max(0, crop_x1);
+    face[1] = (float)std::max(0, crop_y1);
+    face[2] = (float)std::min((int)width, crop_x2);
+    face[3] = (float)std::min((int)height, crop_y2);
 }
 
 
@@ -179,6 +202,17 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
         int offset = heatmap_size * landmark;
         int argmax = -100;
         float maxval = -100;
+#ifdef OPTIMIZE_Tracker
+        float* landmark_heatmap = &heatmaps[offset]; // reduce indexing
+        for (int i = 0; i < heatmap_size; i++)
+        {
+            if (landmark_heatmap[i] > maxval)
+            {
+                argmax = i;
+                maxval = landmark_heatmap[i];
+            }
+        }
+#else
         for (int i = 0; i < heatmap_size; i++)
         {
             if (heatmaps[offset + i] > maxval)
@@ -187,20 +221,20 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
                 maxval = heatmaps[offset + i];
             }
         }
-
+#endif
         int x = argmax / 28;
         int y = argmax % 28;
 
 
-        float conf = heatmaps[offset + argmax];
+        // float conf = heatmaps[offset + argmax]; unreferenced local variable
         float res = 223;
 
-        int off_x = floor(res * (logit(heatmaps[66 * heatmap_size + offset + argmax])) + 0.1);
-        int off_y = floor(res * (logit(heatmaps[2 * 66 * heatmap_size + offset + argmax])) + 0.1);
+        int off_x = (int)floor(res * (logit(heatmaps[66 * heatmap_size + offset + argmax])) + 0.1f);
+        int off_y = (int)floor(res * (logit(heatmaps[2 * 66 * heatmap_size + offset + argmax])) + 0.1f);
 
 
-        float lm_x = (float)y0 + (float)(scale_x * (res * (float(x) / 27.) + off_x));
-        float lm_y = (float)x0 + (float)(scale_y * (res * (float(y) / 27.) + off_y));
+        float lm_x = (float)y0 + (float)(scale_x * (res * (float(x) / 27.0f) + off_x));
+        float lm_y = (float)x0 + (float)(scale_y * (res * (float(y) / 27.0f) + off_y));
 
         face_data.landmark_coords[2 * landmark] = lm_x;
         face_data.landmark_coords[2 * landmark + 1] = lm_y;
