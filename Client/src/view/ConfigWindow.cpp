@@ -1,5 +1,5 @@
 #include "ConfigWindow.h"
-#include <stdstring>
+#include <string>
 
 ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	: QWidget(parent)
