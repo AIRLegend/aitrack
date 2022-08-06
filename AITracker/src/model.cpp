@@ -66,27 +66,16 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr
     }
 }
 
-#define FIX_logit_boundary_conditions 1
 
 float inline logit(float p)
 {
-#ifdef FIX_logit_boundary_conditions
-    if (p >= 0.9999999f) // prevent divide by zero, with consistent boundary and resolution
+    if (p >= 0.9999999f)
         p = 0.9999999f; 
-    else if (p <= 0.0000001f) // prevent log(0), with consistent boundary and resolution
+    else if (p <= 0.0000001f)
         p = 0.0000001f; 
-
+    
     p = p / (1.0f - p);
     return log(p) / 16.0f;
-#else
-    if (p >= 1.0)
-        p = 0.99999;
-    else if (p <= 0.0)
-        p = 0.0000001;
-
-    p = p / (1 - p);
-    return log(p) / 16;
-#endif
 }
 
 void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
