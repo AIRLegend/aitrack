@@ -1364,13 +1364,11 @@ uint16_t PS3EYECam::ov534_set_frame_rate(uint16_t frame_rate, bool dry_run)
      return r->fps;
 }
 
-#define OPTIMIZE_ov534_reg_write 1
 void inline PS3EYECam::ov534_reg_write(uint16_t reg, uint8_t val)
 {
 	int ret;
 
 	//debug("reg=0x%04x, val=0%02x", reg, val);
-#ifdef OPTIMIZE_ov534_reg_write
 	// usb_buf[0] = val;
 
 	ret = libusb_control_transfer(handle_,
@@ -1378,15 +1376,7 @@ void inline PS3EYECam::ov534_reg_write(uint16_t reg, uint8_t val)
 		LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
 		0x01, 0x00, reg,
 		&val, 1, 500);
-#else
-	usb_buf[0] = val;
 
-  	ret = libusb_control_transfer(handle_,
-							LIBUSB_ENDPOINT_OUT | 
-							LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE, 
-							0x01, 0x00, reg,
-							usb_buf, 1, 500);
-#endif
 	if (ret < 0) {
 		debug("write failed\n");
 	}
