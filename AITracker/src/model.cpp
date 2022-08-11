@@ -7,8 +7,6 @@
 #include <omp.h>
 
 
-#define OPTIMIZE_Tracker 1
-
 Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
     improc(),
     memory_info(allocator.GetInfo()),
@@ -82,15 +80,10 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
-#ifdef OPTIMIZE_ImageProcessor
-    improc.normalize_and_transpose(resized, buffer_data); // combine methods
-#else
-    improc.normalize(resized);
-    improc.transpose((float*)resized.data, buffer_data);
-#endif
+
+    improc.normalize_and_transpose(resized, buffer_data); // combines methods (one single run!)
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
-
 
     auto output_tensors = session->Run(Ort::RunOptions{ nullptr },
         detection_input_node_names.data(), &input_tensor, 1, detection_output_node_names.data(), 2);
@@ -145,12 +138,7 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
-#ifdef OPTIMIZE_ImageProcessor
     improc.normalize_and_transpose(resized, buffer_data); // combine methods
-#else
-    improc.normalize(resized);
-    improc.transpose((float*)resized.data, buffer_data);
-#endif
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info, buffer_data, tensor_input_size, tensor_input_dims, 4);
 
@@ -191,7 +179,7 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
         int offset = heatmap_size * landmark;
         int argmax = -100;
         float maxval = -100;
-#ifdef OPTIMIZE_Tracker
+
         float* landmark_heatmap = &heatmaps[offset]; // reduce indexing
         for (int i = 0; i < heatmap_size; i++)
         {
@@ -201,16 +189,7 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
                 maxval = landmark_heatmap[i];
             }
         }
-#else
-        for (int i = 0; i < heatmap_size; i++)
-        {
-            if (heatmaps[offset + i] > maxval)
-            {
-                argmax = i;
-                maxval = heatmaps[offset + i];
-            }
-        }
-#endif
+
         int x = argmax / 28;
         int y = argmax % 28;
 
