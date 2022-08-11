@@ -1,10 +1,7 @@
 #include "filters.h"
-
 #include <cstring>
-
-#ifdef OPTIMIZE_MAFilter
 #include <cmath>
-#endif
+
 
 MAFilter::MAFilter(int steps, int array_size)
 {
@@ -13,33 +10,27 @@ MAFilter::MAFilter(int steps, int array_size)
 	this->idx = 0; // this->idx < this->n_steps
 
 	this->circular_buffer = (float *)new float[steps * array_size]; // float[steps][array_size]
-#ifdef OPTIMIZE_MAFilter
 	this->sum = (float *)new float[array_size]; // use this array to cache the sum
 	for (int i = 0; i < array_size; i++)
 		this->sum[i] = nanf("");
-#endif
 }
 
 MAFilter::~MAFilter()
 {
 	delete[] this->circular_buffer;
-#ifdef OPTIMIZE_MAFilter
 	delete[] this->sum;
-#endif
 }
 
 void MAFilter::filter(float* in_array, float* out_array)
 {
 	int offset = this->idx * this->array_size;
-#ifdef OPTIMIZE_MAFilter
 	// equivalent to:
 	// typedef float (*CIRCULAR_BUFFER_IDX)[this->array_size];
 	// typedef float (*CIRCULAR_BUFFER)[this->n_steps][this->array_size];
 	float *circular_buffer_idx = &this->circular_buffer[offset]; // CIRCULAR_BUFFER_IDX circular_buffer_idx = &((CIRCULAR_BUFFER)this->circular_buffer)[this->idx][0];
-#endif
+
 	for (int i = 0; i < this->array_size; i++)
 	{
-#ifdef OPTIMIZE_MAFilter
 		if (isnan(this->sum[i]))
 		{
 			// initialize sum
@@ -61,19 +52,6 @@ void MAFilter::filter(float* in_array, float* out_array)
 			// Insert current position
 			circular_buffer_idx[i] = in_array[i];
 		}
-#else
-		// Insert current position
-		this->circular_buffer[offset + i] = in_array[i];
-		out_array[i] = 0;
-
-		// get mean of all steps for this position
-		for (int j = 0; j < this->n_steps; j++)
-		{
-			out_array[i] += this->circular_buffer[j * this->array_size + i];
-		}
-
-		out_array[i] /= this->n_steps;
-#endif
 	}
 
 	this->idx = (this->idx + 1) % this->n_steps;
