@@ -355,3 +355,4 @@ log.txt
 CMakeCache.txt
 CMakeFiles/
 /cmake-build-debug/
+cmake_install.cmake
