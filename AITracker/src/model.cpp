@@ -22,6 +22,8 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
     session_options.SetInterOpNumThreads(0); // size of the CPU thread pool used for executing multiple request concurrently, 0 = Use default optimal thread count
     session_options.SetIntraOpNumThreads(0); // size of the CPU thread pool used for executing a single graph, 0 = Use default optimal thread count
+    session_options.SetInterOpNumThreads(1); // size of the CPU thread pool used for executing multiple request concurrently, 0 = Use default optimal thread count
+    session_options.SetIntraOpNumThreads(1); // size of the CPU thread pool used for executing a single graph, 0 = Use default optimal thread count
     session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
 
 
