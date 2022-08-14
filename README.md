@@ -63,4 +63,4 @@ Thank you!
 ## Acknowledgements
 
 - [inspirit](https://github.com/inspirit), for the PS3 C++ camera library which I used during development.
-- [emilianavt](https://github.com/emilianavt/), for porting the original Pytorch pretrained models to ONNX.
+- [emilianavt](https://github.com/emilianavt/), for porting the original Pytorch pretrained landmark model to ONNX format.
