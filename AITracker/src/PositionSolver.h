@@ -1,7 +1,7 @@
 #pragma once
 
 #include "opencv2/core/matx.hpp"
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 #include "data.h"
 
 /**
@@ -68,5 +68,12 @@ private:
 	* This method corrects them.
 	*/
 	void correct_rotation(FaceData& face_data);
+
+
+	/**
+	* Ensures all rotations are in -90/90 range. 
+	* (No human head can rotate more supposing camera view is frontal).
+	*/
+	void clip_rotations(FaceData& face_data);
 };
 

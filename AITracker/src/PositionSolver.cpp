@@ -1,6 +1,6 @@
 #include "PositionSolver.h"
 
-#define OPTIMIZE_PositionSolver 1
+#define USE_FOV  // Use FOV correction for the camera matrix.
 
 PositionSolver::PositionSolver(
     int width, 
@@ -28,19 +28,11 @@ PositionSolver::PositionSolver(
     this->rv[2] = -1.57;
     this->tv[2] = this->prior_distance;
 
-#ifdef OPTIMIZE_PositionSolver
     head3dScale = (cv::Mat_<double>(3, 3) <<
         y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
         0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
         0.0, 0.0, z_scale
     );
-#else
-    head3dScale = (cv::Mat_<double>(3, 3) <<
-        x_scale, 0.0, 0,
-        0.0, y_scale, 0,
-        0.0, 0.0, z_scale
-        );
-#endif
 
     this->complex = complex;
 
@@ -115,7 +107,7 @@ PositionSolver::PositionSolver(
 
     // Get expressed in sensor-size units
 
- #ifdef OPTIMIZE_PositionSolver
+ #ifdef USE_FOV
     // field of view is a rectangular viewport with corners on a circular lens
     // the diagonal of the rectangle can be expressed as the angular field of view or pixels
     // the width of the rectangle can be expressed as either the field of view width or width in pixels
@@ -160,11 +152,10 @@ PositionSolver::PositionSolver(
         i_width, 0, height / 2,
         0, i_height, width / 2,
         0, 0, 1
-        );
+    );
+
 
  #endif
-
-
 
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 
@@ -173,7 +164,7 @@ PositionSolver::PositionSolver(
     if(complex) std::cout << "Using complex solver" << std::endl;
 }
 
-#define FIX_WARNING_PositionSolver 1
+
 void PositionSolver::solve_rotation(FaceData* face_data)
 {
     int contour_idx = 0;
@@ -182,12 +173,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         for (int i = 0; i < contour_indices.size(); i++)
         {
             contour_idx = contour_indices[i];
-#ifdef FIX_WARNING_PositionSolver
-            landmark_points_buffer.at<float>(i, j) = (float)(int)face_data->landmark_coords[2 * contour_idx + j]; // is the (int) typecast intentional to discard fractional value ?
-#else
-            landmark_points_buffer.at<float>(i, j) = (int)face_data->landmark_coords[2 * contour_idx + j];
-#endif
-
+            landmark_points_buffer.at<float>(i, j) = (float)(int)face_data->landmark_coords[2 * contour_idx + j]; // fix complation warnings.
         }
     }
 
@@ -222,6 +208,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 #endif
 
     correct_rotation(*face_data);
+    clip_rotations(*face_data);
 
 }
 
@@ -271,31 +258,34 @@ void PositionSolver::correct_rotation(FaceData& face_data)
     float lateral_offset = (float)face_data.translation[1];
     float verical_offset = (float)face_data.translation[0];
 
-#ifdef OPTIMIZE_PositionSolver
     float correction_yaw = (float)(std::atan(lateral_offset / distance) * TO_DEG); // (lateral_offset / distance) is already tangent, so only need atan to obtain radians
     float correction_pitch = (float)(std::atan(verical_offset / distance) * TO_DEG); // (verical_offset / distance) is already tangent, so only need atan to obtain radians
-#else
-    float correction_yaw = (float)(std::atan(std::tan(lateral_offset / distance)) * TO_DEG);
-    float correction_pitch = (float)(std::atan(std::tan(verical_offset / distance)) * TO_DEG);
-#endif
 
     face_data.rotation[1] += correction_yaw;
     face_data.rotation[0] += correction_pitch;
 
-    face_data.rotation[0] = face_data.rotation[0] * 1.5; // compensate for insensitive negative pitch (upwards) which saturates just above -20deg with camera placed above monitor
+    // Note: We could saturate pitch here, but its better to let the user do it via Opentrack.
+    // The coefficient could be problematic for some users.
+    //face_data.rotation[0] = face_data.rotation[0] * 1.5;
+}
 
 
-#ifdef OPTIMIZE_PositionSolver
-    // Limit yaw between -90.0 and +90.0 degrees after correction
+void PositionSolver::clip_rotations(FaceData& face_data)
+{
+    // Limit yaw between -90.0 and +90.0 degrees
     if (face_data.rotation[1] >= 90.0)
         face_data.rotation[1] = 90.0;
     else if (face_data.rotation[1] <= -90.0)
         face_data.rotation[1] = -90.0;
-    // Limit pitch between -90.0 and +90.0 degrees after correction
+    // Limit pitch between -90.0 and +90.0 
     if (face_data.rotation[0] >= 90.0)
         face_data.rotation[0] = 90.0;
     else if (face_data.rotation[0] <= -90.0)
         face_data.rotation[0] = -90.0;
-#endif
+    // Limit roll between -90.0 and +90.0 
+    if (face_data.rotation[2] >= 90.0)
+        face_data.rotation[2] = 90.0;
+    else if (face_data.rotation[2] <= -90.0)
+        face_data.rotation[2] = -90.0;
 }
 

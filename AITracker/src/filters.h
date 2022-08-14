@@ -1,6 +1,5 @@
 #pragma once
 
-#define OPTIMIZE_MAFilter 1
 
 class IFilter
 {
@@ -17,10 +16,7 @@ private:
 	int n_steps;
 
 	float *circular_buffer;
-#ifdef OPTIMIZE_MAFilter
 	float *sum;
-#endif
-
 
 public:
 	MAFilter(int steps, int array_size);
@@ -36,8 +32,6 @@ class EAFilter : public IFilter
 private:
 	int array_size;
 	float* last_value;
-
-
 
 public:
 	EAFilter(int array_size);

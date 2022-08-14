@@ -6,7 +6,6 @@
 
 #include <string>
 
-#define UDPSENDER_SUPPORT_IPv6 1
 
 /**
 	Data sender to Opentrack using UDP
@@ -17,7 +16,6 @@ private:
 	const int BUFFER_SIZE = sizeof(double) * 6;
 	double position_data[6];
 
-#ifdef UDPSENDER_SUPPORT_IPv6
 	union
 	{
 		sockaddr_in  dest;
@@ -28,10 +26,6 @@ private:
 		sockaddr_in  local;
 		sockaddr_in6 local_IPv6;
 	};
-#else
-	sockaddr_in dest;
-	sockaddr_in local;
-#endif
 
 	WSAData data;
 	SOCKET s;
@@ -39,6 +33,7 @@ private:
 public:
 	std::string ip;
 	int port;
+	bool valid = true;
 
 	UDPSender(const char* dest_ip, int dest_port);
 	~UDPSender();
