@@ -1,6 +1,6 @@
 #pragma once
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 
 class ImageProcessor
 {

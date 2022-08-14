@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 #include "../model/Config.h"
 #include "../presenter/i_presenter.h"
 

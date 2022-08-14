@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "presenter.h"
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 
 #include "../camera/CameraFactory.h"
 

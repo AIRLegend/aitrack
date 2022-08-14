@@ -1,6 +1,7 @@
 #pragma once
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
+
 #include <onnxruntime_cxx_api.h>
 #include "data.h"
 #include "imageprocessor.h"

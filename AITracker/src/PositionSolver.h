@@ -1,7 +1,7 @@
 #pragma once
 
 #include "opencv2/core/matx.hpp"
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 #include "data.h"
 
 /**

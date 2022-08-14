@@ -14,8 +14,8 @@ SET(ONNXRUNTIME_EXTRACT_PATH "Dependencies/")
 
 #SET(PS3Driver_URL "")
 #SET(PS3Driver_PATH "")
-SET(OPENCV_URL "https://github.com/opencv/opencv/releases/download/4.3.0/opencv-4.3.0-vc14_vc15.exe")
-SET(OPENCV_PATH "${DEPS_DIR}opencv-4.3.0-vc14_vc15.exe")
+SET(OPENCV_URL "https://github.com/opencv/opencv/releases/download/4.6.0/opencv-4.6.0-vc14_vc15.exe")
+SET(OPENCV_PATH "${DEPS_DIR}opencv-4.6.0-vc14_vc15.exe")
 
 SET(LIBUSB_URL "https://github.com/libusb/libusb/releases/download/v1.0.23/libusb-1.0.23.7z")
 SET(LIBUSB_NAME "libusb-1.0.23")

@@ -6,7 +6,7 @@
 #include <QImage>
 
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 #include "../presenter/i_presenter.h"
 
 #include "ui_MainWindow.h"
