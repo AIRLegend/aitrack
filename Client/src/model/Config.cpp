@@ -17,16 +17,23 @@ ConfigData ConfigData::getGenericConfig()
 	conf.num_cameras_detected = 0;
 	conf.video_width = -1;
 	conf.video_height = -1;
-	conf.video_fps = -1;
+	conf.video_fps = 30;
 	conf.use_landmark_stab = true;
 	conf.autocheck_updates = true;
 	conf.tracking_shortcut_enabled = false;
 	conf.x, conf.y, conf.z, conf.pitch, conf.yaw, conf.roll = 0;
 	conf.cam_exposure = -1;
 	conf.cam_gain = -1;
+	conf.onnx_set_env_threads = true;
+	conf.onnx_env_threads = 1;
+	conf.onnx_set_num_threads = true;
+	conf.onnx_num_threads = 1;
+	conf.onnx_set_dynamic = true;
+	conf.onnx_dynamic = 0;
 	conf.head_scale_x = 1.0;
 	conf.head_scale_y = 1.0;
 	conf.head_scale_z = 1.0;
+
 	return conf;
 }
 
@@ -59,10 +66,19 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("cam_gain", data.cam_gain);
 	conf.setValue("selected_camera", data.selected_camera);
 	conf.setValue("autocheck_updates", data.autocheck_updates);
+
+	conf.setValue("onnx_set_env_threads", data.onnx_set_env_threads);
+	conf.setValue("onnx_env_threads", data.onnx_env_threads);
+	conf.setValue("onnx_set_num_threads", data.onnx_set_num_threads);
+	conf.setValue("onnx_num_threads", data.onnx_num_threads);
+	conf.setValue("onnx_set_dynamic", data.onnx_set_dynamic);
+	conf.setValue("onnx_dynamic", data.onnx_dynamic);
+
 	conf.setValue("head_3d_scale_x", data.head_scale_x);
 	conf.setValue("head_3d_scale_y", data.head_scale_y);
 	conf.setValue("head_3d_scale_z", data.head_scale_z);
 	conf.setValue("tracking_shortcut_enabled", data.tracking_shortcut_enabled);
+
 }
 
 ConfigData ConfigMgr::getConfig()
@@ -82,10 +98,17 @@ ConfigData ConfigMgr::getConfig()
 	c.cam_exposure= conf.value("cam_exposure", -1).toInt();
 	c.cam_gain = conf.value("cam_gain", -1).toInt();
 	c.autocheck_updates = conf.value("autocheck_updates", 1).toBool();
+	c.onnx_set_env_threads = conf.value("set_env_threads", true).toBool();
+	c.onnx_env_threads = conf.value("env_threads", 1).toInt();
+	c.onnx_set_num_threads = conf.value("set_num_threads", true).toBool();
+	c.onnx_num_threads = conf.value("num_threads", 1).toInt();
+	c.onnx_set_dynamic = conf.value("set_dynamic", true).toBool();
+	c.onnx_dynamic = conf.value("dynamic", 0).toInt();
 	c.head_scale_x = conf.value("head_3d_scale_x", 1.0).toDouble();
 	c.head_scale_y = conf.value("head_3d_scale_y", 1.0).toDouble();
 	c.head_scale_z = conf.value("head_3d_scale_z", 1.0).toDouble();
 	c.tracking_shortcut_enabled= conf.value("tracking_shortcut_enabled", false).toBool();
+
 	return c;
 }
 

@@ -30,6 +30,13 @@ struct ConfigData
 	int cam_exposure;
 	int cam_gain;
 
+	bool onnx_set_env_threads;
+	int onnx_env_threads;
+	bool onnx_set_num_threads;
+	int onnx_num_threads;
+	bool onnx_set_dynamic;
+	int onnx_dynamic;
+
 	std::vector<std::string> model_names;
 	int selected_model;
 

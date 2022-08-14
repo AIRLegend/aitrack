@@ -9,7 +9,6 @@ FaceData::FaceData():
 	face_detected = false;
 }
 
-
 std::string FaceData::to_string()
 {
 	std::string datastring =
@@ -21,7 +20,7 @@ std::string FaceData::to_string()
 		std::string("   X: ") +
 		std::to_string(this->translation[0]) + ", Y: " +
 		std::to_string(this->translation[1]) + ", Z: " +
-		std::to_string(this->translation[2]) ;
+		std::to_string(this->translation[2]);
 
 	return datastring;
 }

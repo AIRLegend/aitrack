@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "presenter.h"
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 
 #include "../camera/CameraFactory.h"
 
@@ -209,7 +209,7 @@ void Presenter::run_loop()
 					}
 					cv::Point p1(d.face_coords[0], d.face_coords[1]);
 					cv::Point p2(d.face_coords[2], d.face_coords[3]);
-					cv::rectangle(mat, p1, p2, color_blue, 1);
+					cv::rectangle(mat, p1, p2, color_blue, 2);
 				}
 
 				update_tracking_data(d);

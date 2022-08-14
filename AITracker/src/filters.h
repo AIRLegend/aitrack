@@ -16,8 +16,7 @@ private:
 	int n_steps;
 
 	float *circular_buffer;
-	
-
+	float *sum;
 
 public:
 	MAFilter(int steps, int array_size);
@@ -33,8 +32,6 @@ class EAFilter : public IFilter
 private:
 	int array_size;
 	float* last_value;
-
-
 
 public:
 	EAFilter(int array_size);

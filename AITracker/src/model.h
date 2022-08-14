@@ -1,11 +1,14 @@
 #pragma once
 
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
+
 #include <onnxruntime_cxx_api.h>
 #include "data.h"
 #include "imageprocessor.h"
 #include "PositionSolver.h"
 #include "filters.h"
+
+
 
 class Tracker
 {
@@ -32,6 +35,7 @@ private:
 	std::vector<const char*> landmarks_input_node_names;
 	std::vector<const char*> landmarks_output_node_names;
 
+	cv::Ptr<cv::FaceDetectorYN> face_detector;
 
 	size_t tensor_input_size;
 	int64_t tensor_input_dims[4] = { 1,3,224,224 };

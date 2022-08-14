@@ -1,6 +1,6 @@
 #pragma once
 #include "Camera.h"
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 
 class OCVCamera : public Camera
 {

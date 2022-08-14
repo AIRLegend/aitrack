@@ -2,8 +2,10 @@
 
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
+#include <Ws2def.h>
 
 #include <string>
+
 
 /**
 	Data sender to Opentrack using UDP
@@ -14,8 +16,16 @@ private:
 	const int BUFFER_SIZE = sizeof(double) * 6;
 	double position_data[6];
 
-	sockaddr_in dest;
-	sockaddr_in local;
+	union
+	{
+		sockaddr_in  dest;
+		sockaddr_in6 dest_IPv6;
+	};
+	union
+	{
+		sockaddr_in  local;
+		sockaddr_in6 local_IPv6;
+	};
 
 	WSAData data;
 	SOCKET s;
@@ -23,6 +33,7 @@ private:
 public:
 	std::string ip;
 	int port;
+	bool valid = true;
 
 	UDPSender(const char* dest_ip, int dest_port);
 	~UDPSender();
