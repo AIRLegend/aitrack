@@ -7,6 +7,12 @@
 #include "PositionSolver.h"
 #include "filters.h"
 
+#define _ENABLE_DETECTION_MODES_	1
+#define DETECTION_MODE_default		0
+#define DETECTION_MODE_conical      1
+#define DETECTION_MODE_vignette     2
+#define DETECTION_MODE_digitalzoom  3
+
 class Tracker
 {
 
@@ -16,6 +22,9 @@ public:
 	Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path);
 
 	void predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter = {});
+#ifdef	_ENABLE_DETECTION_MODES_
+	void initDetectionFilter(int detection_mode);
+#endif
 
 private:
 	ImageProcessor improc;

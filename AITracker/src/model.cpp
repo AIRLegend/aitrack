@@ -33,7 +33,28 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
     session_lm = std::make_unique<Ort::Session>(*enviro, landmark_model_path.data(), session_options);
 
     tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
+    
+#ifdef _ENABLE_DETECTION_MODES_
+    initDetectionFilter(DETECTION_MODE_default);       // disable filter by default for better performance
+    //initDetectionFilter(DETECTION_MODE_conical);     // uncomment for testing, centered weight
+    initDetectionFilter(DETECTION_MODE_vignette);    // uncomment for testing, more centered weight
+    //initDetectionFilter(DETECTION_MODE_digitalzoom); // uncomment for testing, most centered weight
+#endif
 }
+
+#ifdef _ENABLE_DETECTION_MODES_
+void Tracker::initDetectionFilter(int detection_mode)
+{
+    if (detection_mode == DETECTION_MODE_digitalzoom)
+        improc.initFilter_digitalZoom(224, 224, 2);
+    else if (detection_mode == DETECTION_MODE_vignette)
+        improc.initFilter_vignette(224, 224);
+    else if (detection_mode == DETECTION_MODE_conical)
+        improc.initFilter_conical(224, 224);
+    else // if (detection_mode == DETECTION_MODE_default)
+        improc.scalingFilter.resize(0);
+}
+#endif
 
 void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
 {
@@ -92,9 +113,14 @@ float inline logit(float p)
 void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized;
-    cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
+    cv::resize(image, resized, cv::Size(224, 224), 0, 0, cv::INTER_AREA);
 #ifdef OPTIMIZE_ImageProcessor
-    improc.normalize_and_transpose(resized, buffer_data); // combine methods
+    if (improc.scalingFilter.size())
+    {
+        improc.normalize_and_transpose_and_filter(resized, buffer_data, improc.scalingFilter); // combine methods
+    }
+    else
+        improc.normalize_and_transpose(resized, buffer_data); // combine methods
 #else
     improc.normalize(resized);
     improc.transpose((float*)resized.data, buffer_data);
@@ -125,9 +151,6 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
     float r = second.at<float>(p) * 2 * 56;
     int x = p.x * 4;
     int y = p.y * 4;
-
-
-    face_data.face_detected = c > 0.7f ? true : false;
 
     if (face_data.face_detected)
     {
@@ -240,8 +263,6 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
         face_data.landmark_coords[2 * landmark + 1] = lm_y;
     }
 }
-
-
 
 
 
