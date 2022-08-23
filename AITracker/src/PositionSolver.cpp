@@ -282,10 +282,10 @@ void PositionSolver::clip_rotations(FaceData& face_data)
         face_data.rotation[0] = 90.0;
     else if (face_data.rotation[0] <= -90.0)
         face_data.rotation[0] = -90.0;
-    // Limit roll between -90.0 and +90.0 
-    if (face_data.rotation[2] >= 90.0)
-        face_data.rotation[2] = 90.0;
-    else if (face_data.rotation[2] <= -90.0)
-        face_data.rotation[2] = -90.0;
+    // Limit roll between 0.0 and +180.0 
+    if (face_data.rotation[2] >= 180.0)
+        face_data.rotation[2] = 180.0;
+    else if (face_data.rotation[2] <= 0.0)
+        face_data.rotation[2] = 0.0;
 }
 
