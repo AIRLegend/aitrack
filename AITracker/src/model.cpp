@@ -161,9 +161,9 @@ void StandardTracker::proc_face_detect(float* face, float width, float height)
     float w = face[2];
     float h = face[3];
 
-    int crop_x1 = (int)(x);
-    int crop_y1 = (int)(y);
-    int crop_x2 = (int)(x + w);  
+    int crop_x1 = (int)(x - w*0.1);
+    int crop_y1 = (int)(y - h*0.1);
+    int crop_x2 = (int)(x + w + w * 0.1);  
     int crop_y2 = (int)(y + h + h * 0.1f); // force a little taller BB so the chin tends to be covered
 
     face[0] = (float)std::max(0, crop_x1);
