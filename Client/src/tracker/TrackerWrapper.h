@@ -9,10 +9,10 @@ class TrackerWrapper : public ITrackerWrapper
 {
 private:
 	TRACKER_TYPE type;
-	std::unique_ptr<Tracker> model;
+	std::unique_ptr<ITracker> model;
 
 public:
-	TrackerWrapper(std::unique_ptr<Tracker>&& model, TRACKER_TYPE type);
+	TrackerWrapper(std::unique_ptr<ITracker>&& model, TRACKER_TYPE type);
 	~TrackerWrapper() override;
 
 	// Inherited via ITrackerWrapper

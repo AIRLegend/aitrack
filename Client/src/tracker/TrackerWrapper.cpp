@@ -1,7 +1,7 @@
 #include "TrackerWrapper.h"
 
 
-TrackerWrapper::TrackerWrapper(std::unique_ptr<Tracker>&& model, TRACKER_TYPE type)
+TrackerWrapper::TrackerWrapper(std::unique_ptr<ITracker>&& model, TRACKER_TYPE type)
 {
     this->model = std::move(model);
     this->type = type;

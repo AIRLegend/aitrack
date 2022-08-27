@@ -19,9 +19,17 @@ std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(
 	std::string landmark_path = model_dir;
 	std::string detect_path = model_dir + "detection.onnx";
 	bool complex_solver = true;
+	bool experimental_model = false;
+
+	std::unique_ptr<ITracker>  t;
 
 	switch(type)
 	{
+	case TRACKER_TYPE::TRACKER_VERY_FAST:
+		landmark_path += "landmarks_model_776.onnx";
+		complex_solver = false;
+		experimental_model = true;
+		break;
 	case TRACKER_TYPE::TRACKER_FAST:
 		landmark_path += "lm_f.onnx";
 		complex_solver = false;
@@ -43,14 +51,15 @@ std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(
 	auto solver = std::make_unique<PositionSolver>(im_width, im_height, -2, -2, distance, complex_solver,
 												   x_scale, y_scale, z_scale);
 
-	std::unique_ptr<Tracker> t;
+
 	try
 	{
-		t = std::make_unique<Tracker>(
-			std::move(solver),
-			detect_wstr,
-			landmark_wstr
-		);
+		if (experimental_model) {
+			t = std::make_unique<EfficientTracker>( std::move(solver), detect_wstr, landmark_wstr);
+		}
+		else {		
+			t = std::make_unique<StandardTracker>(std::move(solver), detect_wstr, landmark_wstr);
+		}
 	}
 	catch (std::exception e)
 	{
@@ -74,6 +83,7 @@ void TrackerFactory::get_model_names(std::vector<std::string>& names)
 	names.push_back("Fast");
 	names.push_back("Medium");
 	names.push_back("Heavy");
+	names.push_back("Very-Fast");
 }
 
 int TrackerFactory::get_type_id(TRACKER_TYPE type)

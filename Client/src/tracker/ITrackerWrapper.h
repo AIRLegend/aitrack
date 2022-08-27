@@ -7,15 +7,17 @@
 
 /**
 * Possible model types.
+* TRACKER_VERY_FAST = An experimental (even) faster model which runs about x2 faster than TRACKER_FAST.
 * TRACKER_FAST = Less weights. Lighter, but could have less precission
 * TRACKER_MED = Half the way. Could offer a good tradeoff.
 * TRACKER_FULL = The heaviest. Could perform the best but also eats more CPU.
 */
 enum class TRACKER_TYPE
 {
-	TRACKER_FAST,
-	TRACKER_MED,
-	TRACKER_FULL
+	TRACKER_VERY_FAST = 3,
+	TRACKER_FAST = 0,
+	TRACKER_MED = 1,
+	TRACKER_FULL = 2
 };
 
 

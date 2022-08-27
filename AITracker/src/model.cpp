@@ -7,7 +7,19 @@
 #include <omp.h>
 
 
-Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
+float inline logit(float p)
+{
+    if (p >= 0.9999999f)
+        p = 0.9999999f;
+    else if (p <= 0.0000001f)
+        p = 0.0000001f;
+
+    p = p / (1.0f - p);
+    return log(p) / 16.0f;
+}
+
+
+StandardTracker::StandardTracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
     improc(),
     memory_info(allocator.GetInfo()),
     enviro(std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "env")),
@@ -31,8 +43,8 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
 
     // Face detector
     float score_threshold = .8;
-    float nms_threshold = .3;
-    int topK = 50;
+    float nms_threshold = .1;
+    int topK = 1;
     face_detector = cv::FaceDetectorYN::create(
         std::string(detection_model_path.begin(), detection_model_path.end()),
         "",                      
@@ -42,10 +54,10 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
         topK
     );
 
-    tensor_input_size = tensor_input_dims[1] * tensor_input_dims[2] * tensor_input_dims[3];
+    this->tensor_input_size = get_lm_input_size();
 }
 
-void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
+void StandardTracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
 {
     detect_face(image, face_data); 
 
@@ -58,10 +70,12 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr
         int height = face_data.face_coords[2] - face_data.face_coords[0];
         int width = face_data.face_coords[3] - face_data.face_coords[1];
 
-        float scale_x = (float)width / 224.0f;
-        float scale_y = (float)height / 224.0f;
 
-        detect_landmarks(cropped, face_data.face_coords[0], face_data.face_coords[1], scale_x, scale_y, face_data);
+        float scale_x = (float)width / get_landmark_input_dims()[2];
+        float scale_y = (float)height / get_landmark_input_dims()[3];
+
+
+        this->detect_landmarks(cropped, face_data.face_coords[0], face_data.face_coords[1], scale_x, scale_y, face_data);
 
         if (filter != nullptr)
             filter->filter(face_data.landmark_coords, face_data.landmark_coords);
@@ -71,18 +85,7 @@ void Tracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr
 }
 
 
-float inline logit(float p)
-{
-    if (p >= 0.9999999f)
-        p = 0.9999999f; 
-    else if (p <= 0.0000001f)
-        p = 0.0000001f; 
-    
-    p = p / (1.0f - p);
-    return log(p) / 16.0f;
-}
-
-void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
+void StandardTracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized, faces;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
@@ -130,7 +133,8 @@ void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
     }
 }
 
-void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale_x, float scale_y, FaceData& face_data)
+
+void StandardTracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale_x, float scale_y, FaceData& face_data)
 {
     cv::Mat resized;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
@@ -150,7 +154,7 @@ void Tracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale
 }
 
 
-void Tracker::proc_face_detect(float* face, float width, float height)
+void StandardTracker::proc_face_detect(float* face, float width, float height)
 {
     float x = face[0];
     float y = face[1];
@@ -169,7 +173,7 @@ void Tracker::proc_face_detect(float* face, float width, float height)
 }
 
 
-void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, float scale_y, FaceData& face_data)
+void StandardTracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, float scale_y, FaceData& face_data)
 {
     int heatmap_size = 784; //28 * 28;
     for (int landmark = 0; landmark < 66; landmark++)
@@ -208,6 +212,78 @@ void Tracker::proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, floa
 }
 
 
+size_t StandardTracker::get_lm_input_size()
+{
+    size_t tensor_input_size = 1;
+    for (int i = 0; i < 4; i++)
+        tensor_input_size *= tensor_input_dims[i];
+
+    return tensor_input_size;
+}
+
+
+const int64_t* StandardTracker::get_landmark_input_dims()
+{
+    return tensor_input_dims;
+}
 
 
 
+
+
+/*
+* 
+*   EFFICIENT TRACKER 
+* 
+*/
+
+EfficientTracker::EfficientTracker(std::unique_ptr<PositionSolver> solver, std::wstring& detection_model_path, std::wstring& landmark_model_path) :
+     StandardTracker(std::move(solver), detection_model_path, landmark_model_path)
+{  
+    tensor_input_dims[0] = 1;
+    tensor_input_dims[1] = 1;
+    tensor_input_dims[2] = 114;
+    tensor_input_dims[3] = 114;
+
+    tensor_input_size = get_lm_input_size();
+}
+
+
+void EfficientTracker::detect_landmarks(const cv::Mat& image, int x0, int y0, float scale_x, float scale_y, FaceData& face_data)
+{
+    cv::Mat resized;
+    cv::resize(image, resized, cv::Size(114, 114), NULL, NULL, cv::INTER_LINEAR);
+    resized.convertTo(resized, CV_32F);
+    cv::cvtColor(resized, resized, cv::COLOR_BGR2GRAY);
+    resized = resized / 255.0;
+
+    // standarization
+    resized = resized - 0.445313568967;
+    resized = resized / 0.269246187;
+
+    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
+        this->memory_info, 
+        (float*)resized.data, 
+        this->tensor_input_size,
+        this->tensor_input_dims, 
+        4
+   );
+
+    auto output_tensors = this->session_lm->Run(
+        Ort::RunOptions{ nullptr },
+        this->landmarks_input_node_names.data(),
+        &input_tensor, 1, 
+        this->landmarks_output_node_names.data(), 
+        1
+    );
+
+    float* output_arr = output_tensors[0].GetTensorMutableData<float>();
+
+    for (int landmark = 0; landmark < 66; landmark++) {
+        float pred_x = output_arr[2 * landmark] * 114;
+        float pred_y = output_arr[2 * landmark + 1] * 114;
+
+        face_data.landmark_coords[2 * landmark] = (pred_y * scale_x) + y0;
+        face_data.landmark_coords[2 * landmark + 1] = (pred_x * scale_y) + x0;
+    }
+}
