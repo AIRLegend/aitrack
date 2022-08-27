@@ -44,7 +44,7 @@ StandardTracker::StandardTracker(std::unique_ptr<PositionSolver>&& solver, std::
     // Face detector
     float score_threshold = .8;
     float nms_threshold = .1;
-    int topK = 1;
+    int topK = 15;
     face_detector = cv::FaceDetectorYN::create(
         std::string(detection_model_path.begin(), detection_model_path.end()),
         "",                      
