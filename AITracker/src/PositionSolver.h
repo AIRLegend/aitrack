@@ -24,7 +24,7 @@ public:
 		bool complex = false,
 		float fov = 56.0f,
 		float x_scale = 1.0f,
-		float y_scal = 1.0f,
+		float y_scale = 1.0f,
 		float z_scale = 1.0f);
 
 	/**
@@ -36,13 +36,13 @@ public:
 	void set_prior_yaw(float new_yaw);
 	void set_prior_distance(float new_distance);
 
-private:
+protected:
 	static const int NB_CONTOUR_POINTS_COMPLEX = 29;
 	static const int NB_CONTOUR_POINTS_BASE = 18;
 	const double TO_DEG = (180.0 / 3.14159265);
 	const double TO_RAD = (3.14159265 / 180.0);
 
-	cv::Mat mat3dface;
+	//cv::Mat mat3dface;
 	cv::Mat mat3dcontour;
 	std::vector<int> contour_indices;  // Facial landmarks that interest us
 	cv::Mat head3dScale;               // This will let us scale the 3d model so a better PnP can be acomplished
@@ -77,3 +77,24 @@ private:
 	void clip_rotations(FaceData& face_data);
 };
 
+
+
+/**
+* This position solver has basically the same behaviour than its parent but it uses a different mat3dcontour
+* and also different indices. (right now used for position-solving new models' outputs).
+*/
+class SimplePositionSolver : public PositionSolver
+{
+public:
+	SimplePositionSolver(
+		int im_width,
+		int im_height,
+		float prior_pitch = -2.f,
+		float prior_yaw = -2.f,
+		float prior_distance = -1.f,
+		bool complex = false,
+		float fov = 56.0f,
+		float x_scale = 1.0f,
+		float y_scale = 1.0f,
+		float z_scale = 1.0f);
+};

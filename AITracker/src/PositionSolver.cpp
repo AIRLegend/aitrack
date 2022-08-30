@@ -28,11 +28,18 @@ PositionSolver::PositionSolver(
     this->rv[2] = -1.57;
     this->tv[2] = this->prior_distance;
 
+    //head3dScale = (cv::Mat_<double>(3, 3) <<
+    //    y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
+    //    0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+    //    0.0, 0.0, z_scale
+    //);
+
+
     head3dScale = (cv::Mat_<double>(3, 3) <<
-        y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
-        0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+        x_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
+        0.0, y_scale, 0,        // yaw is rv[1], yaw involves x-axis
         0.0, 0.0, z_scale
-    );
+        );
 
     this->complex = complex;
 
@@ -173,7 +180,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         for (int i = 0; i < contour_indices.size(); i++)
         {
             contour_idx = contour_indices[i];
-            landmark_points_buffer.at<float>(i, j) = (float)(int)face_data->landmark_coords[2 * contour_idx + j]; // fix complation warnings.
+            landmark_points_buffer.at<float>(i, j) = (float)face_data->landmark_coords[2 * contour_idx + j]; // fix complation warnings.
         }
     }
 
@@ -189,7 +196,6 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         !this->complex, //extrinsic guess
         cv::SOLVEPNP_ITERATIVE
     );
-
 
     get_euler(rvec, tvec);
 
@@ -208,7 +214,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
 #endif
 
     correct_rotation(*face_data);
-    clip_rotations(*face_data);
+    //clip_rotations(*face_data);
 
 }
 
@@ -264,6 +270,8 @@ void PositionSolver::correct_rotation(FaceData& face_data)
     face_data.rotation[1] += correction_yaw;
     face_data.rotation[0] += correction_pitch;
 
+
+
     // Note: We could saturate pitch here, but its better to let the user do it via Opentrack.
     // The coefficient could be problematic for some users.
     //face_data.rotation[0] = face_data.rotation[0] * 1.5;
@@ -289,3 +297,34 @@ void PositionSolver::clip_rotations(FaceData& face_data)
         face_data.rotation[2] = 0.0;
 }
 
+
+
+/*
+*   SIMPLE POSITION SOLVER
+*/
+SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float prior_pitch, float prior_yaw, float prior_distance, bool complex, float fov, float x_scale, float y_scale, float z_scale):
+   PositionSolver(im_width, im_height,prior_pitch, prior_yaw, prior_distance, complex, fov, x_scale, y_scale, z_scale)
+{
+    contour_indices = { 0,1,2,3,8,13,14,15,16,27,28,29,30,39,42, 55};
+
+    landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
+
+    mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
+        0.4551769692672, 0.300895790030204, -0.764429433974752, 
+        0.448998827123556, 0.166995837790733, -0.765143004071253, 
+        0.437431554952677, 0.022655479179981, -0.739267175112735, 
+        0.415033422928434, -0.088941454648772, -0.747947437846473,
+        0., -0.621079019321682, -0.287294770748887,
+        -0.415033422928434, -0.088941454648772, -0.747947437846473, 
+        -0.437431554952677, 0.022655479179981, -0.739267175112735, 
+        -0.448998827123556, 0.166995837790733, -0.765143004071253, 
+        -0.4551769692672, 0.300895790030204, -0.764429433974752, 
+        0., 0.293332603215811, -0.137582088779393, 
+        0., 0.194828701837823, -0.069158109325951, 
+        0., 0.103844017393155, -0.009151819844964, 
+        0., 0., 0., 
+        0.131229723798772, 0.284447361805627, -0.234239149487417, 
+        -0.131229723798772, 0.284447361805627, -0.234239149487417,
+        -0.132325402795928, -0.290857984604968, -0.187067868218105
+         );
+}
