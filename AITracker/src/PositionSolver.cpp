@@ -327,4 +327,17 @@ SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float pr
         -0.131229723798772, 0.284447361805627, -0.234239149487417,
         -0.132325402795928, -0.290857984604968, -0.187067868218105
          );
+
+    head3dScale = (cv::Mat_<double>(3, 3) <<
+        y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
+        0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+        0.0, 0.0, z_scale
+        );
+
+    cv::transpose(mat3dcontour, mat3dcontour);
+    mat3dcontour = head3dScale * mat3dcontour;
+    cv::transpose(mat3dcontour, mat3dcontour);
+
+
+
 }
