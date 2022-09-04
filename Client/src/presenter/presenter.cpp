@@ -227,8 +227,9 @@ void Presenter::run_loop()
 			std::chrono::milliseconds loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop_end_time - loop_start_time);
 			if (loop_duration < frame_duration)
 				QThread::msleep((frame_duration - loop_duration).count());
-
-			std::cout << (int)(loop_duration.count()) << std::endl;
+//#ifdef _DEBUG
+			std::cout << "Iteration took: " << (int)(loop_duration.count()) << " ms" << std::endl;
+//#endif
 		}
 
 		cam->stop_camera();
