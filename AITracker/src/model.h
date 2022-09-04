@@ -64,7 +64,7 @@ protected:
 	// Buffer for transposing the input of the landmark model
 	float buffer_data[150528];
 
-	void detect_face(const cv::Mat& image, FaceData& face_data);
+	virtual void detect_face(const cv::Mat& image, FaceData& face_data);
 	virtual void detect_landmarks(const cv::Mat& image, int x0, int y0, float scale_x, float scale_y, FaceData& face_data);
 
 	// gets the number of items (floats) to be allocated depending on image dimension
@@ -72,7 +72,7 @@ protected:
 	virtual const int64_t* get_landmark_input_dims();
 
 private:
-	void proc_face_detect(float* face, float width = 1080, float height = 720);
+	virtual void proc_face_detect(float* face, float width = 1080, float height = 720);
 	void proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, float scale_y, FaceData& face_data);
 };
 
@@ -82,6 +82,6 @@ class EfficientTracker: public StandardTracker
 public:
 	EfficientTracker(std::unique_ptr<PositionSolver> solver, std::wstring& detection_model_path, std::wstring& landmark_model_path);
 
-private:
-	void detect_landmarks(const cv::Mat& image, int x0, int y0, float scale_x, float scale_y, FaceData& face_data) override;
+protected:
+	virtual void detect_landmarks(const cv::Mat& image, int x0, int y0, float scale_x, float scale_y, FaceData& face_data) override;
 };

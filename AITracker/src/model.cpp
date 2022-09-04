@@ -50,7 +50,7 @@ StandardTracker::StandardTracker(std::unique_ptr<PositionSolver>&& solver, std::
     face_detector = cv::FaceDetectorYN::create(
         std::string(detection_model_path.begin(), detection_model_path.end()),
         "",                      
-        cv::Size(224, 224),
+        cv::Size(114, 114),
         score_threshold,
         nms_threshold,
         topK
@@ -107,7 +107,7 @@ TrackerMetadata StandardTracker::get_metadata()
 void StandardTracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized, faces;
-    cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
+    cv::resize(image, resized, cv::Size(114, 114), NULL, NULL, cv::INTER_LINEAR);
 
     float width = (float)image.cols;
     float height = (float)image.rows;
