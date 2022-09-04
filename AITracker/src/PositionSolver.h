@@ -64,12 +64,16 @@ protected:
 
 	bool complex;
 
-	// Returns tuple with <width, height> of the 3d internal face.
-	// Tipically measured from left->right jaw side and forehead->chin
+	/**
+	* Returns tuple with <width, height> of the 3d internal face.
+	* Tipically measured from left->right jaw side and forehead->chin
+	*/
 	virtual std::tuple<double, double> get_3dhead_dims();
 
-	// Returns tuple with <width, height> of facial landmarks (2D).
-	// Tipically measured from left->right jaw side and forehead->chin
+	/**
+	* Returns tuple with <width, height> of facial landmarks (2D).
+	* Tipically measured from left->right jaw side and forehead->chin
+	*/
 	virtual std::tuple<double, double> get_2dhead_dims(FaceData& face_data);
 
 	/**

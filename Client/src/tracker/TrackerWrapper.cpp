@@ -9,9 +9,7 @@ TrackerWrapper::TrackerWrapper(std::unique_ptr<ITracker>&& model, TRACKER_TYPE t
 
 TrackerWrapper::~TrackerWrapper()
 {
-    //this->model.release();
     this->model.reset(nullptr);
-   
 }
 
 void TrackerWrapper::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)

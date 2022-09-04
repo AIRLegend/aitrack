@@ -36,8 +36,8 @@ PositionSolver::PositionSolver(
 
 
     head3dScale = (cv::Mat_<double>(3, 3) <<
-        x_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
-        0.0, y_scale, 0,        // yaw is rv[1], yaw involves x-axis
+        y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
+        0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
         0.0, 0.0, z_scale
         );
 
@@ -166,7 +166,11 @@ PositionSolver::PositionSolver(
 
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 
-    mat3dcontour =  mat3dcontour * head3dScale;
+    //mat3dcontour =  mat3dcontour * head3dScale;
+
+    cv::transpose(mat3dcontour, mat3dcontour);
+    mat3dcontour = head3dScale * mat3dcontour;
+    cv::transpose(mat3dcontour, mat3dcontour);
 
     if(complex) std::cout << "Using complex solver" << std::endl;
 }
@@ -206,17 +210,12 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         face_data->translation[i] = tvec.at<double>(i, 0) * 10; // scale solvePnP coordinates to opentrack units in centimeters
     }
 
-    // We dont want the Z axis oversaturated since opentrack has +/-600 centimeter range
-    face_data->translation[2] /= 100;
+    correct_rotation(*face_data);
+    clip_rotations(*face_data);
 
 #ifdef _DEBUG
     std::cout << face_data->to_string() << std::endl; // disable copy constructor and output to std::cout
 #endif
-
-    correct_rotation(*face_data);
-    //clip_rotations(*face_data);
-
-    std::cout << head3dScale << std::endl;
 
 }
 
@@ -301,21 +300,32 @@ void PositionSolver::get_euler(cv::Mat& rvec, cv::Mat& tvec)
 
 void PositionSolver::correct_rotation(FaceData& face_data)
 {
-    float distance = (float) -(face_data.translation[2]);
+    float distance = (float) abs(face_data.translation[2]);
     float lateral_offset = (float)face_data.translation[1];
     float verical_offset = (float)face_data.translation[0];
 
-    float correction_yaw = (float)(std::atan(lateral_offset / distance) * TO_DEG); // (lateral_offset / distance) is already tangent, so only need atan to obtain radians
-    float correction_pitch = (float)(std::atan(verical_offset / distance) * TO_DEG); // (verical_offset / distance) is already tangent, so only need atan to obtain radians
+    //float correction_yaw = (float)std::atan((distance / abs(lateral_offset))) * TO_DEG;
+    //float correction_pitch = (float)(distance / std::atan(verical_offset) * TO_DEG);
+
+
+    float correction_yaw = 90.0f - (float)std::atan2(distance, abs(lateral_offset)) * TO_DEG;
+    float correction_pitch = 90.0f - (float)std::atan2(distance, abs(verical_offset)) * TO_DEG;
+
+    if (lateral_offset < 0)
+        correction_yaw *= -1;
+
+    if (verical_offset < 0)
+        correction_pitch *= -1;
 
     face_data.rotation[1] += correction_yaw;
     face_data.rotation[0] += correction_pitch;
 
-
-
     // Note: We could saturate pitch here, but its better to let the user do it via Opentrack.
     // The coefficient could be problematic for some users.
     //face_data.rotation[0] = face_data.rotation[0] * 1.5;
+
+    // We dont want the Z axis oversaturated since opentrack has +/-600 centimeter range
+    face_data.translation[2] /= 100;
 }
 
 
@@ -388,11 +398,11 @@ SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float pr
         0., -0.343742581679188, -0.113925986025684
         );
 
-
+    // This 3d model is "inverted", so we need to also invert scales
     head3dScale = (cv::Mat_<double>(3, 3) <<
         y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
-        0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
-        0.0, 0.0, z_scale
+        0.0, -x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+        0.0, 0.0, -z_scale
         );
 
     cv::transpose(mat3dcontour, mat3dcontour);
