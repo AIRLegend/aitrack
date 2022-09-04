@@ -8,6 +8,7 @@
 
 #include "ui_ConfigWindow.h"
 #include "i_view.h"
+#include "HeadCalibrationWindow.h"
 
 
 class ConfigWindow : public QWidget, IView
@@ -19,22 +20,29 @@ public:
 	~ConfigWindow();
 
 	// Inherited via IView
-	virtual void connect_presenter(IPresenter* presenter) override;
-	virtual void paint_video_frame(cv::Mat& img) override;
-	virtual void show_tracking_data(ConfigData conf) override;
-	virtual void set_tracking_mode(bool is_tracking) override;
-	virtual ConfigData get_inputs() override;
-	virtual void update_view_state(ConfigData conf) override;
-	virtual void set_enabled(bool enabled) override;
-	virtual void show_message(const char* msg, MSG_SEVERITY severity) override;
-	virtual void set_shortcuts(bool enabled) override;
+	void connect_presenter(IPresenter* presenter) override;
+	void show_tracking_data(ConfigData conf) override;
+	void set_tracking_mode(bool is_tracking) override;
+	ConfigData get_inputs() override;
+	void update_view_state(ConfigData conf) override;
+	void set_enabled(bool enabled) override;
+	void show_message(const char* msg, MSG_SEVERITY severity) override;
+	void set_shortcuts(bool enabled) override;
+	IView* get_calibration_window();
+	void set_visible(bool visible);
+	void paint_video_frame(cv::Mat& img) {};
+
 
 private:
 	Ui::ConfigWindow ui;
 
+	IPresenter* presenter;
+
+	HeadCalibrationWindow calibration_window;
+
 	IRootView *parentView;
 
-	QPushButton *btn_apply;
+	QPushButton *btn_apply, *btn_calibrate;
 	QComboBox *input_camera, *cb_modelType;
 
 	QCheckBox *check_stabilization_landmarks, *check_auto_update, *check_enable_tracking_shortcut;
@@ -49,4 +57,5 @@ private:
 
 private slots:
 	void onApplyClick();
+	void onCalibrateClick();
 };

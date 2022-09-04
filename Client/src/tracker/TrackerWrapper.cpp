@@ -9,6 +9,9 @@ TrackerWrapper::TrackerWrapper(std::unique_ptr<ITracker>&& model, TRACKER_TYPE t
 
 TrackerWrapper::~TrackerWrapper()
 {
+    //this->model.release();
+    this->model.reset(nullptr);
+   
 }
 
 void TrackerWrapper::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
@@ -24,4 +27,14 @@ void TrackerWrapper::update_distance_param(float new_distance)
 TRACKER_TYPE TrackerWrapper::get_type()
 {
     return type;
+}
+
+void TrackerWrapper::calibrate(FaceData& face_data)
+{
+    model->calibrate(face_data);
+}
+
+TrackerMetadata TrackerWrapper::get_model_config()
+{
+    return model->get_metadata();
 }

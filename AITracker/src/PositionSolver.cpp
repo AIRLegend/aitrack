@@ -74,9 +74,9 @@ PositionSolver::PositionSolver(
         landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
 
         mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
-            0.45517698, -0.30089578, 0.76442945,
-            0.44899884, -0.16699584, 0.76514298,
-            0.43743154, -0.02265548, 0.73926717,
+            0.45517698, -0.30089578, 0.76442945,        //0
+            0.44899884, -0.16699584, 0.76514298,        //1
+            0.43743154, -0.02265548, 0.73926717,        
             0.41503343, 0.08894145, 0.74794745,
             0.38912359, 0.23238003, 0.70478839,
             0.3346301, 0.36126539, 0.61558759,
@@ -216,6 +216,8 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     correct_rotation(*face_data);
     //clip_rotations(*face_data);
 
+    std::cout << head3dScale << std::endl;
+
 }
 
 void PositionSolver::set_prior_pitch(float new_pitch)
@@ -234,6 +236,45 @@ void PositionSolver::set_prior_distance(float new_distance)
 {
     this->prior_distance = new_distance * -2.;
     this->tv[2] = this->prior_distance;
+}
+
+void PositionSolver::calibrate_head_scale(FaceData& face_data)
+{
+    std::tuple<double, double> face_dims = get_3dhead_dims();
+    double width = std::get<0>(face_dims);
+    double height = std::get<1>(face_dims);
+
+    double real_ratio = width / height;
+
+    std::tuple<double, double> model_dims = get_3dhead_dims();
+    double model_width = std::get<0>(model_dims);
+    double model_height = std::get<1>(model_dims);
+
+    double model_ratio = model_width / model_height;
+
+    double scale = (model_height * real_ratio) / height;
+
+    head3dScale.at<double>(0, 0) = scale;
+}
+
+double PositionSolver::get_x_scale()
+{
+    return head3dScale.at<double>(1, 1);
+}
+
+std::tuple<double, double> PositionSolver::get_3dhead_dims()
+{
+    // indices of the matrix rows, not actual points!
+    double model_width = abs(mat3dcontour.at<double>(0, 0) - mat3dcontour.at<double>(8, 0));   // 0 - 16
+    double model_height = abs(mat3dcontour.at<double>(9, 1) - mat3dcontour.at<double>(4, 1));  // 27 -8
+    return std::tuple<double, double>(model_width, model_height);
+}
+
+std::tuple<double, double> PositionSolver::get_2dhead_dims(FaceData& face_data)
+{
+    double width = abs(face_data.landmark_coords[0 + 1] - face_data.landmark_coords[16 * 2 + 1]);
+    double height = abs(face_data.landmark_coords[27 * 2 + 0] - face_data.landmark_coords[8 * 2 + 0]);
+    return std::tuple<double, double>(width, height);
 }
 
 
@@ -309,7 +350,7 @@ SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float pr
 
     landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
 
-    mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
+    /*mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
         0.4551769692672, 0.300895790030204, -0.764429433974752, 
         0.448998827123556, 0.166995837790733, -0.765143004071253, 
         0.437431554952677, 0.022655479179981, -0.739267175112735, 
@@ -326,7 +367,27 @@ SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float pr
         0.131229723798772, 0.284447361805627, -0.234239149487417, 
         -0.131229723798772, 0.284447361805627, -0.234239149487417,
         -0.132325402795928, -0.290857984604968, -0.187067868218105
-         );
+         );*/
+
+    mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
+        0.4551769692672, 0.300895790030204, -0.764429433974752,
+        0.448998827123556, 0.166995837790733, -0.765143004071253,
+        0.437431554952677, 0.022655479179981, -0.739267175112735,
+        0.415033422928434, -0.088941454648772, -0.747947437846473,
+        0., -0.621079019321682, -0.287294770748887,
+        -0.415033422928434, -0.088941454648772, -0.747947437846473,
+        -0.437431554952677, 0.022655479179981, -0.739267175112735,
+        -0.448998827123556, 0.166995837790733, -0.765143004071253,
+        -0.4551769692672, 0.300895790030204, -0.764429433974752,
+        0., 0.293332603215811, -0.137582088779393,
+        0., 0.194828701837823, -0.069158109325951,
+        0., 0.103844017393155, -0.009151819844964,
+        0., 0., 0.,
+        0.131229723798772, 0.284447361805627, -0.234239149487417,
+        -0.131229723798772, 0.284447361805627, -0.234239149487417,
+        0., -0.343742581679188, -0.113925986025684
+        );
+
 
     head3dScale = (cv::Mat_<double>(3, 3) <<
         y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
@@ -337,7 +398,21 @@ SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float pr
     cv::transpose(mat3dcontour, mat3dcontour);
     mat3dcontour = head3dScale * mat3dcontour;
     cv::transpose(mat3dcontour, mat3dcontour);
+}
 
 
 
+std::tuple<double, double> SimplePositionSolver::get_3dhead_dims()
+{
+    // indices of the matrix rows, not actual points!
+    double model_width = abs(mat3dcontour.at<double>(0, 0) - mat3dcontour.at<double>(8, 0));   // 0 - 16
+    double model_height = abs(mat3dcontour.at<double>(9, 1) - mat3dcontour.at<double>(4, 1));  // 27 -8
+    return std::tuple<double, double>(model_width, model_height);
+}
+
+std::tuple<double, double> SimplePositionSolver::get_2dhead_dims(FaceData& face_data)
+{
+    double width = abs(face_data.landmark_coords[0 + 1] - face_data.landmark_coords[16 * 2 + 1]);
+    double height = abs(face_data.landmark_coords[27 * 2 + 0] - face_data.landmark_coords[8 * 2 + 0]);
+    return std::tuple<double, double>(width, height);
 }

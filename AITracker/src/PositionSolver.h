@@ -35,6 +35,12 @@ public:
 	void set_prior_pitch(float new_pitch);
 	void set_prior_yaw(float new_yaw);
 	void set_prior_distance(float new_distance);
+	void calibrate_head_scale(FaceData& face_data);
+	
+	// Get the scaling factor applied to the internal 3d head model.
+	double get_x_scale();
+
+	
 
 protected:
 	static const int NB_CONTOUR_POINTS_COMPLEX = 29;
@@ -45,7 +51,7 @@ protected:
 	//cv::Mat mat3dface;
 	cv::Mat mat3dcontour;
 	std::vector<int> contour_indices;  // Facial landmarks that interest us
-	cv::Mat head3dScale;               // This will let us scale the 3d model so a better PnP can be acomplished
+	cv::Mat head3dScale;               // This will let us scale the 3d reference model so a better PnP can be acomplished
 
 	//Buffer so we dont have to allocate a list on every solve_rotation call.
 	cv::Mat landmark_points_buffer;
@@ -57,6 +63,14 @@ protected:
 	cv::Mat camera_matrix, camera_distortion;
 
 	bool complex;
+
+	// Returns tuple with <width, height> of the 3d internal face.
+	// Tipically measured from left->right jaw side and forehead->chin
+	virtual std::tuple<double, double> get_3dhead_dims();
+
+	// Returns tuple with <width, height> of facial landmarks (2D).
+	// Tipically measured from left->right jaw side and forehead->chin
+	virtual std::tuple<double, double> get_2dhead_dims(FaceData& face_data);
 
 	/**
 		Gets euler angles from rotation matrix.
@@ -97,4 +111,13 @@ public:
 		float x_scale = 1.0f,
 		float y_scale = 1.0f,
 		float z_scale = 1.0f);
+
+protected:
+	// Returns tuple with <width, height> of the 3d internal face.
+	// Tipically measured from left->right jaw side and forehead->chin
+	virtual std::tuple<double, double> get_3dhead_dims() override;
+
+	// Returns tuple with <width, height> of facial landmarks (2D).
+	// Tipically measured from left->right jaw side and forehead->chin
+	virtual std::tuple<double, double> get_2dhead_dims(FaceData& face_data) override;
 };

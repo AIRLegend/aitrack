@@ -248,6 +248,7 @@
     <ClInclude Include="src\imageprocessor.h" />
     <ClInclude Include="src\data.h" />
     <ClInclude Include="src\model.h" />
+    <ClInclude Include="src\_inference.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

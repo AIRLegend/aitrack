@@ -1,4 +1,5 @@
 #include "model.h"
+#include "_inference.h"
 
 #include "onnxruntime_cxx_api.h"
 #include "opencv2/core/matx.hpp"
@@ -21,8 +22,6 @@ float inline logit(float p)
 
 StandardTracker::StandardTracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detection_model_path, std::wstring& landmark_model_path):
     improc(),
-    memory_info(allocator.GetInfo()),
-    enviro(std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "env")),
     detection_input_node_names{ "input" },
     detection_output_node_names{ "output", "maxpool" },
     landmarks_input_node_names{ "input" },
@@ -30,16 +29,19 @@ StandardTracker::StandardTracker(std::unique_ptr<PositionSolver>&& solver, std::
 {
     this->solver = std::move(solver);
 
+    memory_info = allocator.GetInfo();
+
+    enviro = SessionSingleton::getInstance().enviro;
+
     auto session_options = Ort::SessionOptions();
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
     session_options.SetInterOpNumThreads(1);
     session_options.SetIntraOpNumThreads(1);
     session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
 
-    enviro->DisableTelemetryEvents();
-
    // Landmark detector
-    session_lm = std::make_unique<Ort::Session>(*enviro, landmark_model_path.data(), session_options);
+    session_lm = std::make_unique<Ort::Session>(*enviro, 
+        landmark_model_path.data(), session_options);
 
     // Face detector
     float score_threshold = .8;
@@ -55,6 +57,11 @@ StandardTracker::StandardTracker(std::unique_ptr<PositionSolver>&& solver, std::
     );
 
     this->tensor_input_size = get_lm_input_size();
+}
+
+StandardTracker::~StandardTracker()
+{
+    session_lm->release();
 }
 
 void StandardTracker::predict(cv::Mat& image, FaceData& face_data, const std::unique_ptr<IFilter>& filter)
@@ -82,6 +89,18 @@ void StandardTracker::predict(cv::Mat& image, FaceData& face_data, const std::un
 
         solver->solve_rotation(&face_data);
     }
+}
+
+void StandardTracker::calibrate(FaceData& face_data)
+{
+    this->solver->calibrate_head_scale(face_data);
+}
+
+TrackerMetadata StandardTracker::get_metadata()
+{
+     TrackerMetadata  t;
+     t.head_width_scale = solver->get_x_scale();
+     return t;
 }
 
 

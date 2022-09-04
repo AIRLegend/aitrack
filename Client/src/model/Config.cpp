@@ -75,8 +75,8 @@ void ConfigMgr::updateConfig(const ConfigData& data)
 	conf.setValue("onnx_dynamic", data.onnx_dynamic);
 
 	conf.setValue("head_3d_scale_x", data.head_scale_x);
-	conf.setValue("head_3d_scale_y", data.head_scale_y);
-	conf.setValue("head_3d_scale_z", data.head_scale_z);
+	//conf.setValue("head_3d_scale_y", data.head_scale_y);
+	//conf.setValue("head_3d_scale_z", data.head_scale_z);
 	conf.setValue("tracking_shortcut_enabled", data.tracking_shortcut_enabled);
 
 }
@@ -105,8 +105,8 @@ ConfigData ConfigMgr::getConfig()
 	c.onnx_set_dynamic = conf.value("set_dynamic", true).toBool();
 	c.onnx_dynamic = conf.value("dynamic", 0).toInt();
 	c.head_scale_x = conf.value("head_3d_scale_x", 1.0).toDouble();
-	c.head_scale_y = conf.value("head_3d_scale_y", 1.0).toDouble();
-	c.head_scale_z = conf.value("head_3d_scale_z", 1.0).toDouble();
+	//c.head_scale_y = conf.value("head_3d_scale_y", 1.0).toDouble();
+	//c.head_scale_z = conf.value("head_3d_scale_z", 1.0).toDouble();
 	c.tracking_shortcut_enabled= conf.value("tracking_shortcut_enabled", false).toBool();
 
 	return c;

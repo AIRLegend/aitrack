@@ -6,7 +6,7 @@
 
 #include "TrackerWrapper.h"
 
-std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(
+std::unique_ptr<TrackerWrapper> TrackerFactory::buildTracker(
 	int im_width, 
 	int im_height, 
 	float distance, 
@@ -48,27 +48,28 @@ std::unique_ptr<ITrackerWrapper> TrackerFactory::buildTracker(
 	std::wstring detect_wstr = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(detect_path);
 	std::wstring landmark_wstr = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(landmark_path);
 
-	//auto solver = std::make_unique<PositionSolver>(im_width, im_height, -2, -2, distance, complex_solver,
-	//											   x_scale, y_scale, z_scale);
-
-	auto solver = std::make_unique<SimplePositionSolver>(im_width, im_height, -2, -2, distance, complex_solver, x_scale, y_scale, z_scale);
-
-
 	try
 	{
 		if (experimental_model) {
+			// This experimental uses less points and hence, a simple solver
+			std::unique_ptr<SimplePositionSolver> solver = std::make_unique<SimplePositionSolver>(
+				im_width, im_height, -2, -2, distance, complex_solver, fov, x_scale, y_scale, z_scale
+				);
 			t = std::make_unique<EfficientTracker>( std::move(solver), detect_wstr, landmark_wstr);
 		}
 		else {		
+			std::unique_ptr<PositionSolver> solver = std::make_unique<PositionSolver>(
+				im_width, im_height, -2, -2, distance, complex_solver, fov, x_scale, y_scale, z_scale
+			);
 			t = std::make_unique<StandardTracker>(std::move(solver), detect_wstr, landmark_wstr);
 		}
 	}
 	catch (std::exception e)
 	{
 #ifdef _DEBUG
-		std::cout << "PROBLEM BUILDING TRACKER \n" << e.what() << std::endl;
+		std::cout << "PROBLEM BUILDING TRACKER:" << e.what() << std::endl;
 #endif
-		t.reset();
+		t.reset(nullptr);
 	}
 
 	return std::make_unique<TrackerWrapper>(std::move(t), type);
