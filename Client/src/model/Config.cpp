@@ -31,8 +31,8 @@ ConfigData ConfigData::getGenericConfig()
 	conf.onnx_set_dynamic = true;
 	conf.onnx_dynamic = 0;
 	conf.head_scale_x = 1.0;
-	conf.head_scale_y = 1.0;
-	conf.head_scale_z = 1.0;
+	//conf.head_scale_y = 1.0;
+	//conf.head_scale_z = 1.0;
 
 	return conf;
 }
