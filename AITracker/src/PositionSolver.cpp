@@ -23,6 +23,9 @@ PositionSolver::PositionSolver(
     this->prior_yaw = -1.57;
     this->prior_distance = prior_distance * -2.0;
 
+    this->width = width;
+    this->height = height;
+
     this->rv[0] = this->prior_pitch;
     this->rv[1] = this->prior_yaw;
     this->rv[2] = -1.57;
@@ -211,7 +214,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     }
 
     correct_rotation(*face_data);
-    clip_rotations(*face_data);
+    //clip_rotations(*face_data);
 
 #ifdef _DEBUG
     std::cout << face_data->to_string() << std::endl; // disable copy constructor and output to std::cout
@@ -356,7 +359,7 @@ void PositionSolver::clip_rotations(FaceData& face_data)
 SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float prior_pitch, float prior_yaw, float prior_distance, bool complex, float fov, float x_scale, float y_scale, float z_scale):
    PositionSolver(im_width, im_height,prior_pitch, prior_yaw, prior_distance, complex, fov, x_scale, y_scale, z_scale)
 {
-    contour_indices = { 0,1,2,3,8,13,14,15,16,27,28,29,30,39,42, 55};
+    contour_indices = { 0,1,2,3,8,13,14,15,16,27,28,29,30,39,42,55 };
 
     landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
 
@@ -401,8 +404,8 @@ SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float pr
     // This 3d model is "inverted", so we need to also invert scales
     head3dScale = (cv::Mat_<double>(3, 3) <<
         y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
-        0.0, -x_scale, 0,        // yaw is rv[1], yaw involves x-axis
-        0.0, 0.0, -z_scale
+        0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+        0.0, 0.0, z_scale
         );
 
     cv::transpose(mat3dcontour, mat3dcontour);
@@ -425,4 +428,24 @@ std::tuple<double, double> SimplePositionSolver::get_2dhead_dims(FaceData& face_
     double width = abs(face_data.landmark_coords[0 + 1] - face_data.landmark_coords[16 * 2 + 1]);
     double height = abs(face_data.landmark_coords[27 * 2 + 0] - face_data.landmark_coords[8 * 2 + 0]);
     return std::tuple<double, double>(width, height);
+}
+
+
+void SimplePositionSolver::correct_rotation(FaceData& face_data)
+{
+    // For some reason the solver gets rest "Pitch" as "-180 deg", which is the same 
+    // as "0 deg", which is what the other solvers find.
+    // For the moment this method will be overriden beacuse it's very possible that 
+    // this simpler model will change (soon). 
+
+    if(abs(face_data.rotation[0]) > 90)
+        if (face_data.rotation[0] >= -180 && face_data.rotation[0] <= 0) {
+            face_data.rotation[0] += 180;
+        }
+        else if (face_data.rotation[0] > 0 && face_data.rotation[0] <= 180)
+        {
+            face_data.rotation[0] -= 180;
+        }
+
+    PositionSolver::correct_rotation(face_data);
 }

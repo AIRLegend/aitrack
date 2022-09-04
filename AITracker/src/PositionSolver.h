@@ -31,14 +31,14 @@ public:
 		Stores solved translation/rotation on the face_data object
 		@param face_data FaceData instance with 2D landmark coordinates detected
 	*/
-	void solve_rotation(FaceData* face_data);
-	void set_prior_pitch(float new_pitch);
-	void set_prior_yaw(float new_yaw);
-	void set_prior_distance(float new_distance);
-	void calibrate_head_scale(FaceData& face_data);
+	virtual void solve_rotation(FaceData* face_data);
+	virtual void set_prior_pitch(float new_pitch);
+	virtual void set_prior_yaw(float new_yaw);
+	virtual void set_prior_distance(float new_distance);
+	virtual void calibrate_head_scale(FaceData& face_data);
 	
 	// Get the scaling factor applied to the internal 3d head model.
-	double get_x_scale();
+	virtual double get_x_scale();
 
 	
 
@@ -85,7 +85,7 @@ protected:
 	* Lateral/Vertical offset adds an error to the calculated rotation.
 	* This method corrects them.
 	*/
-	void correct_rotation(FaceData& face_data);
+	virtual void correct_rotation(FaceData& face_data);
 
 
 	/**
@@ -124,4 +124,11 @@ protected:
 	// Returns tuple with <width, height> of facial landmarks (2D).
 	// Tipically measured from left->right jaw side and forehead->chin
 	virtual std::tuple<double, double> get_2dhead_dims(FaceData& face_data) override;
+
+
+	/**
+	* Lateral/Vertical offset adds an error to the calculated rotation.
+	* This method corrects them.
+	*/
+	virtual void correct_rotation(FaceData& face_data) override;
 };
