@@ -359,7 +359,7 @@ void PositionSolver::clip_rotations(FaceData& face_data)
 SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float prior_pitch, float prior_yaw, float prior_distance, bool complex, float fov, float x_scale, float y_scale, float z_scale):
    PositionSolver(im_width, im_height,prior_pitch, prior_yaw, prior_distance, complex, fov, x_scale, y_scale, z_scale)
 {
-    contour_indices = { 0,1,2,3,8,13,14,15,16,27,28,29,30,39,42,55 };
+    contour_indices = { 0,1,2,3,8,13,14,15,16,27,28,29,30,39,42,57 };  // 57 == 55 in the 3d model
 
     landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
 
