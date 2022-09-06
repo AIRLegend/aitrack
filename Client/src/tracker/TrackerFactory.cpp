@@ -26,7 +26,7 @@ std::unique_ptr<TrackerWrapper> TrackerFactory::buildTracker(
 	switch(type)
 	{
 	case TRACKER_TYPE::TRACKER_VERY_FAST:
-		landmark_path += "landmarks_model_776.onnx";
+		landmark_path += "lm_fast_exp1.onnx";
 		complex_solver = false;
 		experimental_model = true;
 		break;
