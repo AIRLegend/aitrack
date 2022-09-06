@@ -22,7 +22,9 @@ Presenter::Presenter(IView& view, std::unique_ptr<TrackerFactory>&& t_factory, s
 	state = this->conf_mgr->getConfig();
 
 	this->view = &view;
+
 	this->view->connect_presenter(this);
+
 	this->paint = state.show_video_feed;
 	this->filter = nullptr;
 	
@@ -134,8 +136,10 @@ void Presenter::init_tracker(int type)
 			std::cout << "Resetting old tracker" << std::endl;
 #endif
 			this->logger->info("Rebuilding tracker with new parameters");
-			this->t.reset();
-			this->t.release();
+			this->t.reset(nullptr);
+			
+			std::cout << "Scale_X: " << state.head_scale_x << "Scale_Y: " << state.head_scale_y << std::endl;
+
 			this->t = tracker_factory->
 				buildTracker(all_cameras[state.selected_camera]->width,
 							 all_cameras[state.selected_camera]->height,
@@ -143,8 +147,8 @@ void Presenter::init_tracker(int type)
 							 this->state.camera_fov,
 							 tracker_factory->get_type(type),
 							 state.head_scale_x,
-							 state.head_scale_y,
-							 state.head_scale_z
+							 1,//state.head_scale_y,
+							 1//state.head_scale_z
 				);
 		}
 		else
@@ -159,12 +163,15 @@ void Presenter::init_tracker(int type)
 			all_cameras[state.selected_camera]->height,
 			(float)state.prior_distance,
 			this->state.camera_fov,
-			tracker_factory->get_type(type));
+			tracker_factory->get_type(type), 
+			state.head_scale_x,
+			1,//state.head_scale_y,
+			1//state.head_scale_z
+		);
 	}
 	state.selected_model = type;
 	this->logger->info("Tracker initialized.");
 }
-
 
 void Presenter::run_loop()
 {
@@ -201,15 +208,7 @@ void Presenter::run_loop()
 			{
 				if (paint)
 				{
-					// Paint landmarks
-					for (int i = 0; i < 66; i++)
-					{
-						cv::Point p(d.landmark_coords[2 * i + 1], d.landmark_coords[2 * i]);
-						cv::circle(mat, p, 2, color_magenta, 3);
-					}
-					cv::Point p1(d.face_coords[0], d.face_coords[1]);
-					cv::Point p2(d.face_coords[2], d.face_coords[3]);
-					cv::rectangle(mat, p1, p2, color_blue, 2);
+					paint_predictions(mat, d, color_blue, color_magenta);
 				}
 
 				update_tracking_data(d);
@@ -219,7 +218,7 @@ void Presenter::run_loop()
 			if (paint)
 			{
 				cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
-				view->paint_video_frame(mat);
+				this->view->paint_video_frame(mat);
 			}
 
 			QApplication::processEvents();
@@ -228,6 +227,9 @@ void Presenter::run_loop()
 			std::chrono::milliseconds loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop_end_time - loop_start_time);
 			if (loop_duration < frame_duration)
 				QThread::msleep((frame_duration - loop_duration).count());
+//#ifdef _DEBUG
+			std::cout << "Iteration took: " << (int)(loop_duration.count()) << " ms" << std::endl;
+//#endif
 		}
 
 		cam->stop_camera();
@@ -238,6 +240,18 @@ void Presenter::run_loop()
 	}
 }
 
+void Presenter::paint_predictions(cv::Mat& image, const FaceData& face_data, const cv::Scalar& color_bbox, const cv::Scalar& color_landmarks)
+{
+	// Paint landmarks
+	for (int i = 0; i < 66; i++)
+	{
+		cv::Point p(face_data.landmark_coords[2 * i + 1], face_data.landmark_coords[2 * i]);
+		cv::circle(image, p, 2, color_landmarks, 3);
+	}
+	cv::Point p1(face_data.face_coords[0], face_data.face_coords[1]);
+	cv::Point p2(face_data.face_coords[2], face_data.face_coords[3]);
+	cv::rectangle(image, p1, p2, color_bbox, 2);
+}
 
 void Presenter::update_tracking_data(FaceData& facedata)
 {
@@ -350,6 +364,69 @@ void Presenter::save_prefs(const ConfigData& data)
 	conf_mgr->updateConfig(state);
 	sync_ui_inputs();
 	this->logger->info("Prefs saved");
+}
+
+void Presenter::calibrate_face(IView& calibration_view)
+{
+	std::cout << "Calibration" << std::endl;
+	FaceData d = FaceData();
+
+	auto cam = all_cameras[state.selected_camera];
+
+	int video_frame_buff_size = cam->width * cam->height * 3;
+	auto video_tex_pixels = std::make_unique<uint8_t[]>(video_frame_buff_size);
+
+	cv::Scalar color_blue(255, 0, 0);
+	cv::Scalar color_magenta(255, 0, 255);
+
+	this->logger->info("Starting calibration with camera {}", state.selected_camera);
+
+	try
+	{
+		cam->start_camera();
+		this->logger->info("Camera {} started capturing", state.selected_camera);
+
+		std::chrono::milliseconds frame_duration(1000 / state.video_fps);
+
+		for (int i=0; i < 10; i++)
+		{
+			auto loop_start_time = std::chrono::steady_clock::now();
+			cam->get_frame(video_tex_pixels.get());
+			cv::Mat mat(cam->height, cam->width, CV_8UC3, video_tex_pixels.get());
+
+			t->predict(mat, d, this->filter);
+
+			if (d.face_detected)
+			{
+
+				paint_predictions(mat, d, color_blue, color_magenta);
+			}
+
+			cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+			calibration_view.paint_video_frame(mat);
+
+			QApplication::processEvents();
+
+			auto loop_end_time = std::chrono::steady_clock::now();
+			std::chrono::milliseconds loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(loop_end_time - loop_start_time);
+			if (loop_duration < frame_duration)
+				QThread::msleep((frame_duration - loop_duration).count());
+		}
+
+		cam->stop_camera();
+		this->logger->info("Stop camera {} capture", state.selected_camera);
+	}
+	catch (std::exception& ex) {
+		this->logger->error(ex.what());
+	}
+
+	calibration_view.set_visible(false);
+	t->calibrate(d);
+	TrackerMetadata tmetadata = t->get_model_config();
+	state.head_scale_x = tmetadata.head_width_scale;
+	save_prefs(state);
+	this->logger->info("Ended calibration.");
+	view->show_message("Calibration ended! Face scale saved!", MSG_SEVERITY::NORMAL);
 }
 
 void Presenter::sync_ui_inputs()

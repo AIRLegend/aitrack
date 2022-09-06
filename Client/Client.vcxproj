@@ -117,7 +117,7 @@
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>$(DefaultQtVersion)</QtInstall>
-    <QtModules>core;uitools;widgets;quick;</QtModules>
+    <QtModules>core;uitools;widgets;quick</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtLibrarySearchPath>$(QTDIR)\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
     <QtHeaderSearchPath>$(QTDIR)\include</QtHeaderSearchPath>
@@ -189,6 +189,7 @@
     <ClCompile Include="src\model\UDPSender.cpp" />
     <ClCompile Include="src\utils\qglobalshortcuts\qglobalshortcut.cc" />
     <ClCompile Include="src\view\ConfigWindow.cpp" />
+    <ClCompile Include="src\view\HeadCalibrationWindow.cpp" />
     <ClCompile Include="src\view\WindowMain.cpp" />
     <ClCompile Include="src\tracker\TrackerFactory.cpp" />
     <ClCompile Include="src\tracker\TrackerWrapper.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\model\UDPSender.h" />
     <ClInclude Include="src\tracker\ITrackerWrapper.h" />
     <QtMoc Include="src\view\ConfigWindow.h" />
+    <QtMoc Include="src\view\HeadCalibrationWindow.h" />
     <ClInclude Include="src\view\i_view.h" />
     <ClInclude Include="src\tracker\TrackerFactory.h" />
     <ClInclude Include="src\tracker\TrackerWrapper.h" />
@@ -237,6 +239,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="src\view\ConfigWindow.ui" />
+    <QtUic Include="src\view\HeadCalibrationWindow.ui" />
     <QtUic Include="src\view\MainWindow.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

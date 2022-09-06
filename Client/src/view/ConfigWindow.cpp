@@ -2,7 +2,7 @@
 #include <string>
 
 ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
-	: QWidget(parent)
+	: QWidget(parent), calibration_window((IRootView* )this)
 {
 	ui.setupUi(this);
 
@@ -15,6 +15,7 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 	gp_box_image_prefs = gp_box_camera_prefs->findChild<QGroupBox*>("gbImageParams");
 
 	btn_apply = findChild<QPushButton*>("applyBtn");
+	btn_calibrate = findChild<QPushButton*>("calibrateBtn");
 
 	input_camera = gp_box_camera_prefs->findChild<QComboBox*>("cameraIdSelector");
 	width_selector = gp_box_camera_prefs->findChild<QSpinBox*>("imgWidthSelector");
@@ -36,6 +37,7 @@ ConfigWindow::ConfigWindow(IRootView *prev_window, QWidget *parent)
 
 
 	connect(btn_apply, SIGNAL(released()), this, SLOT(onApplyClick()));
+	connect(btn_calibrate, SIGNAL(released()), this, SLOT(onCalibrateClick()));
 }
 
 ConfigWindow::~ConfigWindow()
@@ -46,14 +48,28 @@ void ConfigWindow::onApplyClick() {
 	parentView->notify((IView*)this);
 }
 
+void ConfigWindow::onCalibrateClick() {
+	calibration_window.show();
+}
 
-void ConfigWindow::connect_presenter(IPresenter* presenter) { }
 
-void ConfigWindow::paint_video_frame(cv::Mat& img) { }
+void ConfigWindow::connect_presenter(IPresenter* presenter) 
+{
+	if (presenter != nullptr)
+	{
+		this->presenter = presenter;
+		this->calibration_window.connect_presenter(presenter);
+	}
+}
 
 void ConfigWindow::show_tracking_data(ConfigData conf) { }
 
 void ConfigWindow::set_shortcuts(bool enabled) { }
+
+IView* ConfigWindow::get_calibration_window()
+{
+	return &(this->calibration_window);
+}
 
 void ConfigWindow::set_tracking_mode(bool is_tracking)
 {
@@ -138,4 +154,11 @@ void ConfigWindow::set_enabled(bool enabled)
 {
 	this->setEnabled(enabled);
 }
+
 void ConfigWindow::show_message(const char* msg, MSG_SEVERITY severity){}
+
+void ConfigWindow::set_visible(bool visible)
+{
+	
+		
+};

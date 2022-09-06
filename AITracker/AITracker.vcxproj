@@ -190,6 +190,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\OpenCV\include\;$(SolutionDir)Dependencies\onnxruntime\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -247,6 +248,7 @@
     <ClInclude Include="src\imageprocessor.h" />
     <ClInclude Include="src\data.h" />
     <ClInclude Include="src\model.h" />
+    <ClInclude Include="src\_inference.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,16 +23,26 @@ PositionSolver::PositionSolver(
     this->prior_yaw = -1.57;
     this->prior_distance = prior_distance * -2.0;
 
+    this->width = width;
+    this->height = height;
+
     this->rv[0] = this->prior_pitch;
     this->rv[1] = this->prior_yaw;
     this->rv[2] = -1.57;
     this->tv[2] = this->prior_distance;
 
+    //head3dScale = (cv::Mat_<double>(3, 3) <<
+    //    y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
+    //    0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+    //    0.0, 0.0, z_scale
+    //);
+
+
     head3dScale = (cv::Mat_<double>(3, 3) <<
         y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
         0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
         0.0, 0.0, z_scale
-    );
+        );
 
     this->complex = complex;
 
@@ -67,9 +77,9 @@ PositionSolver::PositionSolver(
         landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
 
         mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
-            0.45517698, -0.30089578, 0.76442945,
-            0.44899884, -0.16699584, 0.76514298,
-            0.43743154, -0.02265548, 0.73926717,
+            0.45517698, -0.30089578, 0.76442945,        //0
+            0.44899884, -0.16699584, 0.76514298,        //1
+            0.43743154, -0.02265548, 0.73926717,        
             0.41503343, 0.08894145, 0.74794745,
             0.38912359, 0.23238003, 0.70478839,
             0.3346301, 0.36126539, 0.61558759,
@@ -159,7 +169,11 @@ PositionSolver::PositionSolver(
 
     camera_distortion = (cv::Mat_<double>(4, 1) << 0, 0, 0, 0);
 
-    mat3dcontour =  mat3dcontour * head3dScale;
+    //mat3dcontour =  mat3dcontour * head3dScale;
+
+    cv::transpose(mat3dcontour, mat3dcontour);
+    mat3dcontour = head3dScale * mat3dcontour;
+    cv::transpose(mat3dcontour, mat3dcontour);
 
     if(complex) std::cout << "Using complex solver" << std::endl;
 }
@@ -173,7 +187,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         for (int i = 0; i < contour_indices.size(); i++)
         {
             contour_idx = contour_indices[i];
-            landmark_points_buffer.at<float>(i, j) = (float)(int)face_data->landmark_coords[2 * contour_idx + j]; // fix complation warnings.
+            landmark_points_buffer.at<float>(i, j) = (float)face_data->landmark_coords[2 * contour_idx + j]; // fix complation warnings.
         }
     }
 
@@ -190,7 +204,6 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         cv::SOLVEPNP_ITERATIVE
     );
 
-
     get_euler(rvec, tvec);
 
 
@@ -200,15 +213,12 @@ void PositionSolver::solve_rotation(FaceData* face_data)
         face_data->translation[i] = tvec.at<double>(i, 0) * 10; // scale solvePnP coordinates to opentrack units in centimeters
     }
 
-    // We dont want the Z axis oversaturated since opentrack has +/-600 centimeter range
-    face_data->translation[2] /= 100;
+    correct_rotation(*face_data);
+    //clip_rotations(*face_data);
 
 #ifdef _DEBUG
     std::cout << face_data->to_string() << std::endl; // disable copy constructor and output to std::cout
 #endif
-
-    correct_rotation(*face_data);
-    clip_rotations(*face_data);
 
 }
 
@@ -228,6 +238,45 @@ void PositionSolver::set_prior_distance(float new_distance)
 {
     this->prior_distance = new_distance * -2.;
     this->tv[2] = this->prior_distance;
+}
+
+void PositionSolver::calibrate_head_scale(FaceData& face_data)
+{
+    std::tuple<double, double> face_dims = get_3dhead_dims();
+    double width = std::get<0>(face_dims);
+    double height = std::get<1>(face_dims);
+
+    double real_ratio = width / height;
+
+    std::tuple<double, double> model_dims = get_3dhead_dims();
+    double model_width = std::get<0>(model_dims);
+    double model_height = std::get<1>(model_dims);
+
+    double model_ratio = model_width / model_height;
+
+    double scale = (model_height * real_ratio) / height;
+
+    head3dScale.at<double>(0, 0) = scale;
+}
+
+double PositionSolver::get_x_scale()
+{
+    return head3dScale.at<double>(1, 1);
+}
+
+std::tuple<double, double> PositionSolver::get_3dhead_dims()
+{
+    // indices of the matrix rows, not actual points!
+    double model_width = abs(mat3dcontour.at<double>(0, 0) - mat3dcontour.at<double>(8, 0));   // 0 - 16
+    double model_height = abs(mat3dcontour.at<double>(9, 1) - mat3dcontour.at<double>(4, 1));  // 27 -8
+    return std::tuple<double, double>(model_width, model_height);
+}
+
+std::tuple<double, double> PositionSolver::get_2dhead_dims(FaceData& face_data)
+{
+    double width = abs(face_data.landmark_coords[0 + 1] - face_data.landmark_coords[16 * 2 + 1]);
+    double height = abs(face_data.landmark_coords[27 * 2 + 0] - face_data.landmark_coords[8 * 2 + 0]);
+    return std::tuple<double, double>(width, height);
 }
 
 
@@ -254,12 +303,22 @@ void PositionSolver::get_euler(cv::Mat& rvec, cv::Mat& tvec)
 
 void PositionSolver::correct_rotation(FaceData& face_data)
 {
-    float distance = (float) -(face_data.translation[2]);
+    float distance = (float) abs(face_data.translation[2]);
     float lateral_offset = (float)face_data.translation[1];
     float verical_offset = (float)face_data.translation[0];
 
-    float correction_yaw = (float)(std::atan(lateral_offset / distance) * TO_DEG); // (lateral_offset / distance) is already tangent, so only need atan to obtain radians
-    float correction_pitch = (float)(std::atan(verical_offset / distance) * TO_DEG); // (verical_offset / distance) is already tangent, so only need atan to obtain radians
+    //float correction_yaw = (float)std::atan((distance / abs(lateral_offset))) * TO_DEG;
+    //float correction_pitch = (float)(distance / std::atan(verical_offset) * TO_DEG);
+
+
+    float correction_yaw = 90.0f - (float)std::atan2(distance, abs(lateral_offset)) * TO_DEG;
+    float correction_pitch = 90.0f - (float)std::atan2(distance, abs(verical_offset)) * TO_DEG;
+
+    if (lateral_offset < 0)
+        correction_yaw *= -1;
+
+    if (verical_offset < 0)
+        correction_pitch *= -1;
 
     face_data.rotation[1] += correction_yaw;
     face_data.rotation[0] += correction_pitch;
@@ -267,6 +326,9 @@ void PositionSolver::correct_rotation(FaceData& face_data)
     // Note: We could saturate pitch here, but its better to let the user do it via Opentrack.
     // The coefficient could be problematic for some users.
     //face_data.rotation[0] = face_data.rotation[0] * 1.5;
+
+    // We dont want the Z axis oversaturated since opentrack has +/-600 centimeter range
+    face_data.translation[2] /= 100;
 }
 
 
@@ -289,3 +351,82 @@ void PositionSolver::clip_rotations(FaceData& face_data)
         face_data.rotation[2] = 0.0;
 }
 
+
+
+/*
+*   SIMPLE POSITION SOLVER
+*/
+SimplePositionSolver::SimplePositionSolver(int im_width, int im_height, float prior_pitch, float prior_yaw, float prior_distance, bool complex, float fov, float x_scale, float y_scale, float z_scale):
+   PositionSolver(im_width, im_height,prior_pitch, prior_yaw, prior_distance, complex, fov, x_scale, y_scale, z_scale)
+{
+    contour_indices = { 0,1,2,3,8,13,14,15,16,27,28,29,30,39,42,57 };  // 57 == 55 in the 3d model
+
+    landmark_points_buffer = cv::Mat((int)contour_indices.size(), 1, CV_32FC2);
+
+    mat3dcontour = (cv::Mat_<double>((int)contour_indices.size(), 3) <<
+        0.4551769692672, 0.300895790030204, -0.764429433974752,
+        0.448998827123556, 0.166995837790733, -0.765143004071253,
+        0.437431554952677, 0.022655479179981, -0.739267175112735,
+        0.415033422928434, -0.088941454648772, -0.747947437846473,
+        0., -0.621079019321682, -0.287294770748887,
+        -0.415033422928434, -0.088941454648772, -0.747947437846473,
+        -0.437431554952677, 0.022655479179981, -0.739267175112735,
+        -0.448998827123556, 0.166995837790733, -0.765143004071253,
+        -0.4551769692672, 0.300895790030204, -0.764429433974752,
+        0., 0.293332603215811, -0.137582088779393,
+        0., 0.194828701837823, -0.069158109325951,
+        0., 0.103844017393155, -0.009151819844964,
+        0., 0., 0.,
+        0.131229723798772, 0.284447361805627, -0.234239149487417,
+        -0.131229723798772, 0.284447361805627, -0.234239149487417,
+        0., -0.343742581679188, -0.113925986025684
+        );
+
+    // This 3d model is "inverted", so we need to also invert scales
+    head3dScale = (cv::Mat_<double>(3, 3) <<
+        y_scale, 0.0, 0,        // pitch is rv[0], pitch involves y-axis
+        0.0, x_scale, 0,        // yaw is rv[1], yaw involves x-axis
+        0.0, 0.0, z_scale
+        );
+
+    cv::transpose(mat3dcontour, mat3dcontour);
+    mat3dcontour = head3dScale * mat3dcontour;
+    cv::transpose(mat3dcontour, mat3dcontour);
+}
+
+
+
+std::tuple<double, double> SimplePositionSolver::get_3dhead_dims()
+{
+    // indices of the matrix rows, not actual points!
+    double model_width = abs(mat3dcontour.at<double>(0, 0) - mat3dcontour.at<double>(8, 0));   // 0 - 16
+    double model_height = abs(mat3dcontour.at<double>(9, 1) - mat3dcontour.at<double>(4, 1));  // 27 -8
+    return std::tuple<double, double>(model_width, model_height);
+}
+
+std::tuple<double, double> SimplePositionSolver::get_2dhead_dims(FaceData& face_data)
+{
+    double width = abs(face_data.landmark_coords[0 + 1] - face_data.landmark_coords[16 * 2 + 1]);
+    double height = abs(face_data.landmark_coords[27 * 2 + 0] - face_data.landmark_coords[8 * 2 + 0]);
+    return std::tuple<double, double>(width, height);
+}
+
+
+void SimplePositionSolver::correct_rotation(FaceData& face_data)
+{
+    // For some reason the solver gets rest "Pitch" as "-180 deg", which is the same 
+    // as "0 deg", which is what the other solvers find.
+    // For the moment this method will be overriden beacuse it's very possible that 
+    // this simpler model will change (soon). 
+
+    if(abs(face_data.rotation[0]) > 90)
+        if (face_data.rotation[0] >= -180 && face_data.rotation[0] <= 0) {
+            face_data.rotation[0] += 180;
+        }
+        else if (face_data.rotation[0] > 0 && face_data.rotation[0] <= 180)
+        {
+            face_data.rotation[0] -= 180;
+        }
+
+    PositionSolver::correct_rotation(face_data);
+}

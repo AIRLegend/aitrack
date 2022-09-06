@@ -1,11 +1,12 @@
 #pragma once
 
-
 #include "opencv2/opencv.hpp"
+
 #include "../model/Config.h"
 #include "../presenter/i_presenter.h"
 
 enum MSG_SEVERITY { CRITICAL, NORMAL };
+
 
 
 
@@ -17,15 +18,9 @@ public:
 	virtual void connect_presenter(IPresenter* presenter) = 0;
 
 	/**
-	* Paint a video frame on the video preview
-	*/
-	virtual void paint_video_frame(cv::Mat& img) = 0;
-
-	/**
 	* Show the tracking data on the UI
 	*/
 	virtual void show_tracking_data(ConfigData conf) = 0;
-
 
 	/**
 	* Sets the view in tracking or not tracking mode 
@@ -43,12 +38,15 @@ public:
 	*/
 	virtual void update_view_state(ConfigData conf) = 0;
 
-
 	/**
 	* Disables the GUI in case of error (or something like that) so the user
 	* cant start using the program.
 	*/
 	virtual void set_enabled(bool enabled) = 0;
+
+	/**
+	*/
+	virtual void set_visible(bool visible) = 0;
 
 	/**
 	* For showing dialogs or alerts to the user.
@@ -59,8 +57,27 @@ public:
 	* Enables / Disables shortcuts
 	*/
 	virtual void set_shortcuts(bool enabled) = 0;
+
+	/**/
+	virtual IView* get_calibration_window() = 0;
+
+
+	virtual void paint_video_frame(cv::Mat& img) = 0;
+
+
 };
 
+
+/**
+* Must be implemented by all windows which will support previews (or anything drawn from the presenter)
+
+class IPaintableView: public IView
+{
+public:
+
+	virtual void paint_video_frame(cv::Mat& img) = 0;
+};
+*/
 
 
 /**

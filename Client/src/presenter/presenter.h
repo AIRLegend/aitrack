@@ -12,7 +12,7 @@
 #include "filters.h"
 
 #include "../tracker/TrackerFactory.h"
-#include "../tracker/ITrackerWrapper.h"
+#include "../tracker/TrackerWrapper.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
@@ -22,7 +22,7 @@ private:
 	FaceData face_data;
 	std::unique_ptr<UDPSender> udp_sender;
 	std::unique_ptr<TrackerFactory> tracker_factory;
-	std::unique_ptr<ITrackerWrapper> t;
+	std::unique_ptr<TrackerWrapper> t;
 	std::vector<std::shared_ptr<Camera>> all_cameras;
 	std::shared_ptr<spdlog::logger> logger;
 
@@ -33,6 +33,7 @@ private:
 	std::unique_ptr<IFilter> filter;
 
 	IView* view;
+	//IPaintableView* calibration_view;
 
 	// Whether the main recognition loop has to be running.
 	bool run = false;
@@ -95,6 +96,11 @@ private:
 	*/
 	void update_camera_params();
 
+	/**
+	* Paints the model predictions on an captured image using the FaceData.
+	*/
+	void paint_predictions(cv::Mat& image, const FaceData& face_data, const cv::Scalar& color_bbox, const cv::Scalar& color_landmarks );
+
 
 public:
 	std::unique_ptr<ConfigMgr> conf_mgr;
@@ -105,6 +111,7 @@ public:
 	//IPresenter
 	void toggle_tracking();
 	void save_prefs(const ConfigData& data);
+	void calibrate_face(IView& view);
 	void close_program();
 
 	//IUpdatesub
