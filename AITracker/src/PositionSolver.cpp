@@ -214,7 +214,7 @@ void PositionSolver::solve_rotation(FaceData* face_data)
     }
 
     correct_rotation(*face_data);
-    //clip_rotations(*face_data);
+    clip_rotations(*face_data);
 
 #ifdef _DEBUG
     std::cout << face_data->to_string() << std::endl; // disable copy constructor and output to std::cout
@@ -328,7 +328,7 @@ void PositionSolver::correct_rotation(FaceData& face_data)
     //face_data.rotation[0] = face_data.rotation[0] * 1.5;
 
     // We dont want the Z axis oversaturated since opentrack has +/-600 centimeter range
-    face_data.translation[2] /= 100;
+    face_data.translation[2] /= 10;
 }
 
 
