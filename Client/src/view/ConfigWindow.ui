@@ -10,19 +10,19 @@
     <x>0</x>
     <y>0</y>
     <width>411</width>
-    <height>393</height>
+    <height>401</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>411</width>
-    <height>393</height>
+    <height>401</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>411</width>
-    <height>393</height>
+    <height>401</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
      <x>10</x>
      <y>20</y>
      <width>191</width>
-     <height>321</height>
+     <height>281</height>
     </rect>
    </property>
    <property name="title">
@@ -234,7 +234,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>350</y>
+     <y>360</y>
      <width>381</width>
      <height>31</height>
     </rect>
@@ -252,7 +252,7 @@
      <x>210</x>
      <y>21</y>
      <width>191</width>
-     <height>91</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="title">
@@ -268,9 +268,9 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>30</y>
+      <y>20</y>
       <width>91</width>
-      <height>21</height>
+      <height>15</height>
      </rect>
     </property>
     <property name="acceptDrops">
@@ -293,9 +293,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>20</y>
       <width>21</width>
-      <height>16</height>
+      <height>10</height>
      </rect>
     </property>
     <property name="text">
@@ -306,9 +306,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
+      <y>50</y>
       <width>21</width>
-      <height>16</height>
+      <height>10</height>
      </rect>
     </property>
     <property name="text">
@@ -319,9 +319,9 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>60</y>
+      <y>50</y>
       <width>41</width>
-      <height>21</height>
+      <height>15</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -336,9 +336,9 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>120</y>
+     <y>100</y>
      <width>191</width>
-     <height>151</height>
+     <height>181</height>
     </rect>
    </property>
    <property name="title">
@@ -441,12 +441,28 @@
      <string>Camera FOV</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="calibrateBtn">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>150</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="English" country="UnitedStates"/>
+    </property>
+    <property name="text">
+     <string>Calibrate Face</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="generalGroupBox">
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>270</y>
+     <y>280</y>
      <width>191</width>
      <height>71</height>
     </rect>

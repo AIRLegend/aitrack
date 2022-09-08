@@ -66,9 +66,10 @@ void WindowMain::show_tracking_data(ConfigData conf)
 
 void WindowMain::connect_presenter(IPresenter* presenter)
 {
-	if (presenter != NULL)
+	if (presenter != NULL && this->presenter == nullptr)
 	{
 		this->presenter = presenter;
+		conf_win->connect_presenter(presenter);
 	}
 }
 
@@ -201,4 +202,9 @@ void WindowMain::set_shortcuts(bool enabled)
 		delete this->toggle_tracking_shortcut;
 		this->toggle_tracking_shortcut = nullptr;
 	}
+}
+
+IView* WindowMain::get_calibration_window()
+{
+	return conf_win->get_calibration_window();
 }

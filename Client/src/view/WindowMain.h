@@ -15,9 +15,9 @@
 
 #include "../utils/qglobalshortcuts/qglobalshortcut.h"
 
-class Presenter;
+//class IPresenter;
 
-class WindowMain : public QMainWindow, IView, IRootView
+class WindowMain : public QMainWindow,  public IRootView, public IView
 {
 	Q_OBJECT
 
@@ -29,7 +29,6 @@ public:
 
 	//Iview stuff
 	void connect_presenter(IPresenter* presenter);
-	void paint_video_frame(cv::Mat& img);
 	void show_tracking_data(ConfigData conf);
 	ConfigData get_inputs();
 	void update_view_state(ConfigData conf);
@@ -37,9 +36,14 @@ public:
 	void set_enabled(bool enabled);
 	void show_message(const char* msg, MSG_SEVERITY severity);
 	void set_shortcuts(bool enabled);
+	IView* get_calibration_window();
+	void set_visible(bool visible) {};
 
 	//IRootView
 	void notify(IView *self);
+
+	//IPaintable
+	void paint_video_frame(cv::Mat& img);
 
 private:
 	Ui::MainWindow ui;
@@ -54,6 +58,7 @@ private:
 	//QComboBox* cb_modelType;
 
 	ConfigWindow *conf_win;
+
 	/**
 	* Compacting the window to the content.
 	*/

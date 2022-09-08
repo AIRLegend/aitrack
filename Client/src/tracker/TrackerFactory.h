@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ITrackerWrapper.h"
+#include "TrackerWrapper.h"
 #include <string.h>
 #include <memory>
 #include <vector>
@@ -14,9 +14,8 @@ class TrackerFactory
 private:
 	std::string model_dir;
 public:
-	//std::unique_ptr<ITrackerWrapper> buildTracker(int im_width, int im_height, float distance, float fov, TRACKER_TYPE type);
 	TrackerFactory(std::string modeldir);
-	std::unique_ptr<ITrackerWrapper> buildTracker(int im_width, 
+	std::unique_ptr<TrackerWrapper> buildTracker(int im_width, 
 												  int im_height, 
 												  float distance, 
 												  float fov, 
