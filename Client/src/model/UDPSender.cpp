@@ -66,7 +66,7 @@ void UDPSender::send_data(double* d)
 {
     // Make packet
     const char* pkt = (char*)d;
-    sendto(s, pkt, BUFFER_SIZE, 0, (sockaddr*)&dest, sizeof(dest));
+    sendto(s, pkt, BUFFER_SIZE, 0, (sockaddr*)&dest, (dest.sin_family == AF_INET6 ? sizeof(dest_IPv6) : sizeof(dest)));
 };
 
 
