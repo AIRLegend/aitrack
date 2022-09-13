@@ -48,7 +48,4 @@ private:
 	void proc_face_detect(float* face, float width = 1080, float height = 720);
 	void detect_landmarks(const cv::Mat& image, int x0, int y0, float scale_x, float scale_y, FaceData& face_data);
 	void proc_heatmaps(float* heatmaps, int x0, int y0, float scale_x, float scale_y, FaceData& face_data);
-
-	float get_distance_squared(float x0, float y0, float x1, float y1);
-	int get_center_weighted_faces_row(const cv::Mat& image, const cv::Mat& faces);
 };
