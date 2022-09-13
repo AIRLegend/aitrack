@@ -42,32 +42,41 @@ std::vector<std::shared_ptr<Camera>> CameraFactory::getCameras(CameraSettings& s
 {
 	std::vector<std::shared_ptr<Camera>> cams;
 
-	// Search first for any PS3 camera.
-	try
-	{
-		cams.push_back(std::make_shared<Ps3Camera>(640, 480, 60));
-		cams[0]->set_settings(settings);
-	}
-	catch (...)
-	{
-		std::cout << "No PS3 camera available." << std::endl;
-		cams.clear();
-	}
-
-
 	for (int i = 0; i < 5; i++)
 	{
+		bool bFoundPs3Camera = false;
+		// Search first for any PS3 camera.
 		try
 		{
-			std::shared_ptr<Camera> c = std::make_shared<OCVCamera>(settings.width, settings.height, settings.fps, i);
+			std::shared_ptr<Camera> c = std::make_shared<Ps3Camera>(640, 480, 60);
 			c->set_settings(settings);  // Brightness / Exposure
 			cams.push_back(std::move(c));
-			std::cout << "Found ID: " << i << std::endl;
+			bFoundPs3Camera = true;
+			std::cout << "Found PS3 camera ID: " << i << std::endl;
 		}
-		catch (const std::exception&)
+		catch (...)
 		{
-			std::cout << "Not found device" << i << std::endl;
 		}
+
+		if (!bFoundPs3Camera)
+		{
+			// Then search or OCV Camera.
+			try
+			{
+				std::shared_ptr<Camera> c = std::make_shared<OCVCamera>(settings.width, settings.height, settings.fps, i);
+				c->set_settings(settings);  // Brightness / Exposure
+				cams.push_back(std::move(c));
+				std::cout << "Found OCV camera ID: " << i << std::endl;
+			}
+			catch (const std::exception&)
+			{
+			}
+		}
+
+	}
+	if (cams.size() == 0)
+	{
+		std::cout << "No cameras found" << std::endl;
 	}
 
 	return cams;
