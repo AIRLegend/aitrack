@@ -199,10 +199,13 @@ void Tracker::proc_face_detect(float* face, float width, float height)
     float w = face[2];
     float h = face[3];
 
-    int crop_x1 = (int)(x);
-    int crop_y1 = (int)(y);
-    int crop_x2 = (int)(x + w);  
-    int crop_y2 = (int)(y + h + h * 0.1f); // force a little taller BB so the chin tends to be covered
+    int additional_width_margin = (int)(w * 0.4f);
+    int additional_height_margin = (int)(h * 0.4f);
+
+    int crop_x1 = (int)(x - additional_width_margin);
+    int crop_y1 = (int)(y - additional_height_margin);
+    int crop_x2 = (int)(x + w + additional_width_margin);
+    int crop_y2 = (int)(y + h + additional_height_margin); // force a little taller BB so the chin tends to be covered
 
     face[0] = (float)std::max(0, crop_x1);
     face[1] = (float)std::max(0, crop_y1);
