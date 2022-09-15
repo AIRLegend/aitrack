@@ -326,9 +326,6 @@ void PositionSolver::correct_rotation(FaceData& face_data)
     // Note: We could saturate pitch here, but its better to let the user do it via Opentrack.
     // The coefficient could be problematic for some users.
     //face_data.rotation[0] = face_data.rotation[0] * 1.5;
-
-    // We dont want the Z axis oversaturated since opentrack has +/-600 centimeter range
-    face_data.translation[2] /= 10;
 }
 
 
