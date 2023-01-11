@@ -157,8 +157,16 @@ void Tracker::proc_face_detect(float* face, float width, float height)
     float w = face[2];
     float h = face[3];
 
-    int additional_width_margin = (int)(w * 0.4f);
-    int additional_height_margin = (int)(h * 0.4f);
+    /* Need to increase the boundary for face detection by 10% to compensate for increased size due to yaw, pitch and roll */
+    /* But we also need a minimum amount of pixels for detection at farther distances where the face is smaller */
+    int additional_width_margin = (int)(w * 0.1f);
+    int minimum_width_margin    = (int)width / (4 * 10);
+    if (additional_width_margin < minimum_width_margin)
+        additional_width_margin = minimum_width_margin;
+    int additional_height_margin = (int)(h * 0.1f);
+    int minimum_height_margin    = (int)height / (4 * 10);
+    if (additional_height_margin < minimum_height_margin)
+        additional_height_margin = minimum_height_margin;
 
     int crop_x1 = (int)(x - additional_width_margin);
     int crop_y1 = (int)(y - additional_height_margin);
