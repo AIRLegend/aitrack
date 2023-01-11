@@ -139,12 +139,15 @@ void StandardTracker::detect_face(const cv::Mat& image, FaceData& face_data)
     if (faces.rows > 0)
     {
         face_data.face_detected = true;
-        float x0 = faces.at<float>(0, 0);
-        float y0 = faces.at<float>(0, 1);
-        float face_w = faces.at<float>(0, 2);
-        float face_h = faces.at<float>(0, 3);
-
-        
+        int  faces_row = 0;
+        bool center_weighted = true; // make center weighted face detection configurable
+        if (center_weighted)
+            faces_row = get_center_weighted_faces_row(image, faces);
+        float x0 = faces.at<float>(faces_row, 0);
+        float y0 = faces.at<float>(faces_row, 1);
+        float face_w = faces.at<float>(faces_row, 2);
+        float face_h = faces.at<float>(faces_row, 3);
+                
         float w_ratio = (width / im_width);
         float h_ratio = (height / im_height);
 
