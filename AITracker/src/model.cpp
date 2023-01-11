@@ -30,9 +30,9 @@ Tracker::Tracker(std::unique_ptr<PositionSolver>&& solver, std::wstring& detecti
     session_lm = std::make_unique<Ort::Session>(*enviro, landmark_model_path.data(), session_options);
 
     // Face detector
-    float score_threshold = .8;
-    float nms_threshold = .3;
-    int topK = 50;
+    float score_threshold = .8f;
+    float nms_threshold = .5f;
+    int topK = 7;
     face_detector = cv::FaceDetectorYN::create(
         std::string(detection_model_path.begin(), detection_model_path.end()),
         "",                      
@@ -82,7 +82,45 @@ float inline logit(float p)
     return log(p) / 16.0f;
 }
 
-void Tracker::detect_face(const cv::Mat& image, FaceData& face_data)
+float StandardTracker::get_distance_squared(float x0, float y0, float x1, float y1)
+{
+    // calculate distance squared.
+    // no need to for sqrt to obtain the smallest distance for optimization
+    float x_distance = (x1 - x0);
+    float y_distance = (y1 - y0);
+    float distance_squared = (x_distance * x_distance) + (y_distance * y_distance);
+    return distance_squared;
+}
+
+int StandardTracker::get_center_weighted_faces_row(const cv::Mat& image, const cv::Mat& faces)
+{
+    // get center coordinates for image
+    float image_center_x = (float)(image.rows / 2);
+    float image_center_y = (float)(image.cols / 2);
+
+    float smallest_distance_squared = 0.0f;
+    int   center_weighted_face_row = -1;
+    for (int row = 0; row < faces.rows; row++)
+    {
+        // get center coordinates for faces at row
+        float x0 = faces.at<float>(row, 0);
+        float y0 = faces.at<float>(row, 1);
+        float face_w = faces.at<float>(row, 2);
+        float face_h = faces.at<float>(row, 3);
+        float face_center_x = x0 + (face_w / 2);
+        float face_center_y = y0 + (face_h / 2);
+
+        float distance_squared = get_distance_squared(image_center_x, image_center_y, face_center_x, face_center_y);
+        if ((center_weighted_face_row == -1) || (distance_squared < smallest_distance_squared))
+        {
+            center_weighted_face_row = row;
+            smallest_distance_squared = distance_squared;
+        }
+    }
+    return center_weighted_face_row;
+}
+
+void StandardTracker::detect_face(const cv::Mat& image, FaceData& face_data)
 {
     cv::Mat resized, faces;
     cv::resize(image, resized, cv::Size(224, 224), NULL, NULL, cv::INTER_LINEAR);
